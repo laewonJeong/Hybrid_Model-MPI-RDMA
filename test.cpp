@@ -66,36 +66,32 @@ int main(int argc, char** argv){
     //end = MAX;
     double x = 0;
     struct timespec begin, end1 ;
-    for(int k=0;k<5;k++){
+    struct timespec begin1, end2;
+    clock_gettime(CLOCK_MONOTONIC, &begin1);
+    for(int k=0;k<30;k++){
+        if(rank == 1)
+            cout << "======================" << k << " step==========================" << endl;
         clock_gettime(CLOCK_MONOTONIC, &begin);
         for(i=start;i<end;i++){
             x = 0;
-            /*if(i%5000 == 0){
-                cout << rank << ": " << i <<" vertex calc finish" << endl;
-                cout << "================================================" << endl;
-            }*/
+        
             for(j=0;j<MAXX;j++)
                 x+=j;
             a[i-start] = j;
         }
         MPI_Allgather(a.data(),a.size(),MPI_DOUBLE,send[0].data(),a.size(),MPI_DOUBLE,MPI_COMM_WORLD);
-        if(rank ==1){
-            //clock_gettime(CLOCK_MONOTONIC, &begin);
+        if(rank ==1)
             myrdma.rdma_comm("write_with_imm", "0");
-            //clock_gettime(CLOCK_MONOTONIC, &end1);
-            //time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
-            //printf("rdma_comm 수행시간: %Lfs.\n", time);
-        }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
-        if(rank ==1){
+        if(rank ==1 || rank == 0){
             cout << k <<" step calc finish" << endl;
             printf("수행시간: %Lfs.\n", time);
-            cout << "================================================" << endl;
         }
     }
-    
-    
+    clock_gettime(CLOCK_MONOTONIC, &end2);
+    long double time = (end2.tv_sec - begin1.tv_sec) + (end2.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+    cout << "총 수행시간: "<<time <<"s." << endl;
     
     MPI_Finalize();
 }

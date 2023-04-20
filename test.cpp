@@ -55,10 +55,6 @@ int main(int argc, char** argv){
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();
     }
-    else{
-        sleep(0.5);
-    }
-    
     
     for(i=0;i<size;i++){
         if(i==rank){
@@ -70,29 +66,33 @@ int main(int argc, char** argv){
     //end = MAX;
     double x = 0;
     struct timespec begin, end1 ;
-    clock_gettime(CLOCK_MONOTONIC, &begin);
-    for(i=start;i<end;i++){
-        x = 0;
-        if(i%5000 == 0){
-            cout << rank << ": " << i <<" vertex calc finish" << endl;
-            cout << "================================================" << endl;
-        }
-        for(j=0;j<MAXX;j++)
-            x+=j;
-        a[i-start] = j;
-    }
-    MPI_Allgather(a.data(),a.size(),MPI_DOUBLE,send[0].data(),a.size(),MPI_DOUBLE,MPI_COMM_WORLD);
-    clock_gettime(CLOCK_MONOTONIC, &end1);
-    long double time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
-
-    printf("calc + gather 수행시간: %Lfs.\n", time);
-    if(rank ==1){
+    for(int k=0;k<2;k++){
         clock_gettime(CLOCK_MONOTONIC, &begin);
-        myrdma.rdma_comm("write_with_imm", "0");
+        for(i=start;i<end;i++){
+            x = 0;
+            if(i%5000 == 0){
+                cout << rank << ": " << i <<" vertex calc finish" << endl;
+                cout << "================================================" << endl;
+            }
+            for(j=0;j<MAXX;j++)
+                x+=j;
+            a[i-start] = j;
+        }
+        MPI_Allgather(a.data(),a.size(),MPI_DOUBLE,send[0].data(),a.size(),MPI_DOUBLE,MPI_COMM_WORLD);
+        if(rank ==1){
+            //clock_gettime(CLOCK_MONOTONIC, &begin);
+            myrdma.rdma_comm("write_with_imm", "0");
+            //clock_gettime(CLOCK_MONOTONIC, &end1);
+            //time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
+            //printf("rdma_comm 수행시간: %Lfs.\n", time);
+        }
         clock_gettime(CLOCK_MONOTONIC, &end1);
-        time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
-        printf("rdma_comm 수행시간: %Lfs.\n", time);
+        long double time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
+        if(rank ==1)
+            printf("수행시간: %Lfs.\n", time);
     }
+    
+    
     
     MPI_Finalize();
 }

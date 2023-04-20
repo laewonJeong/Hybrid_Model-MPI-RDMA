@@ -70,10 +70,10 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin);
         for(i=start;i<end;i++){
             x = 0;
-            if(i%5000 == 0){
+            /*if(i%5000 == 0){
                 cout << rank << ": " << i <<" vertex calc finish" << endl;
                 cout << "================================================" << endl;
-            }
+            }*/
             for(j=0;j<MAXX;j++)
                 x+=j;
             a[i-start] = j;
@@ -88,8 +88,11 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
-        if(rank ==1)
+        if(rank ==1){
+            cout << k <<" step calc finish" << endl;
             printf("수행시간: %Lfs.\n", time);
+            cout << "================================================" << endl;
+        }
     }
     
     

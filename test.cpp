@@ -66,7 +66,7 @@ int main(int argc, char** argv){
     //end = MAX;
     double x = 0;
     struct timespec begin, end1 ;
-    for(int k=0;k<2;k++){
+    for(int k=0;k<5;k++){
         clock_gettime(CLOCK_MONOTONIC, &begin);
         for(i=start;i<end;i++){
             x = 0;

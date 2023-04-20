@@ -56,7 +56,7 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
     else{
-        sleep(1);
+        sleep(0.5);
     }
     
     
@@ -82,12 +82,17 @@ int main(int argc, char** argv){
         a[i-start] = j;
     }
     MPI_Allgather(a.data(),a.size(),MPI_DOUBLE,send[0].data(),a.size(),MPI_DOUBLE,MPI_COMM_WORLD);
-    if(rank ==1){
-        myrdma.rdma_comm("write_with_imm", "0");
-    }
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
 
-    printf("수행시간: %Lfs.\n", time);
+    printf("calc + gather 수행시간: %Lfs.\n", time);
+    if(rank ==1){
+        clock_gettime(CLOCK_MONOTONIC, &begin);
+        myrdma.rdma_comm("write_with_imm", "0");
+        clock_gettime(CLOCK_MONOTONIC, &end1);
+        time = (end1.tv_sec - begin.tv_sec) + (end1.tv_nsec - begin.tv_nsec) / 1000000000.0;
+        printf("rdma_comm 수행시간: %Lfs.\n", time);
+    }
+    
     MPI_Finalize();
 }

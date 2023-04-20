@@ -50,7 +50,7 @@ int main(int argc, char** argv){
 
     myRDMA myrdma;
 
-    if(rank == 0){
+    if(rank == 1){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,div);
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();
@@ -82,7 +82,7 @@ int main(int argc, char** argv){
         a[i-start] = j;
     }
     MPI_Allgather(a.data(),a.size(),MPI_DOUBLE,send[0].data(),a.size(),MPI_DOUBLE,MPI_COMM_WORLD);
-    if(rank ==0){
+    if(rank ==1){
         myrdma.rdma_comm("write_with_imm", "0");
     }
     clock_gettime(CLOCK_MONOTONIC, &end1);

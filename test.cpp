@@ -115,6 +115,7 @@ int main(int argc, char** argv){
     int start, end;
     int a,b;
     struct timespec begin1, end1 ;
+    struct timespec begin2, end2 ;
     string my_ip(argv[1]);
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
@@ -201,6 +202,8 @@ int main(int argc, char** argv){
     if(my_ip != server_ip)
         div_send.resize(end-start);
 
+
+    clock_gettime(CLOCK_MONOTONIC, &begin2);
     for(step =0;step<10000000;step++){
         if(rank == 0)
             cout <<"====="<< step+1 << " step=====" <<endl;
@@ -286,6 +289,9 @@ int main(int argc, char** argv){
             break;
         }
     }
+    clock_gettime(CLOCK_MONOTONIC, &end2);
+    long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+
     //===============================================================================
     
     if(my_ip != server_ip && rank == 1){
@@ -296,6 +302,7 @@ int main(int argc, char** argv){
         }
         cerr << "s = " <<sum1 << endl;
     }
-
+    if(rank == 0)
+        printf("calc 수행시간: %Lfs.\n", time1);
     MPI_Finalize();
 }

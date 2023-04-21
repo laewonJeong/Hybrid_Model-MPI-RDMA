@@ -105,7 +105,7 @@ void create_graph_data(string path, int rank, string del){
 		cout << "Unable to open file" <<endl;
         exit(1);
 	}
-
+    num_of_vertex = graph.size();
     delete infile;
 }
 

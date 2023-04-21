@@ -157,7 +157,7 @@ int main(int argc, char** argv){
                 start = a;
                 end = b;
             }
-            if(rank ==size-1){
+            if(rank ==size-1 && rank == i){
                 end = div_num_of_vertex;
             }
             displs[i] = a;

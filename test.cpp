@@ -204,7 +204,11 @@ int main(int argc, char** argv){
                 const size_t from_page = graph_ptr[j];
                 const double inv_num_outgoing = 1.0 / num_outgoing1[from_page];
 
-                tmp += gather_pr[from_page]*inv_num_outgoing;
+                if(is_server(my_ip))
+                    tmp += send[0][from_page]*inv_num_outgoing;
+                else
+                   tmp += recv[0][from_page]*inv_num_outgoing;
+                
             }
             div_send[0][i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
         }

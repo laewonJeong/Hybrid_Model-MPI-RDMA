@@ -197,11 +197,12 @@ int main(int argc, char** argv){
                 }
             }
         }
-         if(rank == 1){
+         if(rank == 0){
             cout << "---------" << step+1 <<"step---------" << endl;
             cout << diff << endl;
         }
-
+        if(diff < 0.00001)
+            break;
         //cout << rank <<": start" << endl;
         for(size_t i=start;i<end;i++){
             tmp = 0.0;
@@ -244,7 +245,7 @@ int main(int argc, char** argv){
             }
             MPI_Bcast(recv[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
 
-            cout << rank << ": " <<recv[0].size() << endl;
+            //cout << rank << ": " <<recv[0].size() << endl;
         }
         else{
             if(rank == 1){
@@ -266,19 +267,15 @@ int main(int argc, char** argv){
                     myrdma.rdma_write_pagerank(send[0],i);      
             }
             MPI_Bcast(send[0].data(), send[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
-            /*if(rank == 0)
-                for(int i=send[0].size()-56;i<send[0].size();i++){
-                    cout << i << ": " << send[0][i] << endl;
-            }*/
-            //cout << rank << ": " <<send[0].size() << endl;
+           
         }
-        /*if(rank == 0)
-            for(int i=num_of_vertex-123;i<num_of_vertex;i++){
-                cout << i << ": " << send[0][i] << endl;
-        }*/
 
-        if(diff < 0.00001)
-            break;
+        if(rank == 0){
+       for(int i=send[0].size()-123;i<send[0].size();i++){
+            cout << "send[0][" << i << "]: " << send[0][i] << endl;
+       }
+        }
+
 
     }
 

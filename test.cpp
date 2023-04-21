@@ -219,12 +219,12 @@ int main(int argc, char** argv){
         else
             prev_pr = recv[0];
 
+        aaaa.resize(1197192);
+        MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
+        
         if(!is_server(my_ip)){
-            cout << "start Allgatehr" << endl;
-            //send[0].resize(end-start);
-            MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
             send[0] = aaaa;
-            cout << "finish Allgather" << endl;
+            
             if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);
@@ -234,12 +234,8 @@ int main(int argc, char** argv){
             MPI_Bcast(recv[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
         else{
-            cout << "start Allgatehr" << endl;
-            MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
-            cout << "finish Allgather" << endl;
             if(rank == 1){
                 myrdma.recv_t("send");
-                cout << aaaa.size() << endl;
                 send[0].clear();
                 for(int i=0;i<num_of_node;i++){
                     size = 1197192;

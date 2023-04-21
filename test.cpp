@@ -194,7 +194,7 @@ int main(int argc, char** argv){
                     dangling_pr += gather_pr[i]; 
             }
         }
-        //cout << rank <<": start" << endl;
+        cout << rank <<": start" << endl;
         for(size_t i=start;i<end;i++){
             tmp = 0.0;
             const size_t graph_size = graph1[i].size();
@@ -212,14 +212,14 @@ int main(int argc, char** argv){
             }
             div_send[0][i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
         }
-        //cout << rank <<": end" << endl;
+        cout << rank <<": end" << endl;
         if(!is_server(my_ip)){
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,send[0].data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
             if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);
             }
-           MPI_Bcast(recv[0].data(), recv[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
+            MPI_Bcast(recv[0].data(), recv[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
         else{
             //cout << "start Allgatehr" << endl;

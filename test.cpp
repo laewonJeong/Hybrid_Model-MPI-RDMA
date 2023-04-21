@@ -184,9 +184,17 @@ int main(int argc, char** argv){
         if(step!=0){
             diff = 0;
             for (size_t i=0;i<num_of_vertex;i++) {
-                diff += fabs(prev_pr[i] - gather_pr[i]);
-                if (num_outgoing[i] == 0)
-                    dangling_pr += gather_pr[i]; 
+                if(is_server(my_ip))
+                    diff += fabs(prev_pr[i] - send[0][i]);
+                else
+                    diff += fabs(prev_pr[i] - recv[0][i]);
+                
+                if (num_outgoing[i] == 0){
+                    if(is_server(my_ip))
+                       dangling_pr += send[0][i]; 
+                    else
+                        dangling_pr += recv[0][i]; 
+                }
             }
         }
          if(rank == 1){
@@ -211,6 +219,9 @@ int main(int argc, char** argv){
                 
             }
             div_send[0][i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
+            /*if(rank ==0){
+                cout << "div_send[" << i-start << "]: "<<div_send[0][i-start] << endl;
+            }*/
         }
         //cout << rank <<": end" << endl;
 
@@ -246,7 +257,7 @@ int main(int argc, char** argv){
                         //cout << i << ": " <<send[0].size() << endl;
                     }
                     else{
-                        send[0].insert(send[0].end(),recv[i-1].begin(),recv[i-1].begin()+size);
+                        send[0].insert(send[0].end(),recv[i-1].begin(),recv[i-1].begin()+(size+1));
                         //cout << i << ": " <<send[0].size() << endl;
                     }    
                 }
@@ -254,7 +265,7 @@ int main(int argc, char** argv){
                 for(size_t i = 0; i<num_of_node-1;i++)
                     myrdma.rdma_write_pagerank(send[0],i);      
             }
-            MPI_Bcast(send[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
+            MPI_Bcast(send[0].data(), send[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
             /*if(rank == 0)
                 for(int i=send[0].size()-56;i<send[0].size();i++){
                     cout << i << ": " << send[0][i] << endl;

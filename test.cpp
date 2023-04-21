@@ -289,7 +289,7 @@ int main(int argc, char** argv){
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
             cout << "pr[" <<i<<"]: " << recv[0][i] <<endl;
         }
-        cerr << "s = " <<round(sum1) << endl;
+        cerr << "s = " <<sum1 << endl;
     }
 
     MPI_Finalize();

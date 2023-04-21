@@ -266,7 +266,7 @@ int main(int argc, char** argv){
         else{
             if(rank == 0){
                 myrdma.rdma_write_vector(send[0],0);
-                cout << "send success" << endl;
+                //cout << "send success" << endl;
             }
             
         } 
@@ -279,7 +279,7 @@ int main(int argc, char** argv){
             if(rank == 0)
                 myrdma.rdma_recv_pagerank(0);
             MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            cout << "recv success" << endl;
+            //cout << "recv success" << endl;
         }
 
         if(my_ip == server_ip && rank == 0)
@@ -290,7 +290,7 @@ int main(int argc, char** argv){
         }
     }
     clock_gettime(CLOCK_MONOTONIC, &end2);
-    long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+    long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
 
     //===============================================================================
     
@@ -303,6 +303,6 @@ int main(int argc, char** argv){
         cerr << "s = " <<sum1 << endl;
     }
     if(rank == 0)
-        printf("calc 수행시간: %Lfs.\n", time1);
+        printf("총 수행시간: %Lfs.\n", time2);
     MPI_Finalize();
 }

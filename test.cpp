@@ -148,7 +148,7 @@ int main(int argc, char** argv){
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
 
-    cout << "start "<< endl;
+    //cout << "start "<< endl;
     if(my_ip != server_ip){
         cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
         for(int i=0;i<size;i++){
@@ -166,14 +166,14 @@ int main(int argc, char** argv){
             if(i ==size-1)
                 recvcounts[i] = div_num_of_vertex-displs[i];
 
-            cout << "displs[" << i << "]: " <<displs[i] << endl;
-            cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
+            //cout << "displs[" << i << "]: " <<displs[i] << endl;
+            //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
         if(my_ip == node[num_of_node-1]){
             start += num_of_vertex/(num_of_node-1);
             end += num_of_vertex/(num_of_node-1);
         }
-         cout << "start, end: " << start <<", "<< end << endl;
+         //cout << "start, end: " << start <<", "<< end << endl;
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);
             recv[i].resize(num_of_vertex, 1/num_of_vertex);
@@ -190,7 +190,7 @@ int main(int argc, char** argv){
 
         nn[num_of_node-2] = x;
     }
-   cout << "end" << endl;
+  // cout << "end" << endl;
     size_t step;
     double diff=1;
     double dangling_pr = 0.0;

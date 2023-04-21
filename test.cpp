@@ -168,6 +168,10 @@ int main(int argc, char** argv){
             cout << "displs[" << i << "]: " <<displs[i] << endl;
             cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
+        if(my_ip == node[num_of_node-1]){
+            start += num_of_vertex/(num_of_node-1);
+            end += num_of_vertex/(num_of_node-1);
+        }
          cout << "start, end: " << start <<", "<< end << endl;
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);

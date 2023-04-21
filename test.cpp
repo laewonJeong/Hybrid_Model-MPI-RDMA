@@ -113,6 +113,7 @@ int main(int argc, char** argv){
     int rank, size, i ,j;
     int start, end;
     int a,b;
+    struct timespec begin1, end1 ;
     string my_ip(argv[1]);
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
@@ -212,6 +213,7 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != server_ip){
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=start;i<end;i++){
                 double tmp = 0.0;
                 const size_t graph_size = graph[i].size();
@@ -226,6 +228,10 @@ int main(int argc, char** argv){
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
              MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            if(rank == 0)
+                printf("calc 수행시간: %Lfs.\n", time1);
         }
         else{
             prev_pr = send[0];

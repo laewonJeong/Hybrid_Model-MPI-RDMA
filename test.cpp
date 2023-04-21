@@ -143,31 +143,32 @@ int main(int argc, char** argv){
     int recvcounts[size];
     int displs[size];
 
-    int div_num_of_vertex = num_of_vertex/num_of_node;    
+    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
-        div_num_of_vertex = num_of_vertex - num_of_vertex/num_of_node;
+        div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
     
-    cout << div_num_of_vertex << endl;
+    cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
 
     // graph partitioning
-    for(int i=0;i<size;i++){
-        a = div_num_of_vertex/size*i;
-        b = a + div_num_of_vertex/size;
-        if(rank == i){
-            start = a;
-            end = b;
+    if(!is_server(my_ip)){
+        for(int i=0;i<size;i++){
+            a = div_num_of_vertex/size*i;
+            b = a + div_num_of_vertex/size;
+            if(rank == i){
+                start = a;
+                end = b;
+            }
+            if(rank ==size-1)
+                end = div_num_of_vertex;
+            displs[i] = a;
+            recvcounts[i] = b-a;
+            if(i ==size-1)
+                recvcounts[i] = div_num_of_vertex-displs[i];
+
+            cout << "displs[" << i << "]: " <<displs[i] << endl;
+            cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
-        if(rank ==size-1)
-            end = div_num_of_vertex;
-       displs[i] = a;
-       recvcounts[i] = b-a;
-       if(i ==size-1)
-            recvcounts[i] = div_num_of_vertex-displs[i];
-
-        cout << "displs[" << i << "]: " <<displs[i] << endl;
-        cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
     }
-
    
     
     MPI_Finalize();

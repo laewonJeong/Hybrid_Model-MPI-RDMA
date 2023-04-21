@@ -228,7 +228,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);
             }
-            MPI_Bcast(recv[0].data(), recv[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
+            MPI_Bcast(recv[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
         else{
             //cout << "start Allgatehr" << endl;
@@ -247,13 +247,16 @@ int main(int argc, char** argv){
                 for(size_t i = 0; i<num_of_node-1;i++)
                     myrdma.rdma_write_pagerank(send[0],i);      
             }
-            MPI_Bcast(send[0].data(), send[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
-            if(rank == 1 || rank == 0)
+            MPI_Bcast(send[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
+            /*if(rank == 1 || rank == 0)
                 for(int i=send[0].size()-56;i<send[0].size();i++){
                     cout << i << ": " << send[0][i] << endl;
-            }
+            }*/
         }
-
+        if(rank == 0)
+                for(int i=num_of_vertex-123;i<num_of_vertex;i++){
+                    cout << i << ": " << send[0][i] << endl;
+            }
 
         if(diff < 0.00001)
             break;

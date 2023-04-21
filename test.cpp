@@ -214,7 +214,9 @@ int main(int argc, char** argv){
         }
         cout << rank <<": end" << endl;
         if(!is_server(my_ip)){
+            cout << "start Allgatehr" << endl;
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,send[0].data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
+            cout << "finish Allgather" << endl;
             if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);

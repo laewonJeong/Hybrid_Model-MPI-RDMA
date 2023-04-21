@@ -116,19 +116,15 @@ int main(int argc, char** argv){
     string my_ip(argv[1]);
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
-    vector<double> div_send[num_of_node];
-    vector<double> aaaa;
     
-
-    // Create Graph
-    create_graph_data(argv[2],0,argv[3]);
 
     //MPI Init
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    
+    // Create Graph
+    create_graph_data(argv[2],rank,argv[3]);
 
     myRDMA myrdma;
     Pagerank pagerank;
@@ -139,18 +135,18 @@ int main(int argc, char** argv){
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();
     }
-    
+
+    // graph partitioning
     int recvcounts[size];
     int displs[size];
+    int nn[num_of_node-1];
 
     int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
-    
-    cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
 
-    // graph partitioning
     if(!is_server(my_ip)){
+        cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
         for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
@@ -168,8 +164,113 @@ int main(int argc, char** argv){
             cout << "displs[" << i << "]: " <<displs[i] << endl;
             cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
+
+        for(int i=0;i<num_of_node;i++){
+            send[i].resize(div_num_of_vertex);
+            recv[i].resize(num_of_vertex, 1/num_of_vertex);
+        }
+    }
+    else{
+        for(int i=0;i<num_of_node;i++){
+            send[i].resize(num_of_vertex, 1/num_of_vertex);
+            recv[i].resize(div_num_of_vertex);
+            nn[i] = div_num_of_vertex;
+        }
+        int x = num_of_vertex - num_of_vertex/(num_of_node-1);
+        recv[num_of_node-2].resize(x);
+
+        nn[num_of_node-2] = num_of_vertex - num_of_vertex/(num_of_node-1);
     }
    
-    
+    size_t step;
+    double diff=1;
+    double dangling_pr = 0.0;
+    vector<double> prev_pr;
+    double df_inv = 1.0 - df;
+    double inv_num_of_vertex = 1.0 / num_of_vertex;
+    vector<double> div_send;
+
+    div_send.resize(end-start);
+
+    for(step =0;step<10000000;step++){
+        if(rank == 0)
+            cout <<"====="<< step+1 << " step=====" <<endl;
+        dangling_pr = 0.0;
+
+        if(step!=0) {
+            if(my_ip != server_ip){
+                for (size_t i=0;i<num_of_vertex;i++) {
+                    if (num_outgoing[i] == 0)
+                        dangling_pr += recv[0][i];   
+                }
+            }
+            else{
+                diff = 0;
+                for (size_t i=0;i<num_of_vertex;i++) 
+                    diff += fabs(prev_pr[i] - send[0][i]);
+            }
+        }
+        //===============================================================================
+        if(my_ip != server_ip){
+            for(size_t i=start;i<end;i++){
+                double tmp = 0.0;
+                const size_t graph_size = graph[i].size();
+                const size_t* graph_ptr = graph[i].data();
+
+                for(size_t j=0; j<graph_size; j++){
+                    const size_t from_page = graph_ptr[j];
+                    const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
+
+                    tmp += recv[0][from_page] * inv_num_outgoing;
+                }
+                div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
+            }
+             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
+        }
+        else{
+            prev_pr = send[0];
+        }
+        //===============================================================================
+        if(my_ip == server_ip){
+            myrdma.recv_t("send");
+            cout << "recv success" << endl;
+            send[0].clear();
+
+            for(int i=0;i<num_of_node-1;i++){
+                size = nn[i];
+                send[0].insert(send[0].end(),recv[i].begin(),recv[i].begin()+size);
+            }   
+
+            if(diff < 0.00001)
+                send[0][0] += 1; 
+            
+            fill(&send[1], &send[num_of_node-1], send[0]);
+        }
+        else{
+            if(rank == 0){
+                myrdma.rdma_write_vector(send[0],0);
+                cout << "send success" << endl;
+            }
+            
+        } 
+        //===============================================================================
+        if(my_ip == server_ip){
+             for(size_t i = 0; i<num_of_node-1;i++)
+                myrdma.rdma_write_pagerank(send[0],i);
+        }
+        else{
+            if(rank == 0)
+                myrdma.rdma_recv_pagerank(0);
+            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            cout << "recv success" << endl;
+        }
+
+        if(my_ip == server_ip && rank == 0)
+            cout << "diff: " <<diff << endl;
+        
+        if(diff < 0.00001 || recv[0][0] > 1){
+            break;
+        }
+    }
     MPI_Finalize();
 }

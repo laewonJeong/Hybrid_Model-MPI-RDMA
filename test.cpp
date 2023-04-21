@@ -167,9 +167,8 @@ int main(int argc, char** argv){
 
             cout << "displs[" << i << "]: " <<displs[i] << endl;
             cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
-            cout << "start, end: " << start <<", "<< end << endl;
         }
-
+         cout << "start, end: " << start <<", "<< end << endl;
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);
             recv[i].resize(num_of_vertex, 1/num_of_vertex);

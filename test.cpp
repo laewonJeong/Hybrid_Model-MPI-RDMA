@@ -219,9 +219,9 @@ int main(int argc, char** argv){
         else
             prev_pr = recv[0];
 
-        cout << "start" << endl;
+        cout << rank <<": start" << endl;
         MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
-        cout << "finish" << endl;
+        cout << rank <<": finish" << endl;
         if(!is_server(my_ip)){
             send[0] = aaaa;
             

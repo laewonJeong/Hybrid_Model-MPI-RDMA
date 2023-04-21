@@ -120,15 +120,15 @@ int main(int argc, char** argv){
     vector<double> aaaa;
     
 
-    
+    // Create Graph
+    create_graph_data(argv[2],0,argv[3]);
 
     //MPI Init
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    // Create Graph
-    create_graph_data(argv[2],rank,argv[3]);
+    
 
     myRDMA myrdma;
     Pagerank pagerank;

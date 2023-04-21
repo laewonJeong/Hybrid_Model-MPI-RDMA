@@ -115,6 +115,8 @@ int main(int argc, char** argv){
     string my_ip(argv[1]);
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
+    vector<double> div_send[num_of_node];
+    vector<double> aaaa;
 
     // Create Graph
     create_graph_data(argv[2],0,argv[3]);
@@ -151,7 +153,90 @@ int main(int argc, char** argv){
         }
        
     }
+
+    div_send[0].resize(end-start);
+
     cout << start << ", " << end << endl;
+    if(rank == 1)
+        cout << "=================================" << endl;
+    
+    size_t step;
+    double diff = 1;
+    double tmp=0;
+    vector<double> prev_pr;
+    double inv_num_of_vertex = 1.0 / num_of_vertex;
+    double df_inv = 1.0 - df;
+    double dangling_pr = 0.0;
+    double* gather_pr;
+    if(is_server(my_ip)){
+        gather_pr = send[0].data(); 
+        send[0].resize(num_of_vertex, 1/num_of_vertex);   
+    }
+    else{
+        gather_pr = recv[0].data();
+        recv[0].resize(num_of_vertex, 1/num_of_vertex);
+    }
+    double* div_send_buffer_ptr = div_send[0].data();
+    const vector<vector<size_t>>& graph1 = graph;
+    const vector<int>& num_outgoing1 = num_outgoing;
+
+    for(step =0;step<2; step++){
+        if(rank == 0){
+            cout << "---------" << step+1 <<"step---------" << endl;
+            cout << diff << endl;
+        }
+
+        if(step!=0){
+            diff = 0;
+            for (size_t i=0;i<num_of_vertex;i++) {
+                diff += fabs(prev_pr[i] - gather_pr[i]);
+                if (num_outgoing[i] == 0)
+                    dangling_pr += gather_pr[i]; 
+            }
+        }
+        for(size_t i=start;i<end;i++){
+            tmp = 0.0;
+            const size_t graph_size = graph1[i].size();
+            const size_t* graph_ptr = graph1[i].data();
+            
+            for(size_t j=0; j<graph_size; j++){
+                const size_t from_page = graph_ptr[j];
+                const double inv_num_outgoing = 1.0 / num_outgoing1[from_page];
+
+                tmp += gather_pr[from_page]*inv_num_outgoing;
+            }
+            div_send_buffer_ptr[i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
+        }
+
+        if(!is_server(my_ip)){
+            MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,send[0].data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
+            if(rank == 1)
+                myrdma.rdma_write_vector(send[0],0);
+        }
+        else{
+            MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
+            if(rank == 1){
+                myrdma.recv_t("send");
+                send[0].clear();
+                for(int i=0;i<num_of_node;i++){
+                    size = end-start;
+                    if(i == 0)
+                        send[0].insert(send[0].end(),aaaa.begin(),aaaa.begin()+size);
+                    else
+                        send[0].insert(send[0].end(),recv[i].begin(),recv[i].begin()+size);    
+                }       
+            }
+            if(rank == 1 || rank == 2)
+                for(int i=0;i<send[0].size();i++){
+                    cout << i << ": " << send[0][i] << endl;
+            }
+        }
+
+
+        if(diff < 0.00001)
+            break;
+
+    }
 
     //
     /*for(i=0;i<size;i++){

@@ -227,6 +227,8 @@ int main(int argc, char** argv){
             if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);
+
+                cout << recv[0].size();
             }
             MPI_Bcast(recv[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
@@ -244,6 +246,7 @@ int main(int argc, char** argv){
                     else
                         send[0].insert(send[0].end(),recv[i-1].begin(),recv[i-1].begin()+size);    
                 }
+                cout << send[0].size() << endl;
                 for(size_t i = 0; i<num_of_node-1;i++)
                     myrdma.rdma_write_pagerank(send[0],i);      
             }
@@ -253,10 +256,10 @@ int main(int argc, char** argv){
                     cout << i << ": " << send[0][i] << endl;
             }*/
         }
-        if(rank == 0)
-                for(int i=num_of_vertex-123;i<num_of_vertex;i++){
-                    cout << i << ": " << send[0][i] << endl;
-            }
+        /*if(rank == 0)
+            for(int i=num_of_vertex-123;i<num_of_vertex;i++){
+                cout << i << ": " << send[0][i] << endl;
+        }*/
 
         if(diff < 0.00001)
             break;

@@ -204,15 +204,18 @@ int main(int argc, char** argv){
                 const size_t from_page = graph_ptr[j];
                 const double inv_num_outgoing = 1.0 / num_outgoing1[from_page];
 
-                tmp += send[0][from_page]*inv_num_outgoing;
+                tmp += gather_pr[from_page]*inv_num_outgoing;
             }
             div_send[0][i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
         }
         //cout << rank <<": end" << endl;
         if(!is_server(my_ip)){
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,send[0].data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
-            if(rank == 1)
+            if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
+                myrdma.rdma_recv_pagerank(0);
+            }
+           MPI_Bcast(recv[0].data(), recv[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
         else{
             //cout << "start Allgatehr" << endl;
@@ -227,7 +230,9 @@ int main(int argc, char** argv){
                         send[0].insert(send[0].end(),aaaa.begin(),aaaa.begin()+size);
                     else
                         send[0].insert(send[0].end(),recv[i-1].begin(),recv[i-1].begin()+size);    
-                }       
+                }
+                for(size_t i = 0; i<num_of_node-1;i++)
+                    myrdma.rdma_write_pagerank(send[0],i);      
             }
             MPI_Bcast(send[0].data(), send[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
             if(rank == 1 || rank == 0)

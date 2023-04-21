@@ -157,14 +157,8 @@ int main(int argc, char** argv){
                 start = a;
                 end = b;
             }
-            if(my_ip == node[num_of_node-1]){
-                start += 1197192;
-                end += 1197192;
-            }
             if(rank ==size-1){
                 end = div_num_of_vertex;
-                if(my_ip == node[num_of_node-1])
-                    end = num_of_vertex;
             }
             displs[i] = a;
             recvcounts[i] = b-a;
@@ -173,6 +167,7 @@ int main(int argc, char** argv){
 
             cout << "displs[" << i << "]: " <<displs[i] << endl;
             cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
+            cout << "start, end: " << start <<", "<< end << endl;
         }
 
         for(int i=0;i<num_of_node;i++){

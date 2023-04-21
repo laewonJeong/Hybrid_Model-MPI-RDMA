@@ -181,6 +181,8 @@ int main(int argc, char** argv){
     const vector<int>& num_outgoing1 = num_outgoing;
 
     for(step =0;step<100000; step++){
+        tmp = 0;
+        dangling_pr = 0;
         if(step!=0){
             diff = 0;
             for (size_t i=0;i<num_of_vertex;i++) {

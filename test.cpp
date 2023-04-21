@@ -218,6 +218,7 @@ int main(int argc, char** argv){
             prev_pr = send[0];
         else
             prev_pr = recv[0];
+
         if(!is_server(my_ip)){
             //cout << "start Allgatehr" << endl;
             //send[0].resize(end-start);
@@ -228,7 +229,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);
 
-                cout << recv[0].size();
+                //cout << recv[0].size();
             }
             MPI_Bcast(recv[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
@@ -238,15 +239,20 @@ int main(int argc, char** argv){
             //cout << "finish Allgather" << endl;
             if(rank == 1){
                 myrdma.recv_t("send");
+                cout << aaaa.size() << endl;
                 send[0].clear();
                 for(int i=0;i<num_of_node;i++){
-                    size = end-start;
-                    if(i == 0)
+                    size = 1197192;
+                    if(i == 0){
                         send[0].insert(send[0].end(),aaaa.begin(),aaaa.begin()+size);
-                    else
-                        send[0].insert(send[0].end(),recv[i-1].begin(),recv[i-1].begin()+size);    
+                        //cout << i << ": " <<send[0].size() << endl;
+                    }
+                    else{
+                        send[0].insert(send[0].end(),recv[0].begin(),recv[0].begin()+size);
+                        //cout << i << ": " <<send[0].size() << endl;
+                    }    
                 }
-                cout << send[0].size() << endl;
+                //cout << send[0].size() << endl;
                 for(size_t i = 0; i<num_of_node-1;i++)
                     myrdma.rdma_write_pagerank(send[0],i);      
             }

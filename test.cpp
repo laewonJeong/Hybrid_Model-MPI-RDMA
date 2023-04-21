@@ -220,11 +220,11 @@ int main(int argc, char** argv){
             prev_pr = recv[0];
 
         if(!is_server(my_ip)){
-            //cout << "start Allgatehr" << endl;
+            cout << "start Allgatehr" << endl;
             //send[0].resize(end-start);
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
             send[0] = aaaa;
-            //cout << "finish Allgather" << endl;
+            cout << "finish Allgather" << endl;
             if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);
@@ -234,9 +234,9 @@ int main(int argc, char** argv){
             MPI_Bcast(recv[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
         else{
-            //cout << "start Allgatehr" << endl;
+            cout << "start Allgatehr" << endl;
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
-            //cout << "finish Allgather" << endl;
+            cout << "finish Allgather" << endl;
             if(rank == 1){
                 myrdma.recv_t("send");
                 cout << aaaa.size() << endl;
@@ -248,7 +248,7 @@ int main(int argc, char** argv){
                         //cout << i << ": " <<send[0].size() << endl;
                     }
                     else{
-                        send[0].insert(send[0].end(),recv[0].begin(),recv[0].begin()+size);
+                        send[0].insert(send[0].end(),recv[i-1].begin(),recv[i-1].begin()+size);
                         //cout << i << ": " <<send[0].size() << endl;
                     }    
                 }
@@ -257,10 +257,10 @@ int main(int argc, char** argv){
                     myrdma.rdma_write_pagerank(send[0],i);      
             }
             MPI_Bcast(send[0].data(), num_of_vertex,MPI_DOUBLE, 1, MPI_COMM_WORLD);
-            /*if(rank == 1 || rank == 0)
+            if(rank == 0)
                 for(int i=send[0].size()-56;i<send[0].size();i++){
                     cout << i << ": " << send[0][i] << endl;
-            }*/
+            }
         }
         /*if(rank == 0)
             for(int i=num_of_vertex-123;i<num_of_vertex;i++){

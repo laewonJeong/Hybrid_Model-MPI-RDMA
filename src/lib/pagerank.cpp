@@ -63,7 +63,7 @@ bool Pagerank::add_arc(size_t from, size_t to) {
     return ret;
 }
 void Pagerank::create_graph_data(string path, string del){
-    cout << "Creating graph about  "<< path<<"..."  <<endl;
+    //cout << "Creating graph about  "<< path<<"..."  <<endl;
     pagerank.num_of_vertex = num_of_vertex;
     istream *infile;
 
@@ -85,8 +85,8 @@ void Pagerank::create_graph_data(string path, string del){
            
             add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
-            if(line_num%5000000 == 0)
-                cerr << "Create " << line_num << " lines" << endl;
+            //if(line_num%5000000 == 0)
+                //cerr << "Create " << line_num << " lines" << endl;
 		}
 	} 
     else {
@@ -95,11 +95,11 @@ void Pagerank::create_graph_data(string path, string del){
 	}
 
     pagerank.num_of_vertex = pagerank.graph.size();
-    cerr << "partition number_outgoing: " << line_num/4 << endl;
-    cerr << "Create " << line_num << " lines, "
-         << pagerank.num_of_vertex << " vertices graph." << endl;
+    //cerr << "partition number_outgoing: " << line_num/4 << endl;
+    //cerr << "Create " << line_num << " lines, "
+    //     << pagerank.num_of_vertex << " vertices graph." << endl;
     
-    cerr << "----------------------------------" <<endl;
+    //cerr << "----------------------------------" <<endl;
     
     int n3 = 0;
     int number_outgoing = line_num/3 + 1;

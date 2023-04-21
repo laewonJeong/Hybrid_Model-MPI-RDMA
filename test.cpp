@@ -164,8 +164,8 @@ int main(int argc, char** argv){
        if(i ==size-1)
             recvcounts[i] = div_num_of_vertex-displs[i];
 
-        cout << displs[i] << endl;
-        cout << recvcounts[i] << endl;
+        cout << "displs[" << i << "]: " <<displs[i] << endl;
+        cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
     }
 
    

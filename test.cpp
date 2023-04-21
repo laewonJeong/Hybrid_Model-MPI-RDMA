@@ -139,7 +139,7 @@ int main(int argc, char** argv){
     }
 
     int div_num_of_vertex = num_of_vertex/num_of_node;
-    
+    aaaa.resize(div_num_of_vertex);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/num_of_node;
     
@@ -181,7 +181,7 @@ int main(int argc, char** argv){
     const vector<int>& num_outgoing1 = num_outgoing;
 
     for(step =0;step<2; step++){
-        if(rank == 0){
+        if(rank == 1){
             cout << "---------" << step+1 <<"step---------" << endl;
             cout << diff << endl;
         }
@@ -194,6 +194,7 @@ int main(int argc, char** argv){
                     dangling_pr += gather_pr[i]; 
             }
         }
+        //cout << rank <<": start" << endl;
         for(size_t i=start;i<end;i++){
             tmp = 0.0;
             const size_t graph_size = graph1[i].size();
@@ -203,18 +204,20 @@ int main(int argc, char** argv){
                 const size_t from_page = graph_ptr[j];
                 const double inv_num_outgoing = 1.0 / num_outgoing1[from_page];
 
-                tmp += gather_pr[from_page]*inv_num_outgoing;
+                tmp += send[0][from_page]*inv_num_outgoing;
             }
-            div_send_buffer_ptr[i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
+            div_send[0][i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
         }
-
+        //cout << rank <<": end" << endl;
         if(!is_server(my_ip)){
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,send[0].data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
             if(rank == 1)
                 myrdma.rdma_write_vector(send[0],0);
         }
         else{
+            //cout << "start Allgatehr" << endl;
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
+            //cout << "finish Allgather" << endl;
             if(rank == 1){
                 myrdma.recv_t("send");
                 send[0].clear();
@@ -223,11 +226,12 @@ int main(int argc, char** argv){
                     if(i == 0)
                         send[0].insert(send[0].end(),aaaa.begin(),aaaa.begin()+size);
                     else
-                        send[0].insert(send[0].end(),recv[i].begin(),recv[i].begin()+size);    
+                        send[0].insert(send[0].end(),recv[i-1].begin(),recv[i-1].begin()+size);    
                 }       
             }
-            if(rank == 1 || rank == 2)
-                for(int i=0;i<send[0].size();i++){
+            MPI_Bcast(send[0].data(), send[0].size(),MPI_DOUBLE, 1, MPI_COMM_WORLD);
+            if(rank == 1 || rank == 0)
+                for(int i=send[0].size()-56;i<send[0].size();i++){
                     cout << i << ": " << send[0][i] << endl;
             }
         }

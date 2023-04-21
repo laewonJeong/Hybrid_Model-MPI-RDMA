@@ -181,11 +181,6 @@ int main(int argc, char** argv){
     const vector<int>& num_outgoing1 = num_outgoing;
 
     for(step =0;step<2; step++){
-        if(rank == 1){
-            cout << "---------" << step+1 <<"step---------" << endl;
-            cout << diff << endl;
-        }
-
         if(step!=0){
             diff = 0;
             for (size_t i=0;i<num_of_vertex;i++) {
@@ -194,7 +189,12 @@ int main(int argc, char** argv){
                     dangling_pr += gather_pr[i]; 
             }
         }
-        cout << rank <<": start" << endl;
+         if(rank == 1){
+            cout << "---------" << step+1 <<"step---------" << endl;
+            cout << diff << endl;
+        }
+
+        //cout << rank <<": start" << endl;
         for(size_t i=start;i<end;i++){
             tmp = 0.0;
             const size_t graph_size = graph1[i].size();
@@ -212,13 +212,18 @@ int main(int argc, char** argv){
             }
             div_send[0][i-start] = (tmp+ dangling_pr*inv_num_of_vertex)*df + df_inv*inv_num_of_vertex;
         }
-        cout << rank <<": end" << endl;
+        //cout << rank <<": end" << endl;
+
+        if(is_server(my_ip))
+            prev_pr = send[0];
+        else
+            prev_pr = recv[0];
         if(!is_server(my_ip)){
-            cout << "start Allgatehr" << endl;
+            //cout << "start Allgatehr" << endl;
             //send[0].resize(end-start);
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
             send[0] = aaaa;
-            cout << "finish Allgather" << endl;
+            //cout << "finish Allgather" << endl;
             if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
                 myrdma.rdma_recv_pagerank(0);

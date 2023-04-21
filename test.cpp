@@ -180,7 +180,7 @@ int main(int argc, char** argv){
     const vector<vector<size_t>>& graph1 = graph;
     const vector<int>& num_outgoing1 = num_outgoing;
 
-    for(step =0;step<2; step++){
+    for(step =0;step<100000; step++){
         if(step!=0){
             diff = 0;
             for (size_t i=0;i<num_of_vertex;i++) {
@@ -230,9 +230,9 @@ int main(int argc, char** argv){
         else
             prev_pr = recv[0];
 
-        cout << rank <<": start" << endl;
+        //cout << rank <<": start" << endl;
         MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,aaaa.data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
-        cout << rank <<": finish" << endl;
+        //cout << rank <<": finish" << endl;
         if(!is_server(my_ip)){
             send[0] = aaaa;
             
@@ -270,7 +270,7 @@ int main(int argc, char** argv){
                 for(int i=send[0].size()-56;i<send[0].size();i++){
                     cout << i << ": " << send[0][i] << endl;
             }*/
-            cout << rank << ": " <<send[0].size() << endl;
+            //cout << rank << ": " <<send[0].size() << endl;
         }
         /*if(rank == 0)
             for(int i=num_of_vertex-123;i<num_of_vertex;i++){

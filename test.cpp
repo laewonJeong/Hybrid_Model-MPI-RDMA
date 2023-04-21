@@ -215,6 +215,7 @@ int main(int argc, char** argv){
         cout << rank <<": end" << endl;
         if(!is_server(my_ip)){
             cout << "start Allgatehr" << endl;
+            send[0].resize(end-start);
             MPI_Allgather(div_send[0].data(),div_send[0].size(),MPI_DOUBLE,send[0].data(),div_send[0].size(),MPI_DOUBLE,MPI_COMM_WORLD);
             cout << "finish Allgather" << endl;
             if(rank == 1){

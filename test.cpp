@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <myRDMA.hpp>
 #include <pagerank.hpp>
+#include <numeric>
 
 #define df 0.85
 #define MAX 100000
@@ -140,13 +141,14 @@ int main(int argc, char** argv){
     // graph partitioning
     int recvcounts[size];
     int displs[size];
-    int nn[num_of_node-1];
+    int nn[num_of_node];
 
     int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
 
-    if(!is_server(my_ip)){
+    cout << "start "<< endl;
+    if(my_ip != server_ip){
         cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
         for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
@@ -180,9 +182,9 @@ int main(int argc, char** argv){
         int x = num_of_vertex - num_of_vertex/(num_of_node-1);
         recv[num_of_node-2].resize(x);
 
-        nn[num_of_node-2] = num_of_vertex - num_of_vertex/(num_of_node-1);
+        nn[num_of_node-2] = x;
     }
-   
+   cout << "end" << endl;
     size_t step;
     double diff=1;
     double dangling_pr = 0.0;
@@ -190,8 +192,9 @@ int main(int argc, char** argv){
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
-
-    div_send.resize(end-start);
+    
+    if(my_ip != server_ip)
+        div_send.resize(end-start);
 
     for(step =0;step<10000000;step++){
         if(rank == 0)
@@ -278,5 +281,16 @@ int main(int argc, char** argv){
             break;
         }
     }
+    //===============================================================================
+    
+    if(my_ip != server_ip && rank == 1){
+        double sum1 = accumulate(recv[0].begin(), recv[0].end(), -1.0);
+        cout.precision(numeric_limits<double>::digits10);
+        for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
+            cout << "pr[" <<i<<"]: " << recv[0][i] <<endl;
+        }
+        cerr << "s = " <<round(sum1) << endl;
+    }
+
     MPI_Finalize();
 }

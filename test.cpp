@@ -193,7 +193,7 @@ int main(int argc, char** argv){
             recv[i].resize(div_num_of_vertex);
             nn[i] = div_num_of_vertex;
         }
-        int x = num_of_vertex - num_of_vertex/(num_of_node-1);
+        int x = num_of_vertex - num_of_vertex/(num_of_node-1)*2;
         recv[num_of_node-2].resize(x);
 
         nn[num_of_node-2] = x;

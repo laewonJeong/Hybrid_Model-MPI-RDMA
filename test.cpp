@@ -18,11 +18,11 @@
 #define df 0.85
 #define MAX 100000
 #define MAXX 50000
-#define num_of_node 4
+#define num_of_node 5
 #define port 40145
 #define server_ip "192.168.0.100"
 
-string node[num_of_node] = {server_ip,"192.168.0.101","192.168.0.104","192.168.0.106"};//,"192.168.1.102","192.168.1.103"};
+string node[num_of_node] = {server_ip,"192.168.0.101","192.168.0.102","192.168.0.104","192.168.0.106"};//,"192.168.1.102","192.168.1.103"};
 std::vector<std::vector<size_t>> graph;
 std::vector<int> num_outgoing;
 int num_of_vertex;

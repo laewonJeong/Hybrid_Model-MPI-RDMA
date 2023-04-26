@@ -177,10 +177,10 @@ int main(int argc, char** argv){
             start += (num_of_vertex/(num_of_node-1));
             end += (num_of_vertex/(num_of_node-1));
         }
-        /*else if(my_ip == node[num_of_node-2]){
+        else if(my_ip == node[num_of_node-2]){
             start += num_of_vertex/(num_of_node-1);
             end += num_of_vertex/(num_of_node-1);
-        }*/
+        }
          cout << "start, end: " << start <<", "<< end << endl;
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);

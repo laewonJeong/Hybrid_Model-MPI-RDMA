@@ -124,7 +124,7 @@ int main(int argc, char** argv){
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-    
+
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
     // Create Graph
@@ -134,7 +134,7 @@ int main(int argc, char** argv){
     Pagerank pagerank;
     
     //D-RDMALib Init
-    if(rank == 0){
+    if(rank == 1){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();

@@ -150,7 +150,7 @@ int main(int argc, char** argv){
 
     int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
-        div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*2;
+        div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
     //cout << "start "<< endl;
     if(my_ip != server_ip){
@@ -174,10 +174,14 @@ int main(int argc, char** argv){
             //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
         if(my_ip == node[num_of_node-1]){
-            start += (num_of_vertex/(num_of_node-1))*2;
-            end += (num_of_vertex/(num_of_node-1))*2;
+            start += (num_of_vertex/(num_of_node-1))*3;
+            end += (num_of_vertex/(num_of_node-1))*3;
         }
         else if(my_ip == node[num_of_node-2]){
+            start += num_of_vertex/(num_of_node-1)*2;
+            end += num_of_vertex/(num_of_node-1)*2;
+        }
+        else if(my_ip == node[num_of_node-3]){
             start += num_of_vertex/(num_of_node-1);
             end += num_of_vertex/(num_of_node-1);
         }
@@ -193,7 +197,7 @@ int main(int argc, char** argv){
             recv[i].resize(div_num_of_vertex);
             nn[i] = div_num_of_vertex;
         }
-        int x = num_of_vertex - num_of_vertex/(num_of_node-1)*2;
+        int x = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
         recv[num_of_node-2].resize(x);
 
         nn[num_of_node-2] = x;

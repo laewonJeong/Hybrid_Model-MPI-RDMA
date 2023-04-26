@@ -145,7 +145,7 @@ int main(int argc, char** argv){
     int nn[num_of_node];
 
     int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
-    if(my_ip == node[num_of_node-1])
+    if(my_ip == node[num_of_node-2])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
 
     //cout << "start "<< endl;

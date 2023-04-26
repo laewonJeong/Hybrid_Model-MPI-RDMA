@@ -211,7 +211,7 @@ int main(int argc, char** argv){
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
     //double* recv_buffer_ptr = recv[0].data(); 
-    double* div_send_ptr = div_send.data();
+    //double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
         div_send.resize(end-start);
 
@@ -236,7 +236,7 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != server_ip){
-            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 double tmp = 0.0;
@@ -249,14 +249,19 @@ int main(int argc, char** argv){
 
                     tmp += recv[0][from_page] * inv_num_outgoing;
                 }
-                div_send_ptr[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
+                div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
             //cout << "start" << endl;
             /*clock_gettime(CLOCK_MONOTONIC, &end1);
-            long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            ;
             
             printf("%d: calc 수행시간: %Lfs.\n", rank, time1);*/
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            if(rank == 0)
+                printf("%d: Allgatherv 수행시간: %Lfs.\n", rank, time1);
             //cout << "end" << endl;
             
             //MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
@@ -265,6 +270,7 @@ int main(int argc, char** argv){
             prev_pr = send[0];
         }
         //===============================================================================
+        clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == server_ip){
             myrdma.recv_t("send");
             cout << "recv success" << endl;
@@ -298,7 +304,10 @@ int main(int argc, char** argv){
             MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             //cout << "recv success" << endl;
         }
-
+        clock_gettime(CLOCK_MONOTONIC, &end1);
+        long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+        if(rank == 0)
+            printf("%d: send/recv 수행시간: %Lfs.\n", rank, time1);
         if(my_ip == server_ip && rank == 0)
             cout << "diff: " <<diff << endl;
         

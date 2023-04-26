@@ -210,7 +210,7 @@ int main(int argc, char** argv){
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
-    double* recv_buffer_ptr = recv[0].data(); 
+    //double* recv_buffer_ptr = recv[0].data(); 
     double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
         div_send.resize(end-start);
@@ -247,7 +247,7 @@ int main(int argc, char** argv){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
-                    tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
+                    tmp += recv[0][from_page] * inv_num_outgoing;
                 }
                 div_send_ptr[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }

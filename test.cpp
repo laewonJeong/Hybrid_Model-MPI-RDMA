@@ -145,8 +145,8 @@ int main(int argc, char** argv){
     int nn[num_of_node];
 
     int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
-    if(my_ip == node[num_of_node-1])
-        div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
+    /*if(my_ip == node[num_of_node-1])
+        div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);*/
 
     //cout << "start "<< endl;
     if(my_ip != server_ip){
@@ -243,7 +243,8 @@ int main(int argc, char** argv){
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
             //cout << "start" << endl;
-            MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
+            MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
+            //MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             //cout << "end" << endl;
             clock_gettime(CLOCK_MONOTONIC, &end1);
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

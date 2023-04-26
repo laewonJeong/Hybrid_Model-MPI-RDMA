@@ -130,9 +130,9 @@ int main(int argc, char** argv){
         aaaa = 1;
     else
         aaaa = 2;
-    int zzzz[2];
+    int zzzz[size];
 
-    MPI_Allgather(&aaaa,1,MPI_INT,&zzzz,1,MPI_INT,MPI_COMM_WORLD);
+    MPI_Allgather(&aaaa,1,MPI_INT,zzzz,1,MPI_INT,MPI_COMM_WORLD);
 
 
     vector<double> send[num_of_node];

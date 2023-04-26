@@ -134,7 +134,7 @@ int main(int argc, char** argv){
     Pagerank pagerank;
     
     //D-RDMALib Init
-    if(rank == 1){
+    if(rank == 1 || my_ip == server_ip){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();

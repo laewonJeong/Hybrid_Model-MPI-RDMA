@@ -134,7 +134,7 @@ int main(int argc, char** argv){
     Pagerank pagerank;
     
     //D-RDMALib Init
-    if(rank == 1 || my_ip == server_ip){
+    if(rank == 0){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();
@@ -203,10 +203,6 @@ int main(int argc, char** argv){
     if(my_ip != server_ip)
         div_send.resize(end-start);
 
-    cout << "displs[" << 0 << "]: " <<displs[0] << endl;
-    cout << "displs[" << 1 << "]: " <<displs[1] << endl;
-    cout << "recvcounts["<<0<<"]: " << recvcounts[0] << endl;
-    cout << "recvcounts["<<1<<"]: " << recvcounts[1] << endl;
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     for(step =0;step<10000000;step++){
         if(rank == 0)
@@ -244,13 +240,14 @@ int main(int argc, char** argv){
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
             //cout << "start" << endl;
-            MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
+            
             //MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             //cout << "end" << endl;
             clock_gettime(CLOCK_MONOTONIC, &end1);
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             printf("%d: calc 수행시간: %Lfs.\n", rank, time1);
+            MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
         }
         else{
             prev_pr = send[0];

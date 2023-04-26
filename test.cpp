@@ -202,7 +202,10 @@ int main(int argc, char** argv){
     if(my_ip != server_ip)
         div_send.resize(end-start);
 
-
+    cout << "displs[" << 0 << "]: " <<displs[0] << endl;
+    cout << "displs[" << 1 << "]: " <<displs[1] << endl;
+    cout << "recvcounts["<<0<<"]: " << recvcounts[0] << endl;
+    cout << "recvcounts["<<1<<"]: " << recvcounts[1] << endl;
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     for(step =0;step<10000000;step++){
         if(rank == 0)

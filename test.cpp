@@ -145,7 +145,7 @@ int main(int argc, char** argv){
     int nn[num_of_node];
 
     int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
-    if(my_ip == node[num_of_node-2])
+    if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
 
     //cout << "start "<< endl;
@@ -169,7 +169,7 @@ int main(int argc, char** argv){
             //cout << "displs[" << i << "]: " <<displs[i] << endl;
             //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
-        if(my_ip == node[num_of_node-2]){
+        if(my_ip == node[num_of_node-1]){
             start += num_of_vertex/(num_of_node-1);
             end += num_of_vertex/(num_of_node-1);
         }

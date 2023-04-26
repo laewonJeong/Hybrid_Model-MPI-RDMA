@@ -117,15 +117,16 @@ int main(int argc, char** argv){
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     string my_ip(argv[1]);
-    vector<double> send[num_of_node];
-    vector<double> recv[num_of_node];
+    
     
 
     //MPI Init
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-
+    
+    vector<double> send[num_of_node];
+    vector<double> recv[num_of_node];
     // Create Graph
     create_graph_data(argv[2],rank,argv[3]);
 

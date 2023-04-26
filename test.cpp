@@ -166,8 +166,8 @@ int main(int argc, char** argv){
             if(i ==size-1)
                 recvcounts[i] = div_num_of_vertex-displs[i];
 
-            cout << "displs[" << i << "]: " <<displs[i] << endl;
-            cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
+            //cout << "displs[" << i << "]: " <<displs[i] << endl;
+            //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
         if(my_ip == node[num_of_node-1]){
             start += num_of_vertex/(num_of_node-1);
@@ -226,6 +226,7 @@ int main(int argc, char** argv){
         if(my_ip != server_ip){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=start;i<end;i++){
+                cout << i << endl;
                 double tmp = 0.0;
                 const size_t graph_size = graph[i].size();
                 const size_t* graph_ptr = graph[i].data();

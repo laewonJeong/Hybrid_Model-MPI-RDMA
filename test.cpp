@@ -125,6 +125,16 @@ int main(int argc, char** argv){
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+    int aaaa;
+    if(rank == 1)
+        aaaa = 1;
+    else
+        aaaa = 2;
+    int zzzz[2];
+
+    MPI_Allgather(&aaaa,1,MPI_INT,&zzzz,1,MPI_INT,MPI_COMM_WORLD);
+
+
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
     // Create Graph
@@ -146,8 +156,8 @@ int main(int argc, char** argv){
     int nn[num_of_node];
 
     int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
-    /*if(my_ip == node[num_of_node-1])
-        div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);*/
+    if(my_ip == node[num_of_node-1])
+        div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1);
 
     //cout << "start "<< endl;
     if(my_ip != server_ip){
@@ -241,13 +251,13 @@ int main(int argc, char** argv){
             }
             //cout << "start" << endl;
             
-            //MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
+            MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             //cout << "end" << endl;
             clock_gettime(CLOCK_MONOTONIC, &end1);
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             printf("%d: calc 수행시간: %Lfs.\n", rank, time1);
-            MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
+            //MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
         }
         else{
             prev_pr = send[0];

@@ -174,6 +174,10 @@ int main(int argc, char** argv){
             //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
         }
         if(my_ip == node[num_of_node-1]){
+            start += (num_of_vertex/(num_of_node-1))*2;
+            end += (num_of_vertex/(num_of_node-1))*2;
+        }
+        else if(my_ip == node[num_of_node-2]){
             start += num_of_vertex/(num_of_node-1);
             end += num_of_vertex/(num_of_node-1);
         }

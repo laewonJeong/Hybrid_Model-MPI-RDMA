@@ -209,6 +209,8 @@ int main(int argc, char** argv){
         nn[num_of_node-2] = x;
     }
   // cout << "end" << endl;
+    int check;
+    int check1[size];
     size_t step;
     double diff=1;
     double dangling_pr = 0.0;
@@ -220,7 +222,9 @@ int main(int argc, char** argv){
     //double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
         div_send.resize(end-start);
-    MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+    check = 1;
+    MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     for(step =0;step<10000000;step++){
         if(rank == 0)

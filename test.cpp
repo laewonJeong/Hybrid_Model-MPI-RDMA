@@ -131,13 +131,13 @@ int main(int argc, char** argv){
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
     // Create Graph
-    if(rank == 0)
-        create_graph_data(argv[2],rank,argv[3]);
+    //if(rank == 0)
+    create_graph_data(argv[2],rank,argv[3]);
     
     MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     /*for(int i=0;i<num_of_vertex;i++)
         MPI_Bcast(graph[i].data(), graph[i].size(), MPI_INT,0,MPI_COMM_WORLD);*/
-    MPI_Bcast(num_outgoing.data(), num_outgoing.size(), MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(num_outgoing.data(), num_outgoing.size(), MPI_INT, 0, MPI_COMM_WORLD);
     myRDMA myrdma;
     Pagerank pagerank;
     

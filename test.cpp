@@ -142,7 +142,7 @@ int main(int argc, char** argv){
     Pagerank pagerank;
     
     //D-RDMALib Init
-    MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     if(rank == 0){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
         myrdma.create_rdma_info();
@@ -191,7 +191,7 @@ int main(int argc, char** argv){
             start += num_of_vertex/(num_of_node-1);
             end += num_of_vertex/(num_of_node-1);
         }
-         cout << "start, end: " << start <<", "<< end << endl;
+         //cout << "start, end: " << start <<", "<< end << endl;
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);
             recv[i].resize(num_of_vertex, 1/num_of_vertex);

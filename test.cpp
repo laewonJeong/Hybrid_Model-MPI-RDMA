@@ -209,16 +209,9 @@ int main(int argc, char** argv){
         nn[num_of_node-2] = x;
     }
   // cout << "end" << endl;
-    //int check;
-    //int check1[size];
-    if(rank == 0){
-        if(server_ip == my_ip){
-            myrdma.recv_t("send");
-        }
-        else{
-            myrdma.rdma_write_vector(send[0],0);
-        }
-    }
+    int check;
+    int check1[size];
+    
     size_t step;
     double diff=1;
     double dangling_pr = 0.0;
@@ -231,8 +224,16 @@ int main(int argc, char** argv){
     if(my_ip != server_ip)
         div_send.resize(end-start);
 
-    //check = 1;
-    //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+    check = 1;
+    MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+    if(rank == 0){
+        if(server_ip == my_ip){
+            myrdma.recv_t("send");
+        }
+        else{
+            myrdma.rdma_write_vector(send[0],0);
+        }
+    }
     
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     for(step =0;step<10000000;step++){

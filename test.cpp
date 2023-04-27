@@ -160,7 +160,7 @@ int main(int argc, char** argv){
 
     //cout << "start "<< endl;
     if(my_ip != server_ip){
-        cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
+        //cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
         for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;

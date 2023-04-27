@@ -94,7 +94,7 @@ void create_graph_data(string path, int rank, string del){
             to = line.substr(pos+1);
             add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
-            if(rank == 1 && line_num%500000 == 0)
+            if(rank == 0 && line_num%500000 == 0)
                 cerr << "Create " << line_num << " lines" << endl; 
             //if(line_num%500000 == 0)
                 //cerr << "Create " << line_num << " lines" << endl;

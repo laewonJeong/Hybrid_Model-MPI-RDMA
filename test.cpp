@@ -338,8 +338,9 @@ int main(int argc, char** argv){
             cout << "pr[" <<i<<"]: " << recv[0][i] <<endl;
         }
         cerr << "s = " <<sum1 << endl;
+         printf("총 수행시간: %Lfs.\n", time2);
     }
-    if(rank == 0)
-        printf("총 수행시간: %Lfs.\n", time2);
+    /*if(rank == 0)
+        printf("총 수행시간: %Lfs.\n", time2);*/
     MPI_Finalize();
 }

@@ -227,12 +227,7 @@ int main(int argc, char** argv){
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){
-        if(server_ip == my_ip){
-            myrdma.recv_t("send");
-        }
-        else{
-            myrdma.rdma_write_vector(send[0],0);
-        }
+        myrdma.rdma_comm("write_with_imm", "1");
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin2);

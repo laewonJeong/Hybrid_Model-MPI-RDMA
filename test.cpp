@@ -320,7 +320,7 @@ int main(int argc, char** argv){
                 worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma, send[0], i));
                 
             for(size_t i=0;i<num_of_node-1;i++)
-                worker[i].join();
+                worker[i].detach();
         }
         else{
             if(rank == 0)

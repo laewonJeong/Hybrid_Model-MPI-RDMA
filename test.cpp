@@ -345,16 +345,16 @@ int main(int argc, char** argv){
 
     //===============================================================================
     
-    if(my_ip != server_ip && rank == 1){
+    if(my_ip != server_ip && rank == 0){
         double sum1 = accumulate(recv[0].begin(), recv[0].end(), -1.0);
         cout.precision(numeric_limits<double>::digits10);
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
             cout << "pr[" <<i<<"]: " << recv[0][i] <<endl;
         }
         cerr << "s = " <<sum1 << endl;
-         printf("총 수행시간: %Lfs.\n", time2);
+        //printf("총 수행시간: %Lfs.\n", time2);
     }
-    /*if(rank == 0)
-        printf("총 수행시간: %Lfs.\n", time2);*/
+    if(rank == 0)
+        printf("총 수행시간: %Lfs.\n", time2);
     MPI_Finalize();
 }

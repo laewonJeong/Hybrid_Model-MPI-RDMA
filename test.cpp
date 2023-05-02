@@ -219,8 +219,7 @@ int main(int argc, char** argv){
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
-    const vector<vector<size_t>>& graph1 = graph;
-    const vector<int>& num_outgoing1 = num_outgoing;
+   
     //double* recv_buffer_ptr = recv[0].data(); 
     //double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
@@ -253,7 +252,7 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != server_ip){
-            
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 double tmp = 0.0;
@@ -262,12 +261,15 @@ int main(int argc, char** argv){
 
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
-                    const double inv_num_outgoing = 1.0 / num_outgoing1[from_page];
+                    const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
                     tmp += recv[0][from_page] * inv_num_outgoing;
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             //cout << "start" << endl;
             /*clock_gettime(CLOCK_MONOTONIC, &end1);
             ;

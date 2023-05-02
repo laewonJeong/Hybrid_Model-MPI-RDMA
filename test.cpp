@@ -257,8 +257,8 @@ int main(int argc, char** argv){
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 double tmp = 0.0;
-                const size_t graph_size = graph1[i].size();
-                const size_t* graph_ptr = graph1[i].data();
+                const size_t graph_size = graph[i].size();
+                const size_t* graph_ptr = graph[i].data();
 
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];

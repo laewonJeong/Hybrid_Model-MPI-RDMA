@@ -222,8 +222,8 @@ int main(int argc, char** argv){
     //vector<double> gather_pr;
    
     double* recv_buffer_ptr = recv[0].data(); 
-    const vector<vector<size_t>>& graph1 = graph;
-    const vector<int>& num_outgoing1 = num_outgoing;
+    //const vector<vector<size_t>>& graph1 = graph;
+    //const vector<int>& num_outgoing1 = num_outgoing;
     //double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
         div_send.resize(end-start);
@@ -260,12 +260,12 @@ int main(int argc, char** argv){
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 double tmp = 0.0;
-                const size_t graph_size = graph1[i].size();
-                const size_t* graph_ptr = graph1[i].data();
+                const size_t graph_size = graph[i].size();
+                const size_t* graph_ptr = graph[i].data();
 
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
-                    const double inv_num_outgoing = 1.0 / num_outgoing1[from_page];
+                    const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
                     tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }

@@ -219,12 +219,13 @@ int main(int argc, char** argv){
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
+    vector<double> gather_pr;
    
     //double* recv_buffer_ptr = recv[0].data(); 
     //double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
         div_send.resize(end-start);
-
+    
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){
@@ -236,7 +237,7 @@ int main(int argc, char** argv){
         if(rank == 0)
             cout <<"====="<< step+1 << " step=====" <<endl;
         dangling_pr = 0.0;
-
+        gather_pr = recv[0];
         if(step!=0) {
             if(my_ip != server_ip){
                 for (size_t i=0;i<num_of_vertex;i++) {
@@ -263,7 +264,7 @@ int main(int argc, char** argv){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
-                    tmp += recv[0][from_page] * inv_num_outgoing;
+                    tmp += gather_pr[from_page] * inv_num_outgoing;
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }

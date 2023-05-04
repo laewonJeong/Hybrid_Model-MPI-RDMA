@@ -342,6 +342,7 @@ int main(int argc, char** argv){
                 //cout << "end" << endl;
             }
             MPI_Bcast(gather_pr.data(), num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            recv[0] = gather_pr;
             //cout << "recv success" << endl;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

@@ -260,7 +260,7 @@ int main(int argc, char** argv){
             //clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
-                double* recv_buffer_ptr = recv[0].data();
+                //double* recv_buffer_ptr = recv[0].data();
                 double tmp = 0.0;
                 const size_t graph_size = graph[i].size();
                 const size_t* graph_ptr = graph[i].data();
@@ -269,7 +269,7 @@ int main(int argc, char** argv){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
-                    tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
+                    tmp += recv[0][from_page] * inv_num_outgoing;
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }

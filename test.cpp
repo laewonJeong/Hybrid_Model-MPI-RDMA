@@ -335,12 +335,10 @@ int main(int argc, char** argv){
             if(rank == 0){
                 //cout << "start" << endl;
                 myrdma.rdma_recv_pagerank(0);
-                MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+                //MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
                 //cout << "end" << endl;
             }
-            else{
-                MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            }
+            MPI_Bcast(recv[0].data(), num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
             //cout << "recv success" << endl;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

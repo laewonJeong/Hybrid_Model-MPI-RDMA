@@ -279,12 +279,12 @@ int main(int argc, char** argv){
             ;
             
             printf("%d: calc 수행시간: %Lfs.\n", rank, time1);*/
-            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            //clock_gettime(CLOCK_MONOTONIC, &begin1);
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
-            clock_gettime(CLOCK_MONOTONIC, &end1);
+            //clock_gettime(CLOCK_MONOTONIC, &end1);
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            if(rank == 0)
-                printf("%d: Allgatherv 수행시간: %Lfs.\n", rank, time1);
+            //if(rank == 0)
+            //    printf("%d: Allgatherv 수행시간: %Lfs.\n", rank, time1);
             //cout << "end" << endl;
             
             //MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
@@ -318,8 +318,8 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        if(rank == 0)
-            printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
+        //if(rank == 0)
+            //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == server_ip){
@@ -333,18 +333,18 @@ int main(int argc, char** argv){
         }
         else{
             if(rank == 0){
-                cout << "start" << endl;
+                //cout << "start" << endl;
                 myrdma.rdma_recv_pagerank(0);
-                cout << "end" << endl;
+                //cout << "end" << endl;
             }
-            cout << "start " <<endl;
+            //cout << "start " <<endl;
             MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            cout << "recv success" << endl;
+            //cout << "recv success" << endl;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        if(rank == 0)
-            printf("%d: recv 수행시간: %Lfs.\n", rank, time1);
+        //if(rank == 0)
+         //   printf("%d: recv 수행시간: %Lfs.\n", rank, time1);
         if(my_ip == server_ip && rank == 0)
             cout << "diff: " <<diff << endl;
         

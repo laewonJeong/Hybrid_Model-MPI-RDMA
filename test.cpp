@@ -318,8 +318,8 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        //if(rank == 0)
-        //    printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
+        if(rank == 0)
+            printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == server_ip){
@@ -339,8 +339,8 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        //if(rank == 0)
-        //    printf("%d: recv 수행시간: %Lfs.\n", rank, time1);
+        if(rank == 0)
+            printf("%d: recv 수행시간: %Lfs.\n", rank, time1);
         if(my_ip == server_ip && rank == 0)
             cout << "diff: " <<diff << endl;
         

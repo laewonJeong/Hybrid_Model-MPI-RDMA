@@ -332,8 +332,12 @@ int main(int argc, char** argv){
                 worker[i].detach();*/
         }
         else{
-            if(rank == 0)
+            if(rank == 0){
+                cout << "start" << endl;
                 myrdma.rdma_recv_pagerank(0);
+                cout << "end" << endl;
+            }
+            
             MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             //cout << "recv success" << endl;
         }

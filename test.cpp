@@ -337,9 +337,9 @@ int main(int argc, char** argv){
                 myrdma.rdma_recv_pagerank(0);
                 cout << "end" << endl;
             }
-            
+            cout << "start " <<endl;
             MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            //cout << "recv success" << endl;
+            cout << "recv success" << endl;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

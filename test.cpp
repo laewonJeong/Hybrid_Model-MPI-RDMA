@@ -338,7 +338,7 @@ int main(int argc, char** argv){
                 //cout << "end" << endl;
             }
             //cout << "start " <<endl;
-            MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
             //cout << "recv success" << endl;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

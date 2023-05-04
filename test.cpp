@@ -267,7 +267,7 @@ int main(int argc, char** argv){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
-                    tmp += recv[0][from_page] * inv_num_outgoing;
+                    tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
@@ -338,7 +338,7 @@ int main(int argc, char** argv){
                 cout << "end" << endl;
             }
             cout << "start " <<endl;
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             cout << "recv success" << endl;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

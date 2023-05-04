@@ -337,12 +337,12 @@ int main(int argc, char** argv){
             if(rank == 0){
                 //cout << "start" << endl;
                 myrdma.rdma_recv_pagerank(0);
-                gather_pr = recv[0];
+                //gather_pr = recv[0];
                 //MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
                 //cout << "end" << endl;
             }
             MPI_Bcast(gather_pr.data(), num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            recv[0] = gather_pr;
+            //recv[0] = gather_pr;
             //cout << "recv success" << endl;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

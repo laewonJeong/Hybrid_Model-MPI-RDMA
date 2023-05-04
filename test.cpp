@@ -22,7 +22,7 @@
 #define port 40145
 #define server_ip "192.168.0.100"
 
-string node[num_of_node] = {server_ip,"192.168.0.101","192.168.0.102","192.168.0.104","192.168.0.106"};//,"192.168.1.102","192.168.1.103"};
+string node[num_of_node] = {server_ip,"192.168.0.101","192.168.0.102","192.168.0.104","192.168.0.105"};//,"192.168.1.102","192.168.1.103"};
 std::vector<std::vector<size_t>> graph;
 std::vector<int> num_outgoing;
 int num_of_vertex;
@@ -299,7 +299,7 @@ int main(int argc, char** argv){
             cout << "recv success" << endl;
             send[0].clear();
 
-            for(int i=0;i<num_of_node-1;i++){
+            for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
                 send[0].insert(send[0].end(),recv[i].begin(),recv[i].begin()+size);
             }   

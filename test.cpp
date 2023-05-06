@@ -336,7 +336,7 @@ int main(int argc, char** argv){
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }
-            
+            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

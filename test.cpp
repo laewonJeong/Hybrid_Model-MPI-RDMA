@@ -94,7 +94,7 @@ void create_graph_data(string path, int rank, string del){
             to = line.substr(pos+1);
             add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
-            if(rank == 1 && line_num%500000 == 0)
+            if(rank == 0 && line_num%500000 == 0)
                 cerr << "Create " << line_num << " lines" << endl; 
             //if(line_num%500000 == 0)
                 //cerr << "Create " << line_num << " lines" << endl;
@@ -143,7 +143,7 @@ int main(int argc, char** argv){
     //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
-    if(rank == 1){
+    if(rank == 1 || my_ip == server_ip){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();
@@ -239,7 +239,7 @@ int main(int argc, char** argv){
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     //===============================================================================
     for(step =0;step<10000000;step++){
-        if(rank == 1)
+        if(rank == 1 || my_ip == server_ip)
             cout <<"====="<< step+1 << " step=====" <<endl;
         dangling_pr = 0.0;
         //gather_pr = recv[0];
@@ -353,7 +353,7 @@ int main(int argc, char** argv){
         if(my_ip == server_ip && rank == 1)
             cout << "diff: " <<diff << endl;
         
-        if(diff < 0.00001 || gather_pr[0] > 1){
+        if(diff < 0.00001 || recv[0][0] > 1){
             break;
         }
     }
@@ -371,7 +371,7 @@ int main(int argc, char** argv){
         cerr << "s = " <<sum1 << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }
-    if(rank == 1)
+    if(rank == 1|| my_ip == server_ip)
         printf("총 수행시간: %Lfs.\n", time2);
     MPI_Finalize();
 }

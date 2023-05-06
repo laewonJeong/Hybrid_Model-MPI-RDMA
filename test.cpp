@@ -235,7 +235,7 @@ int main(int argc, char** argv){
         myrdma.rdma_comm("write_with_imm", "1");
     }
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-    recv[0].resize(num_of_vertex, 1/num_of_vertex);
+    //recv[0].resize(num_of_vertex, 1/num_of_vertex);
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     //===============================================================================
     for(step =0;step<10000000;step++){
@@ -335,9 +335,11 @@ int main(int argc, char** argv){
         else{
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
+                MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             }
-            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-            MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            else{
+                MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            }
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

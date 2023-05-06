@@ -337,13 +337,13 @@ int main(int argc, char** argv){
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 for(int dest=1; dest<size; dest++){
-                    MPI_Send(recv[0].data(), recv[0].size(), MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD);
+                    MPI_Send(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD);
                 }
                 //cout << rank << ": " << recv[0].size() << endl;
             }
             else{
                 //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-                MPI_Recv(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Recv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 //MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             }
         }

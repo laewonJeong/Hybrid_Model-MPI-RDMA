@@ -219,7 +219,7 @@ int main(int argc, char** argv){
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
-    vector<double> gather_pr;
+    //vector<double> gather_pr;
     //gather_pr.resize(num_of_vertex, 1.0/num_of_vertex);
     //vector<double> gather_pr;
     double* recv_buffer_ptr = recv[0].data();
@@ -228,7 +228,7 @@ int main(int argc, char** argv){
     //double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
         div_send.resize(end-start);
-    gather_pr.resize(num_of_vertex);
+    //gather_pr.resize(num_of_vertex);
 
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
@@ -328,23 +328,15 @@ int main(int argc, char** argv){
         //===============================================================================
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == server_ip){
-            //std::vector<std::thread> worker;
              for(size_t i = 0; i<num_of_node-1;i++)
                 myrdma.rdma_write_pagerank(send[0],i);
-                //worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma, send[0], i));
-                
-            /*for(size_t i=0;i<num_of_node-1;i++)
-                worker[i].detach();*/
         }
         else{
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }
-            //double* yy = recv[0].data();
-            //int zz = recv[0].size();
-            //cout << rank << ": " << zz << endl;
-            //cout << rank << ": " << yy << endl;
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            
+            MPI_Bcast(recv_buffer_ptr, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

@@ -343,6 +343,7 @@ int main(int argc, char** argv){
             double* yy = recv[0].data();
             int zz = recv[0].size();
             cout << rank << ": " << zz << endl;
+            cout << rank << ": " << yy << endl;
             MPI_Bcast(yy, zz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

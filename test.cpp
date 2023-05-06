@@ -228,7 +228,8 @@ int main(int argc, char** argv){
     //double* div_send_ptr = div_send.data();
     if(my_ip != server_ip)
         div_send.resize(end-start);
-    
+    gather_pr.resize(num_of_vertex);
+
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){
@@ -336,7 +337,6 @@ int main(int argc, char** argv){
                 worker[i].detach();*/
         }
         else{
-            gather_pr.resize(num_of_vertex);
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 gather_pr = recv[0];

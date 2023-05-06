@@ -229,16 +229,17 @@ int main(int argc, char** argv){
     if(my_ip != server_ip)
         div_send.resize(end-start);
     //gather_pr.resize(num_of_vertex);
-
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){
         myrdma.rdma_comm("write_with_imm", "1");
     }
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+    recv[0].resize(num_of_vertex, 1/num_of_vertex);
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     //===============================================================================
     for(step =0;step<10000000;step++){
+        
         if(rank == 0 || my_ip == server_ip)
             cout <<"====="<< step+1 << " step=====" <<endl;
         dangling_pr = 0.0;

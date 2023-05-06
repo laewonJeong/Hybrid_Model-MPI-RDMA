@@ -335,15 +335,9 @@ int main(int argc, char** argv){
         else{
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
-                for(int dest=1; dest<2; dest++){
-                    MPI_Send(recv[0].data(), recv[0].size(), MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD);
-                }
+                
             }
-            else if(rank ==1){
-                MPI_Recv(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-                //
-            }
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 1, MPI_COMM_WORLD);
+            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

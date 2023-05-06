@@ -344,7 +344,7 @@ int main(int argc, char** argv){
             int zz = recv[0].size();
             cout << rank << ": " << zz << endl;
             cout << rank << ": " << yy << endl;
-            MPI_Bcast(yy, zz, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(yy, zz, MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

@@ -128,8 +128,6 @@ int main(int argc, char** argv){
     
 
 
-    vector<double> send[num_of_node];
-    vector<double> recv[num_of_node];
     // Create Graph
     //if(rank == 0)
     create_graph_data(argv[2],rank,argv[3]);
@@ -143,6 +141,8 @@ int main(int argc, char** argv){
     
     //D-RDMALib Init
     //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    vector<double> send[num_of_node];
+    vector<double> recv[num_of_node];
     if(rank == 0){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
         myrdma.create_rdma_info();
@@ -337,12 +337,12 @@ int main(int argc, char** argv){
                 worker[i].detach();*/
         }
         else{
-            double* recv_buffer_ptr1 = recv[0].data();
+            //double* recv_buffer_ptr1 = recv[0].data();
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 //recv_buffer_ptr1 = recv[0].data();
             }
-            MPI_Bcast(recv_buffer_ptr1, recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

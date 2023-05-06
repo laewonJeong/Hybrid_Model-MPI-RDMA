@@ -222,7 +222,7 @@ int main(int argc, char** argv){
     //vector<double> gather_pr;
     //gather_pr.resize(num_of_vertex, 1.0/num_of_vertex);
     //vector<double> gather_pr;
-    double* recv_buffer_ptr = recv[0].data();
+    //double* recv_buffer_ptr = recv[0].data();
     //const vector<vector<size_t>>& graph1 = graph;
     //const vector<int>& num_outgoing1 = num_outgoing;
     //double* div_send_ptr = div_send.data();
@@ -269,7 +269,7 @@ int main(int argc, char** argv){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
-                    tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
+                    tmp += recv[0][from_page] * inv_num_outgoing;
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }

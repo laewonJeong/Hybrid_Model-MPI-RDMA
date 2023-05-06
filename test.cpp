@@ -347,7 +347,6 @@ int main(int argc, char** argv){
             if (ierr != MPI_SUCCESS) {
                 std::cerr << "MPI_Bcast failed with error code " << ierr << std::endl;
                 MPI_Abort(MPI_COMM_WORLD, ierr);
-            
             }
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

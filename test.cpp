@@ -340,17 +340,17 @@ int main(int argc, char** argv){
             if(rank == 1){
                 myrdma.rdma_recv_pagerank(0);
             }
-            double* yy = recv[0].data();
-            int zz = recv[0].size();
-            cout << rank << ": " << zz << endl;
-            cout << rank << ": " << yy << endl;
-            MPI_Bcast(yy, zz, MPI_DOUBLE, 1, MPI_COMM_WORLD);
+            //double* yy = recv[0].data();
+            //int zz = recv[0].size();
+            //cout << rank << ": " << zz << endl;
+            //cout << rank << ": " << yy << endl;
+            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 1, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
         //if(rank == 1)
          //   printf("%d: recv 수행시간: %Lfs.\n", rank, time1);
-        if(my_ip == server_ip && rank == 1)
+        if(my_ip == server_ip && rank == 0)
             cout << "diff: " <<diff << endl;
         
         if(diff < 0.00001 || recv[0][0] > 1){

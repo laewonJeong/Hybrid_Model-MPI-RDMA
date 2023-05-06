@@ -245,6 +245,7 @@ int main(int argc, char** argv){
         dangling_pr = 0.0;
         //gather_pr = recv[0];
         if(step!=0) {
+            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             if(my_ip != server_ip){
                 //recv[0] = gather_pr;
                 for (size_t i=0;i<num_of_vertex;i++) {
@@ -337,7 +338,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_recv_pagerank(0);
                 
             }
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

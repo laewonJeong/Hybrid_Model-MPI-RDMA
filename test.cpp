@@ -219,10 +219,10 @@ int main(int argc, char** argv){
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
-    //vector<double> gather_pr;
+    vector<double> gather_pr;
     //gather_pr.resize(num_of_vertex, 1.0/num_of_vertex);
     //vector<double> gather_pr;
-    //double* recv_buffer_ptr = recv[0].data();
+    double* recv_buffer_ptr = recv[0].data();
     //const vector<vector<size_t>>& graph1 = graph;
     //const vector<int>& num_outgoing1 = num_outgoing;
     //double* div_send_ptr = div_send.data();
@@ -244,6 +244,7 @@ int main(int argc, char** argv){
         //gather_pr = recv[0];
         if(step!=0) {
             if(my_ip != server_ip){
+                recv[0] = gather_pr;
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
                         dangling_pr += recv[0][i];   
@@ -269,7 +270,7 @@ int main(int argc, char** argv){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
-                    tmp += recv[0][from_page] * inv_num_outgoing;
+                    tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
@@ -335,10 +336,12 @@ int main(int argc, char** argv){
                 worker[i].detach();*/
         }
         else{
-            recv[0].resize(num_of_vertex);
-            if(rank == 0)
+            gather_pr.resize(num_of_vertex);
+            if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+                gather_pr = recv[0];
+            }
+            MPI_Bcast(gather_pr.data(), gather_pr.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -347,7 +350,7 @@ int main(int argc, char** argv){
         if(my_ip == server_ip && rank == 0)
             cout << "diff: " <<diff << endl;
         
-        if(diff < 0.00001 || recv[0][0] > 1){
+        if(diff < 0.00001 || gather_pr[0] > 1){
             break;
         }
     }

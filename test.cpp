@@ -333,12 +333,13 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_pagerank(send[0],i);
         }
         else{
+            cout << rank << ": " << recv[0].size() << endl;
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 /*for(int dest=1; dest<size; dest++){
                     MPI_Send(recv[0].data(), recv[0].size(), MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD);
                 }*/
-                cout << recv[0][1] << endl;
+                
                 MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             }
             else{

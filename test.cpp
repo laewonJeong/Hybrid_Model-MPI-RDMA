@@ -316,7 +316,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_vector(send[0],0);
                 //cout << "send success" << endl;
             }
-            recv[0].resize(num_of_vertex);
+            
             
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
@@ -335,9 +335,10 @@ int main(int argc, char** argv){
                 worker[i].detach();*/
         }
         else{
+            recv[0].resize(num_of_vertex);
             if(rank == 0)
                 myrdma.rdma_recv_pagerank(0);
-            MPI_Bcast(recv[0].data(), num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

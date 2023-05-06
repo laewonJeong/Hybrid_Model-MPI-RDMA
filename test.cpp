@@ -341,10 +341,14 @@ int main(int argc, char** argv){
                 }*/
                 cout << rank << ": " << recv[0].size() << endl;
             }
-            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+            //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             //MPI_Recv(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            int ierr = MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            if (ierr != MPI_SUCCESS) {
+                std::cerr << "MPI_Bcast failed with error code " << ierr << std::endl;
+                MPI_Abort(MPI_COMM_WORLD, ierr);
             
+            }
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

@@ -94,7 +94,7 @@ void create_graph_data(string path, int rank, string del){
             to = line.substr(pos+1);
             add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
-            if(rank == 0 && line_num%500000 == 0)
+            if(rank == 1 && line_num%500000 == 0)
                 cerr << "Create " << line_num << " lines" << endl; 
             //if(line_num%500000 == 0)
                 //cerr << "Create " << line_num << " lines" << endl;
@@ -129,7 +129,7 @@ int main(int argc, char** argv){
 
 
     // Create Graph
-    //if(rank == 0)
+    //if(rank == 1)
     create_graph_data(argv[2],rank,argv[3]);
     
     
@@ -143,7 +143,7 @@ int main(int argc, char** argv){
     //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     vector<double> send[num_of_node];
     vector<double> recv[num_of_node];
-    if(rank == 0){
+    if(rank == 1){
         myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();
@@ -232,14 +232,14 @@ int main(int argc, char** argv){
 
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-    if(rank == 0){
+    if(rank == 1){
         myrdma.rdma_comm("write_with_imm", "1");
     }
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     //===============================================================================
     for(step =0;step<10000000;step++){
-        if(rank == 0)
+        if(rank == 1)
             cout <<"====="<< step+1 << " step=====" <<endl;
         dangling_pr = 0.0;
         //gather_pr = recv[0];
@@ -287,7 +287,7 @@ int main(int argc, char** argv){
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             //clock_gettime(CLOCK_MONOTONIC, &end1);
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            //if(rank == 0)
+            //if(rank == 1)
             //    printf("%d: Allgatherv 수행시간: %Lfs.\n", rank, time1);
             //cout << "end" << endl;
             
@@ -314,7 +314,7 @@ int main(int argc, char** argv){
             fill(&send[1], &send[num_of_node-1], send[0]);
         }
         else{
-            if(rank == 0){
+            if(rank == 1){
                 myrdma.rdma_write_vector(send[0],0);
                 //cout << "send success" << endl;
             }
@@ -323,7 +323,7 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        //if(rank == 0)
+        //if(rank == 1)
             //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         clock_gettime(CLOCK_MONOTONIC, &begin1);
@@ -337,7 +337,7 @@ int main(int argc, char** argv){
                 worker[i].detach();*/
         }
         else{
-            if(rank == 0){
+            if(rank == 1){
                 myrdma.rdma_recv_pagerank(0);
             }
             double* yy = recv[0].data();
@@ -348,9 +348,9 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        //if(rank == 0)
+        //if(rank == 1)
          //   printf("%d: recv 수행시간: %Lfs.\n", rank, time1);
-        if(my_ip == server_ip && rank == 0)
+        if(my_ip == server_ip && rank == 1)
             cout << "diff: " <<diff << endl;
         
         if(diff < 0.00001 || gather_pr[0] > 1){
@@ -362,7 +362,7 @@ int main(int argc, char** argv){
 
     //===============================================================================
     
-    if(my_ip != server_ip && rank == 0){
+    if(my_ip != server_ip && rank == 1){
         double sum1 = accumulate(recv[0].begin(), recv[0].end(), -1.0);
         cout.precision(numeric_limits<double>::digits10);
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
@@ -371,7 +371,7 @@ int main(int argc, char** argv){
         cerr << "s = " <<sum1 << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }
-    if(rank == 0)
+    if(rank == 1)
         printf("총 수행시간: %Lfs.\n", time2);
     MPI_Finalize();
 }

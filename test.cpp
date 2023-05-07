@@ -335,7 +335,7 @@ int main(int argc, char** argv){
                 cout << "recv_success" << endl;
                 cout << "Broadcasting..." << endl;
             }
-            MPI_Bcast(send[0].data(), send[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             /*else{
                 MPI_Recv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 

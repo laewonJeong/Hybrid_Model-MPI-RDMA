@@ -222,7 +222,7 @@ int main(int argc, char** argv){
     //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
     recv1[0].resize(num_of_vertex, 1/num_of_vertex);
-    //double* recv_buffer_ptr = recv1[0].data();
+    double* recv_buffer_ptr = recv1[0].data();
     //double* send_buffer_ptr = send[0].data();
 
     if(my_ip != server_ip)
@@ -271,7 +271,7 @@ int main(int argc, char** argv){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
-                    tmp += recv1[0][from_page] * inv_num_outgoing;
+                    tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
@@ -293,7 +293,7 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == server_ip){
             myrdma.recv_t("send");
-            cout << "recv success" << endl;
+            cout << "recv1 success" << endl;
             send[0].clear();
 
             for(size_t i=0;i<num_of_node-1;i++){
@@ -325,8 +325,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_pagerank(send[0],i);
         }
         else{
-            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            cout << "wow" << endl;
+            
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 //gather_pr = recv1[0];

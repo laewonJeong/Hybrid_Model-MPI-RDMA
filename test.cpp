@@ -218,9 +218,10 @@ int main(int argc, char** argv){
     vector<double> prev_pr;
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
-    vector<double> gather_pr;
-    gather_pr.resize(num_of_vertex);
+    //vector<double> gather_pr;
+    //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
+    recv1[0].resize(num_of_vertex, 1/num_of_vertex);
     double* recv_buffer_ptr = recv1[0].data();
 
     if(my_ip != server_ip)
@@ -243,7 +244,7 @@ int main(int argc, char** argv){
         //gather_pr = recv1[0];
         if(step!=0) {
             if(my_ip != server_ip){
-                recv1[0] = gather_pr;
+                //recv1[0] = gather_pr;
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
                         dangling_pr += recv1[0][i];   
@@ -326,7 +327,7 @@ int main(int argc, char** argv){
             MPI_Request request;
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
-                gather_pr = recv1[0];
+                //gather_pr = recv1[0];
                 /*for(size_t dest=1; dest<size; dest++){
                     MPI_Send(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD);
                 }*/
@@ -337,7 +338,7 @@ int main(int argc, char** argv){
                 MPI_Recv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 
             }*/
-            MPI_Bcast(gather_pr.data(), gather_pr.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

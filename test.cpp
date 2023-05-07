@@ -218,6 +218,7 @@ int main(int argc, char** argv){
     vector<double> prev_pr;
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
+    std::vector<double> recv_buffer(recv1[0].size());
     //vector<double> gather_pr;
     //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
@@ -328,14 +329,17 @@ int main(int argc, char** argv){
             
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
-                //gather_pr = recv1[0];
+                std::copy(recv1[0].begin(), recv1[0].end(), recv_buffer.begin());
                 /*for(size_t dest=1; dest<size; dest++){
                     MPI_Send(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD);
                 }*/
                 cout << "recv_success" << endl;
                 cout << "Broadcasting..." << endl;
             }
-            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv_buffer.data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            if(rank != 0){
+                std::copy(recv_buffer.begin(), recv_buffer.end(), recv1[0].begin());
+            }
             /*else{
                 MPI_Recv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 

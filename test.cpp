@@ -293,7 +293,7 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == server_ip){
             myrdma.recv_t("send");
-            cout << "recv1 success" << endl;
+            cout << "recv success" << endl;
             send[0].clear();
 
             for(size_t i=0;i<num_of_node-1;i++){

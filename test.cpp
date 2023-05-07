@@ -208,6 +208,7 @@ int main(int argc, char** argv){
 
         nn[num_of_node-2] = x;
     }
+    MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
   // cout << "end" << endl;
     int check;
     int check1[size];

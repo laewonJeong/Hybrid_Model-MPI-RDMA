@@ -343,7 +343,7 @@ int main(int argc, char** argv){
         if(my_ip == server_ip && rank == 0)
             cout << "diff: " <<diff << endl;
         
-        if(diff < 0.00001 || recv[0][0] > 1){
+        if(diff < 0.00001 || step ==61){
             break;
         }
     }

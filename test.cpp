@@ -223,6 +223,7 @@ int main(int argc, char** argv){
     vector<double> div_send;
     recv1[0].resize(num_of_vertex, 1/num_of_vertex);
     double* recv_buffer_ptr = recv1[0].data();
+    double* send_buffer_ptr = send[0].data();
 
     if(my_ip != server_ip)
         div_send.resize(end-start);
@@ -324,7 +325,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_pagerank(send[0],i);
         }
         else{
-            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(send[0].data(), send[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 //gather_pr = recv1[0];

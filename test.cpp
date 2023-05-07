@@ -321,6 +321,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_pagerank(send[0],i);
         }
         else{
+            MPI_Request request;
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 for(size_t dest=1; dest<size; dest++){
@@ -331,7 +332,7 @@ int main(int argc, char** argv){
                 MPI_Recv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 
             }
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Ibcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD,&request);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

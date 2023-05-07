@@ -142,9 +142,9 @@ int main(int argc, char** argv){
     //D-RDMALib Init
     //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     vector<double> send[num_of_node];
-    vector<double> recv[num_of_node];
+    vector<double> recv1[num_of_node];
     if(rank == 0 || my_ip == server_ip){
-        myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv,num_of_vertex);
+        myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info();
         myrdma.send_info_change_qp();
     }
@@ -194,17 +194,17 @@ int main(int argc, char** argv){
          //cout << "start, end: " << start <<", "<< end << endl;
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);
-            recv[i].resize(num_of_vertex, 1/num_of_vertex);
+            recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
     }
     else{
         for(int i=0;i<num_of_node;i++){
             send[i].resize(num_of_vertex, 1/num_of_vertex);
-            recv[i].resize(div_num_of_vertex);
+            recv1[i].resize(div_num_of_vertex);
             nn[i] = div_num_of_vertex;
         }
         int x = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
-        recv[num_of_node-2].resize(x);
+        recv1[num_of_node-2].resize(x);
 
         nn[num_of_node-2] = x;
     }
@@ -219,7 +219,7 @@ int main(int argc, char** argv){
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
     vector<double> div_send;
-    double* recv_buffer_ptr = recv[0].data();
+    double* recv_buffer_ptr = recv1[0].data();
 
     if(my_ip != server_ip)
         div_send.resize(end-start);
@@ -238,13 +238,13 @@ int main(int argc, char** argv){
         if(rank == 0 || my_ip == server_ip)
             cout <<"====="<< step+1 << " step=====" <<endl;
         dangling_pr = 0.0;
-        //gather_pr = recv[0];
+        //gather_pr = recv1[0];
         if(step!=0) {
             if(my_ip != server_ip){
-                //recv[0] = gather_pr;
+                //recv1[0] = gather_pr;
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
-                        dangling_pr += recv[0][i];   
+                        dangling_pr += recv1[0][i];   
                 }
             }
             else{
@@ -289,12 +289,12 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == server_ip){
             myrdma.recv_t("send");
-            cout << "recv success" << endl;
+            cout << "recv1 success" << endl;
             send[0].clear();
 
             for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
-                send[0].insert(send[0].end(),recv[i].begin(),recv[i].begin()+size);
+                send[0].insert(send[0].end(),recv1[i].begin(),recv1[i].begin()+size);
             }   
 
             if(diff < 0.00001)
@@ -334,16 +334,16 @@ int main(int argc, char** argv){
                 MPI_Recv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 
             }*/
-            MPI_Bcast(recv[0].data(), recv[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
         //if(rank == 0)
-         //   printf("%d: recv 수행시간: %Lfs.\n", rank, time1);
+         //   printf("%d: recv1 수행시간: %Lfs.\n", rank, time1);
         if(my_ip == server_ip && rank == 0)
             cout << "diff: " <<diff << endl;
         
-        if(diff < 0.00001 || step ==61){
+        if(diff < 0.00001 || recv1[0][0] > 1){
             break;
         }
     }
@@ -353,10 +353,10 @@ int main(int argc, char** argv){
     //===============================================================================
     
     if(my_ip != server_ip && rank == 0){
-        double sum1 = accumulate(recv[0].begin(), recv[0].end(), -1.0);
+        double sum1 = accumulate(recv1[0].begin(), recv1[0].end(), -1.0);
         cout.precision(numeric_limits<double>::digits10);
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
-            cout << "pr[" <<i<<"]: " << recv[0][i] <<endl;
+            cout << "pr[" <<i<<"]: " << recv1[0][i] <<endl;
         }
         cerr << "s = " <<sum1 << endl;
         //printf("총 수행시간: %Lfs.\n", time2);

@@ -325,7 +325,8 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_pagerank(send[0],i);
         }
         else{
-            
+            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            cout << "wow" << endl;
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 //gather_pr = recv1[0];

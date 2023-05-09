@@ -261,7 +261,7 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != server_ip){
-            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            //clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 //
@@ -277,9 +277,9 @@ int main(int argc, char** argv){
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
-            clock_gettime(CLOCK_MONOTONIC, &end1);
-            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
+            //clock_gettime(CLOCK_MONOTONIC, &end1);
+            //long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             
@@ -330,22 +330,19 @@ int main(int argc, char** argv){
             MPI_Request request;
             //std::vector<MPI_Request> requests;
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
-                    //requests.push_back(request);
                 }
             }
-            
             else{
                 MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
                 MPI_Wait(&request, MPI_STATUS_IGNORE);
             }
 
-            /*if(rank == 0) {
-                MPI_Waitall(requests.size(), requests.data(), MPI_STATUSES_IGNORE);
-            }*/
+            
             
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

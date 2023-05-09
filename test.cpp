@@ -327,16 +327,24 @@ int main(int argc, char** argv){
                 myrdma.rdma_write_pagerank(send[0],i);
         }
         else{
-            
+            MPI_Request request;
+            std::vector<MPI_Request> requests;
+            //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 for(size_t dest=1; dest<size; dest++){
-                    MPI_Send(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD);
+                    MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
+                    requests.push_back(request);
                 }
             }
-            //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            
             else{
-                MPI_Recv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
+                MPI_Wait(&request, MPI_STATUS_IGNORE);
+            }
+
+            if(rank == 0) {
+                MPI_Waitall(requests.size(), requests.data(), MPI_STATUSES_IGNORE);
             }
             
         }

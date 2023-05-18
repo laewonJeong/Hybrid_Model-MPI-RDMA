@@ -174,7 +174,7 @@ int main(int argc, char** argv){
     size_t index = 0;
     int edge_part = ceil(edge/(num_of_node-1));
     
-    cout << edge_part << endl;
+    //cout << edge_part << endl;
     
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
@@ -184,18 +184,18 @@ int main(int argc, char** argv){
             end_arr[index] = i;
             if(index<num_of_node-1)
                 start_arr[index+1] = i;
-            cout << "===========================" << endl;
-            cout << "start["<<index<<"]: " << start_arr[index] <<endl;
-            cout << "end["<<index<<"]: " << end_arr[index] <<endl;
+            //cout << "===========================" << endl;
+            //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+            //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
             index++;
         }
         if(index == num_of_node-2)
             break;
     }
-    cout << "===========================" << endl;
+    //cout << "===========================" << endl;
     end_arr[num_of_node-2] = num_of_vertex;
-    cout << "start["<<index<<"]: " << start_arr[index] <<endl;
-    cout << "end["<<index<<"]: " << end_arr[index] <<endl;
+    //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+    //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
 
     int div_num_of_vertex;
     if(my_ip != node[0]){
@@ -210,7 +210,7 @@ int main(int argc, char** argv){
             send[i].resize(div_num_of_vertex);
             recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
-        cout << div_num_of_vertex << ", " << start << ", " << end << endl;
+        //cout << div_num_of_vertex << ", " << start << ", " << end << endl;
         for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
@@ -249,7 +249,7 @@ int main(int argc, char** argv){
             send[i].resize(num_of_vertex, 1/num_of_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;
-            cout << "nn[i]: " <<nn[i] << endl;
+            //cout << "nn[i]: " <<nn[i] << endl;
         }
     }
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
@@ -380,7 +380,7 @@ int main(int argc, char** argv){
             printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
-            cout << div_send[0] << ", " << div_send[div_num_of_vertex-1] << endl;
+            //cout << div_send[0] << ", " << div_send[div_num_of_vertex-1] << endl;
 
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             

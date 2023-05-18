@@ -27,6 +27,7 @@ class TCP{
         int recv_msg(int ip);
         string recv_message(int ip);
         int *client_sock();
+        string domain_to_ip(string domain);
         map<string, string> read_rdma_info(int ip);
         string check_my_ip();
 

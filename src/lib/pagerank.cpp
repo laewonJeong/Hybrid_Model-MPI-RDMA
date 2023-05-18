@@ -1,7 +1,6 @@
 #include "pagerank.hpp"
 #include "../../includes/network/myRDMA.hpp"
 #include "../../includes/network/tcp.hpp"
-#include <boost/lexical_cast.hpp>
 #include <numeric>
 #include <time.h>
 #include <omp.h>
@@ -298,7 +297,7 @@ string Pagerank::max_pr(){
 void Pagerank::init_connection(const char* ip, string server[], int number_of_server, int Port, int num_of_vertex)
 {
     myrdma1.initialize_rdma_connection_vector(ip,server,number_of_server,Port,send_buffer,recv_buffer,num_of_vertex);
-    myrdma1.create_rdma_info();
+    myrdma1.create_rdma_info(send_buffer, recv_buffer);
     myrdma1.send_info_change_qp();
 
     string str_ip(ip);

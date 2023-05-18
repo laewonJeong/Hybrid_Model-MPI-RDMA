@@ -357,42 +357,53 @@ void myRDMA::send_info_change_qp(){
     }
     cerr << "Completely success" << endl;
 }
-void myRDMA::create_rdma_info(){
+void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
     RDMA rdma;
     TCP tcp;
-    cerr << "Creating rdma info...   ";
-    //char (*buf)[buf_size];
-    vector<double> * buf;
-    //vector<double> **r_buf;
-
+    cout << "Creating rdma info...   ";
+   
     for(int j =0;j<2;j++){
         
         if(j == 1){
             for(int i =0;i<myrdma.connect_num;i++){
                 struct ibv_context* context = rdma.createContext();
+                cout << "create context" << endl;
                 struct ibv_pd* protection_domain = ibv_alloc_pd(context);
+                cout << "ibv_pd" << endl;
                 int cq_size = 0x10;
                 struct ibv_cq* completion_queue = ibv_create_cq(context, cq_size, nullptr, nullptr, 0);
+                cout << "ibv_cq clear" << endl;
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
+                cout << "qp clear" << endl;
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
-                                                        myrdma.recv[i].data(), sizeof(double)*(myrdma.num_of_vertex));//sizeof(myrdma.recv[i].data()));
+                                                        recv[i].data(), sizeof(double)*(myrdma.num_of_vertex));//sizeof(myrdma.recv[i].data()));
+                cout << "mr clear" << endl;
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});
+                cout << "clear" << endl;
             }
         }
         else{
             for(int i =0;i<myrdma.connect_num;i++){
                 struct ibv_context* context = rdma.createContext();
-                struct ibv_pd* protection_domain = ibv_alloc_pd(context);
+                cout << "create context" << endl;
+                //struct ibv_pd* protection_domain = ibv_alloc_pd(context);
+                //cout << "ibv_pd" << endl;
                 int cq_size = 0x10;
                 struct ibv_cq* completion_queue = ibv_create_cq(context, cq_size, nullptr, nullptr, 0);
+                cout << "ibv_cq clear" << endl;
+                struct ibv_pd* protection_domain = ibv_alloc_pd(context);
+                cout << "ibv_pd" << endl;
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
+                cout << "qp clear" << endl;
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
-                                                        myrdma.send[i].data(), sizeof(double)*(myrdma.num_of_vertex));//sizeof(myrdma.send[i].data()));
+                                                        send[i].data(), sizeof(double)*(myrdma.num_of_vertex));//sizeof(myrdma.send[i].data()));
+                cout << "mr clear" << endl;
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});
+                cout << "clear" << endl;
             }
         }
         //}

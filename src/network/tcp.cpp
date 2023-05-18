@@ -3,6 +3,36 @@
 static std::mutex mutx;
 TCP *tcp = new TCP();
 
+string TCP::domain_to_ip(string domain){
+   struct hostent *host;
+   struct sockaddr_in addr;
+   char *temp;
+   
+   char domain_ch[100];
+   strcpy(domain_ch, domain.c_str());
+
+   memset(&addr, '0', sizeof(addr));
+
+   addr.sin_addr.s_addr=inet_addr(domain_ch);
+   host=gethostbyaddr((char*)&addr.sin_addr, 4, AF_INET);
+
+   int i = 0;
+   while(1){
+      host = gethostbyname(domain_ch);
+      if(host){
+         for(int i=0; host->h_addr_list[i]; i++){
+            temp = inet_ntoa(*(struct in_addr*)host->h_addr_list[i]);
+         }
+         string result(temp);
+         return result;
+      }
+      else{
+         if(i == 0)
+            printf("Progressing...\n");
+         i = 2;
+      }
+   }
+}
 string TCP::check_my_ip(){
    struct ifaddrs * ifAddrStruct=NULL;
    struct ifaddrs * ifa=NULL;
@@ -19,7 +49,7 @@ string TCP::check_my_ip(){
          tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
          char addressBuffer[INET_ADDRSTRLEN];
          inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-         if(strcmp(ifa->ifa_name, "enp5s0") == 0){
+         if(strcmp(ifa->ifa_name, "eth0") == 0){
             string str(addressBuffer);
             if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
             return str;

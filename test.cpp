@@ -14,20 +14,22 @@
 #include <myRDMA.hpp>
 #include <pagerank.hpp>
 #include <numeric>
+#include "tcp.hpp"
 
 #define df 0.85
 #define MAX 100000
 #define MAXX 50000
 #define num_of_node 5
 #define port 40145
-#define server_ip "192.168.0.100"
+#define server_ip "192.168.0.100"//"pod-a.svc-k8s-rdma"
 
-string node[num_of_node] = {server_ip,"192.168.0.101","192.168.0.102","192.168.0.104","192.168.0.106"};//,"192.168.1.102","192.168.1.103"};
+string node[num_of_node] = {server_ip,"192.168.0.101","192.168.0.102","192.168.0.104","192.168.0.106"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
+string node_domain[num_of_node];
 std::vector<std::vector<size_t>> graph;
 std::vector<int> num_outgoing;
 int num_of_vertex;
 int start, end;
-
+int edge;
 using namespace std;
 
 
@@ -107,6 +109,7 @@ void create_graph_data(string path, int rank, string del){
         exit(1);
 	}
     num_of_vertex = graph.size();
+    edge = line_num;
     delete infile;
 }
 
@@ -117,8 +120,19 @@ int main(int argc, char** argv){
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     string my_ip(argv[1]);
-    
-    
+
+    /*TCP tcp;
+
+    cout << "check my ip" << endl;
+    my_ip = tcp.check_my_ip();
+    cout << "finish! this pod's ip is " <<my_ip << endl;
+
+    cout << "Changing domain to ip ..." << endl;
+    for(int i = 0 ;i < num_of_node;i++){
+        node[i]=tcp.domain_to_ip(node_domain[i]);
+        cout << node_domain[i] << " ----> " << node[i] <<endl;
+    }
+    cout << "Success" << endl;*/
 
     //MPI Init
     MPI_Init(&argc, &argv);
@@ -143,23 +157,50 @@ int main(int argc, char** argv){
     //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
-    if(rank == 0 || my_ip == server_ip){
-        myrdma.initialize_rdma_connection_vector(argv[1],node,num_of_node,port,send,recv1,num_of_vertex);
-        myrdma.create_rdma_info();
+    if(rank == 0){
+        myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
+        myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
     }
     
     // graph partitioning
     int recvcounts[size];
-    int displs[size];
+    int displs[size]; 
     int nn[num_of_node];
-
-    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    int start_arr[num_of_node-1];
+    start_arr[0] = 0;
+    int end_arr[num_of_node-1];
+    int temp = 0;
+    size_t index = 0;
+    int edge_part = ceil(edge/(num_of_node-1));
+    
+    cout << edge_part << endl;
+    
+    for(size_t i=0;i<num_of_vertex;i++){
+        temp += num_outgoing[i];
+        if(temp > edge_part){
+            cout << i << ", " << temp - num_outgoing[i] << endl;
+            temp = num_outgoing[i];
+            end_arr[index] = i;
+            if(index+i<num_of_node-1)
+                start_arr[index+1] = i;
+            cout << "===========================" << endl;
+            cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+            cout << "end["<<index<<"]: " << end_arr[index] <<endl;
+            index++;
+        }
+        if(index == num_of_node-1)
+            break;
+    }
+    end_arr[num_of_node-1] = num_of_vertex;
+    cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+    cout << "end["<<index<<"]: " << end_arr[index] <<endl;
+    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
     //cout << "start "<< endl;
-    if(my_ip != server_ip){
+    if(my_ip != node[0]){
         //cout << "div_num_of_vertex: " <<div_num_of_vertex << endl;
         for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
@@ -227,7 +268,7 @@ int main(int argc, char** argv){
     double* recv_buffer_ptr = recv1[0].data();
     //double* send_buffer_ptr = send[0].data();
 
-    if(my_ip != server_ip)
+    if(my_ip != node[0])
         div_send.resize(end-start);
     
     check = 1;
@@ -241,12 +282,12 @@ int main(int argc, char** argv){
     //===============================================================================
     for(step =0;step<10000000;step++){
         
-        if(rank == 0 || my_ip == server_ip)
+        if(rank == 0 || my_ip == node[0])
             cout <<"====="<< step+1 << " step=====" <<endl;
         dangling_pr = 0.0;
         //gather_pr = recv1[0];
         if(step!=0) {
-            if(my_ip != server_ip){
+            if(my_ip != node[0]){
                 //recv1[0] = gather_pr;
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
@@ -260,7 +301,7 @@ int main(int argc, char** argv){
             }
         }
         //===============================================================================
-        if(my_ip != server_ip){
+        if(my_ip != node[0]){
             //clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
@@ -293,7 +334,7 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         clock_gettime(CLOCK_MONOTONIC, &begin1);
-        if(my_ip == server_ip){
+        if(my_ip == node[0]){
             myrdma.recv_t("send");
             cout << "recv1 success" << endl;
             send[0].clear();
@@ -322,7 +363,7 @@ int main(int argc, char** argv){
             //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         clock_gettime(CLOCK_MONOTONIC, &begin1);
-        if(my_ip == server_ip){
+        if(my_ip == node[0]){
              for(size_t i = 0; i<num_of_node-1;i++)
                 myrdma.rdma_write_pagerank(send[0],i);
         }
@@ -349,7 +390,7 @@ int main(int argc, char** argv){
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
         //if(rank == 0)
          //   printf("%d: recv1 수행시간: %Lfs.\n", rank, time1);
-        if(my_ip == server_ip && rank == 0)
+        if(my_ip == node[0] && rank == 0)
             cout << "diff: " <<diff << endl;
         
         if(diff < 0.00001 || recv1[0][0] > 1){
@@ -361,7 +402,7 @@ int main(int argc, char** argv){
 
     //===============================================================================
     
-    if(my_ip != server_ip && rank == 0){
+    if(my_ip != node[0] && rank == 0){
         double sum1 = accumulate(recv1[0].begin(), recv1[0].end(), -1.0);
         cout.precision(numeric_limits<double>::digits10);
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
@@ -370,7 +411,7 @@ int main(int argc, char** argv){
         cerr << "s = " <<sum1 << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }
-    if(rank == 0|| my_ip == server_ip)
-        printf("총 수행시간: %Lfs.\n", time2);
+    if(rank == 0|| my_ip == node[0])
+        printf("총 수행시간: %Lfs.\n", time2);*/
     MPI_Finalize();
 }

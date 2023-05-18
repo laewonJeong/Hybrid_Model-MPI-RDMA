@@ -236,6 +236,7 @@ int main(int argc, char** argv){
             send[i].resize(num_of_vertex, 1/num_of_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;
+            cout << "nn[i]: " <<nn[i] << endl;
         }
     }
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    

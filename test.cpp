@@ -192,7 +192,8 @@ int main(int argc, char** argv){
         if(index == num_of_node-2)
             break;
     }
-    end_arr[num_of_node-1] = num_of_vertex;
+    cout << "===========================" << endl;
+    end_arr[num_of_node-2] = num_of_vertex;
     cout << "start["<<index<<"]: " << start_arr[index] <<endl;
     cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    

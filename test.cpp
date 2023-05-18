@@ -307,7 +307,7 @@ int main(int argc, char** argv){
     //vector<double> gather_pr;
     //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
-    recv1[0].resize(num_of_vertex, 1/num_of_vertex);
+    //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
     double* recv_buffer_ptr = recv1[0].data();
     //double* send_buffer_ptr = send[0].data();
 
@@ -366,7 +366,7 @@ int main(int argc, char** argv){
             printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
-            
+            cout << div_send[0] << ", " << div_send[div_num_of_vertex-1] << endl;
 
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             

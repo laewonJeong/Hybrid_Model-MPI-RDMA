@@ -211,6 +211,32 @@ int main(int argc, char** argv){
             recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
         cout << div_num_of_vertex << ", " << start << ", " << end << endl;
+        for(int i=0;i<size;i++){
+            a = div_num_of_vertex/size*i;
+            b = a + div_num_of_vertex/size;
+            if(rank == i){
+                start = a;
+                end = b;
+            }
+            if(rank ==size-1 && rank == i){
+                end = div_num_of_vertex;
+            }
+            displs[i] = a;
+            recvcounts[i] = b-a;
+            if(i ==size-1)
+                recvcounts[i] = div_num_of_vertex-displs[i];
+
+            //cout << "displs[" << i << "]: " <<displs[i] << endl;
+            //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
+        }
+    }
+    else{
+         for(int i=0;i<num_of_node;i++){
+            int temp1 = end_arr[i-1] - start_arr[i-1];
+            send[i].resize(num_of_vertex, 1/num_of_vertex);
+            recv1[i].resize(temp);
+            nn[i] = temp1;
+        }
     }
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
@@ -267,7 +293,7 @@ int main(int argc, char** argv){
         nn[num_of_node-2] = x;
     }
     
-  // cout << "end" << endl;
+  // cout << "end" << endl;*/
     int check;
     int check1[size];
     
@@ -429,6 +455,6 @@ int main(int argc, char** argv){
         //printf("총 수행시간: %Lfs.\n", time2);
     }
     if(rank == 0|| my_ip == node[0])
-        printf("총 수행시간: %Lfs.\n", time2);*/
-    //MPI_Finalize();
+        printf("총 수행시간: %Lfs.\n", time2);
+    MPI_Finalize();
 }

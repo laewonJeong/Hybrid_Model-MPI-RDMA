@@ -182,7 +182,7 @@ int main(int argc, char** argv){
             cout << i << ", " << temp - num_outgoing[i] << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
-            if(index+i<num_of_node-1)
+            if(index+1<num_of_node-1)
                 start_arr[index+1] = i;
             cout << "===========================" << endl;
             cout << "start["<<index<<"]: " << start_arr[index] <<endl;

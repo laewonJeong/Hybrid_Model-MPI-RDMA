@@ -197,7 +197,7 @@ int main(int argc, char** argv){
     cout << "start["<<index<<"]: " << start_arr[index] <<endl;
     cout << "end["<<index<<"]: " << end_arr[index] <<endl;
 
-    /*int div_num_of_vertex;
+    int div_num_of_vertex;
     if(my_ip != node[0]){
         for(int i=1;i<num_of_node;i++){
             if(node[i] == my_ip){
@@ -238,8 +238,8 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             cout << "nn[i]: " <<nn[i] << endl;
         }
-    }*/
-    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    }
+    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
@@ -294,7 +294,7 @@ int main(int argc, char** argv){
         nn[num_of_node-2] = x;
     }
     
-  // cout << "end" << endl;
+  // cout << "end" << endl;*/
     int check;
     int check1[size];
     

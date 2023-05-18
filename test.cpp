@@ -239,7 +239,7 @@ int main(int argc, char** argv){
         }
         else if(my_ip == node[num_of_node-3]){
             start += end_arr[0];
-            end += end_arr[1];
+            end += end_arr[0];
         }
         cout << "start, end: " << start <<", "<< end << endl;
     }

@@ -179,7 +179,7 @@ int main(int argc, char** argv){
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if(temp > edge_part){
-            cout << i << ", " << temp - num_outgoing[i] << endl;
+            //cout << i << ", " << temp - num_outgoing[i] << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
             if(index<num_of_node-1)
@@ -196,6 +196,22 @@ int main(int argc, char** argv){
     end_arr[num_of_node-2] = num_of_vertex;
     cout << "start["<<index<<"]: " << start_arr[index] <<endl;
     cout << "end["<<index<<"]: " << end_arr[index] <<endl;
+
+    int div_num_of_vertex;
+    if(my_ip != node[0]){
+        for(int i=1;i<num_of_node;i++){
+            if(node[i] == my_ip){
+                div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
+                start = start_arr[i-1];
+                end = end_arr[i-1];
+            }
+        }
+        for(int i=0;i<num_of_node;i++){
+            send[i].resize(div_num_of_vertex);
+            recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+        }
+        cout << div_num_of_vertex << ", " << start << ", " << end << endl;
+    }
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;

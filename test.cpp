@@ -172,11 +172,11 @@ int main(int argc, char** argv){
     int end_arr[num_of_node-1];
     int temp = 0;
     size_t index = 0;
-    int edge_part = ceil((edge+(num_of_vertex*2))/(num_of_node-1));
+    int edge_part = ceil((edge+num_of_vertex)/(num_of_node-1));
     //cout << edge_part << endl;
     int ttt = 0;
 
-    for(size_t i=0;i<num_of_vertex;i++){
+    /*for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if(temp+ttt > edge_part){
             //cout << i << ", " << temp - num_outgoing[i] << endl;
@@ -253,8 +253,8 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
-    }
-    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    }*/
+    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
@@ -309,7 +309,7 @@ int main(int argc, char** argv){
         nn[num_of_node-2] = x;
     }
     
-  // cout << "end" << endl;*/
+  // cout << "end" << endl;
     int check;
     int check1[size];
     

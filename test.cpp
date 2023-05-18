@@ -182,14 +182,14 @@ int main(int argc, char** argv){
             cout << i << ", " << temp - num_outgoing[i] << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
-            if(index+1<num_of_node-1)
+            if(index<num_of_node-1)
                 start_arr[index+1] = i;
             cout << "===========================" << endl;
             cout << "start["<<index<<"]: " << start_arr[index] <<endl;
             cout << "end["<<index<<"]: " << end_arr[index] <<endl;
             index++;
         }
-        if(index == num_of_node-1)
+        if(index == num_of_node-2)
             break;
     }
     end_arr[num_of_node-1] = num_of_vertex;
@@ -413,5 +413,5 @@ int main(int argc, char** argv){
     }
     if(rank == 0|| my_ip == node[0])
         printf("총 수행시간: %Lfs.\n", time2);*/
-    MPI_Finalize();
+    //MPI_Finalize();
 }

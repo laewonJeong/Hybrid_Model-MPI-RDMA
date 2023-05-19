@@ -167,7 +167,7 @@ int main(int argc, char** argv){
     int recvcounts[size];
     int displs[size]; 
     int nn[num_of_node];
-    int start_arr[num_of_node-1];
+    /*int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];
     int temp = 0;
@@ -257,8 +257,8 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
-    }
-    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    }*/
+    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
@@ -313,7 +313,7 @@ int main(int argc, char** argv){
         nn[num_of_node-2] = x;
     }
     
-  // cout << "end" << endl;*/
+  // cout << "end" << endl;
     int check;
     int check1[size];
     

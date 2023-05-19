@@ -170,20 +170,23 @@ int main(int argc, char** argv){
     int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];
-    long long temp = 0;
+    int temp = 0;
     size_t index = 0;
-    long long edge_part = ceil(edge+(num_of_vertex)/(num_of_node-1));
-    cout << edge_part << endl;
+    int edge_part = ceil((edge+(num_of_vertex*2.3))/(num_of_node-1));
+    //cout << edge_part << endl;
     int ttt = 0;
 
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if(temp+ttt > edge_part){
-            
+            //cout << i << ", " << temp - num_outgoing[i] << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
             if(index<num_of_node-1)
                 start_arr[index+1] = i;
+            //cout << "===========================" << endl;
+            //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+            //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
             ttt=-1;
             index++;
         }
@@ -191,8 +194,10 @@ int main(int argc, char** argv){
         if(index == num_of_node-2)
             break;
     }
+    //cout << "===========================" << endl;
     end_arr[num_of_node-2] = num_of_vertex;
-    
+    //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+    //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
 
     int div_num_of_vertex;
     if(my_ip != node[0]){

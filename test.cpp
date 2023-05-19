@@ -180,7 +180,7 @@ int main(int argc, char** argv){
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if(temp+ttt > edge_part+vertex_part){
-            //cout << i << ", " << temp - num_outgoing[i] << endl;
+            cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
             if(index<num_of_node-1)

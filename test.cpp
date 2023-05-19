@@ -172,7 +172,7 @@ int main(int argc, char** argv){
     int end_arr[num_of_node-1];
     long long temp = 0;
     size_t index = 0;
-    long long edge_part = ceil(edge+(num_of_vertex*2.3)/(num_of_node-1));
+    long long edge_part = ceil(edge+(num_of_vertex)/(num_of_node-1));
     cout << edge_part << endl;
     int ttt = 0;
 

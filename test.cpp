@@ -172,9 +172,9 @@ int main(int argc, char** argv){
     int end_arr[num_of_node-1];
     int temp = 0;
     size_t index = 0;
-    int edge_part = ceil((edge+(num_of_vertex*3.5))/(num_of_node-1));
+    int edge_part = ceil((edge+num_of_vertex)/(num_of_node-1));
     //cout << edge_part << endl;
-    int ttt = 0;
+    int ttt = 1;
 
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
@@ -187,7 +187,7 @@ int main(int argc, char** argv){
             //cout << "===========================" << endl;
             //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
             //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
-            ttt=-1;
+            ttt=0;
             index++;
         }
         ttt++;

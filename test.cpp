@@ -172,13 +172,13 @@ int main(int argc, char** argv){
     int end_arr[num_of_node-1];
     long long temp = 0;
     size_t index = 0;
-    long long edge_part = ceil((edge*num_of_vertex)/(num_of_node-1));
-    //cout << edge_part << endl;
-    int ttt = 1;
+    long long edge_part = ceil((edge+num_of_vertex)/(num_of_node-1));
+    cout << edge_part << endl;
+    int ttt = 0;
 
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
-        if(temp*ttt > edge_part){
+        if(temp+ttt > edge_part){
             //cout << i << ", " << temp - num_outgoing[i] << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
@@ -187,7 +187,7 @@ int main(int argc, char** argv){
             //cout << "===========================" << endl;
             //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
             //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
-            ttt=0;
+            ttt=-1;
             index++;
         }
         ttt++;
@@ -361,7 +361,7 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != node[0]){
-            //clock_gettime(CLOCK_MONOTONIC, &begin1);
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 //
@@ -377,9 +377,9 @@ int main(int argc, char** argv){
                 }
                 div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
-            //clock_gettime(CLOCK_MONOTONIC, &end1);
-            //long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             //cout << div_send[0] << ", " << div_send[div_num_of_vertex-1] << endl;

@@ -323,7 +323,6 @@ int main(int argc, char** argv){
     vector<double> prev_pr;
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
-    std::vector<double> recv_buffer(recv1[0].size());
     //vector<double> gather_pr;
     //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
@@ -451,9 +450,8 @@ int main(int argc, char** argv){
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }
-            double* recv_buffer_ptr1 = recv1[0].data();
             cout << recv1[0].size() << endl;
-            MPI_Bcast(recv_buffer_ptr1, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             
             
         }

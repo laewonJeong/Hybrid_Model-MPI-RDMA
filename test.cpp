@@ -175,7 +175,7 @@ int main(int argc, char** argv){
     int edge_part = ceil(edge/(num_of_node-1));
     int vertex_part = ceil(num_of_vertex/(num_of_node-1));
     //cout << edge_part << endl;
-    long long buffer_size = num_of_vertex * sizeof(size_t);
+    long long buffer_size = num_of_vertex * sizeof(int);
     long long buf_part = buffer_size/(num_of_node-1);
     int ttt = 1;
 

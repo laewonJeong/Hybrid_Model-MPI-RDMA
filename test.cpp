@@ -175,13 +175,13 @@ int main(int argc, char** argv){
     int edge_part = ceil(edge/(num_of_node-1));
     int vertex_part = ceil(num_of_vertex/(num_of_node-1));
     //cout << edge_part << endl;
-    long long buffer_size = num_of_vertex * sizeof(double);
+    long long buffer_size = num_of_vertex * sizeof(float);
     long long buf_part = buffer_size/(num_of_node-1);
     int ttt = 1;
 
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
-        if(temp+ttt+(ttt*sizeof(double)) > edge_part+vertex_part+buf_part){
+        if(temp+ttt+(ttt*sizeof(float)) > edge_part+vertex_part+buf_part){
             //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
@@ -328,11 +328,13 @@ int main(int argc, char** argv){
     //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
     //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
-    double* recv_buffer_ptr = recv1[0].data();
-
+    
     if(my_ip != node[0])
         div_send.resize(end-start);
+
     double* send_buffer_ptr = div_send.data();
+    double* recv_buffer_ptr = recv1[0].data();
+
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){

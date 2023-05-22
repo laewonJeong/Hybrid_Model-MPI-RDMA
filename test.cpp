@@ -451,7 +451,8 @@ int main(int argc, char** argv){
             if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }
-            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            double* recv_buffer_ptr1 = recv1[0].data();
+            MPI_Bcast(recv_buffer_ptr1, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
             
             
         }

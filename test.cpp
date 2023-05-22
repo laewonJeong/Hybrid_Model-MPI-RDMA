@@ -451,6 +451,7 @@ int main(int argc, char** argv){
                 myrdma.rdma_recv_pagerank(0);
             }
             cout << recv1[0].size() << endl;
+            cout << recv1[0].data() << endl;
             MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             
             

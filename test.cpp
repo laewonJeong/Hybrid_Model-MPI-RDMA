@@ -329,7 +329,7 @@ int main(int argc, char** argv){
     vector<double> div_send;
     //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
     double* recv_buffer_ptr = recv1[0].data();
-    //double* send_buffer_ptr = send[0].data();
+    double* send_buffer_ptr = div_send.data();
 
     if(my_ip != node[0])
         div_send.resize(end-start);
@@ -381,7 +381,7 @@ int main(int argc, char** argv){
 
                     tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }
-                div_send[idx] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
+                send_buffer_ptr[idx] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
             clock_gettime(CLOCK_MONOTONIC, &end1);
             long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

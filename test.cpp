@@ -329,11 +329,10 @@ int main(int argc, char** argv){
     vector<double> div_send;
     //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
     double* recv_buffer_ptr = recv1[0].data();
-    double* send_buffer_ptr = div_send.data();
 
     if(my_ip != node[0])
         div_send.resize(end-start);
-    
+    double* send_buffer_ptr = div_send.data();
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){

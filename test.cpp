@@ -438,7 +438,7 @@ int main(int argc, char** argv){
             //std::vector<MPI_Request> requests;
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-            if(rank == 0){
+            /*if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
@@ -447,8 +447,11 @@ int main(int argc, char** argv){
             else{
                 MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
                 MPI_Wait(&request, MPI_STATUS_IGNORE);
+            }*/
+            if(rank == 0){
+                myrdma.rdma_recv_pagerank(0);
             }
-
+            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             
             
         }

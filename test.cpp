@@ -366,9 +366,11 @@ int main(int argc, char** argv){
         //===============================================================================
         if(my_ip != node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
+            int idx;
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 //
+                idx = i-start;
                 double tmp = 0.0;
                 const size_t graph_size = graph[i].size();
                 const size_t* graph_ptr = graph[i].data();
@@ -379,7 +381,7 @@ int main(int argc, char** argv){
 
                     tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }
-                div_send[i-start] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
+                div_send[idx] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
             clock_gettime(CLOCK_MONOTONIC, &end1);
             long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

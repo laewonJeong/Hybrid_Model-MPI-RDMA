@@ -365,7 +365,7 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != node[0]){
-            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            //clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
@@ -383,12 +383,16 @@ int main(int argc, char** argv){
                 }
                 send_buffer_ptr[idx] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
-            clock_gettime(CLOCK_MONOTONIC, &end1);
-            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
+            //clock_gettime(CLOCK_MONOTONIC, &end1);
+            //long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
-            //cout << div_send[0] << ", " << div_send[div_num_of_vertex-1] << endl;
+            
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%d: allgatherv 수행시간: %Lfs.\n", rank, time3);
 
             long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
@@ -425,12 +429,17 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
         //if(rank == 0)
-            //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
+        printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
-        clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == node[0]){
-             for(size_t i = 0; i<num_of_node-1;i++)
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            
+            for(size_t i = 0; i<num_of_node-1;i++)
                 myrdma.rdma_write_pagerank(send[0],i);
+
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%d: send 수행시간: %Lfs.\n", rank, time1);
         }
         else{
             MPI_Request request;
@@ -438,7 +447,17 @@ int main(int argc, char** argv){
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
             if(rank == 0){
+                clock_gettime(CLOCK_MONOTONIC, &begin1);
+
                 myrdma.rdma_recv_pagerank(0);
+
+                clock_gettime(CLOCK_MONOTONIC, &end1);
+                time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+                printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
+            }
+
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            if(rank == 0){
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
                 }
@@ -447,6 +466,9 @@ int main(int argc, char** argv){
                 MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
                 MPI_Wait(&request, MPI_STATUS_IGNORE);
             }
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);
             /*if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }

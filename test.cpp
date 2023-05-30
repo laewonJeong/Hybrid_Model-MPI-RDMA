@@ -386,7 +386,10 @@ int main(int argc, char** argv){
             //clock_gettime(CLOCK_MONOTONIC, &end1);
             //long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
+            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+            
             clock_gettime(CLOCK_MONOTONIC, &begin1);
+            
             
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             
@@ -457,7 +460,7 @@ int main(int argc, char** argv){
             }
 
             MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-            
+
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
                 for(size_t dest=1; dest<size; dest++){

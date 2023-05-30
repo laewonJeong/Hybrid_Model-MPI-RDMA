@@ -456,6 +456,8 @@ int main(int argc, char** argv){
                 printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
             }
 
+            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+            
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
                 for(size_t dest=1; dest<size; dest++){

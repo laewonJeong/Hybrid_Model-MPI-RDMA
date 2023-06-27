@@ -258,7 +258,11 @@ int main(int argc, char** argv){
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }
-    MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    vector<double> test_buf[num_of_node];
+    for(int i=0;i<num_of_node;i++){
+        test_buf[i].resize(num_of_vertex, 1/num_of_vertex);
+    }
+    MPI_Bcast(test_buf[0].data(), test_buf[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
@@ -353,7 +357,7 @@ int main(int argc, char** argv){
         if(step!=0) {
             if(my_ip != node[0]){
                 //recv1[0] = gather_pr;
-                MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+                //MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
                         dangling_pr += recv1[0][i];   
@@ -465,7 +469,7 @@ int main(int argc, char** argv){
             
             
 
-            /*clock_gettime(CLOCK_MONOTONIC, &begin1);
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);

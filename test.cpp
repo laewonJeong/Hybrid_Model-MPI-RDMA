@@ -143,27 +143,21 @@ int main(int argc, char** argv){
 
 
     // Create Graph
-    //if(rank == 0)
     create_graph_data(argv[2],rank,argv[3]);
     
-    
-    /*for(int i=0;i<num_of_vertex;i++)
-        MPI_Bcast(graph[i].data(), graph[i].size(), MPI_INT,0,MPI_COMM_WORLD);*/
-    //MPI_Bcast(num_outgoing.data(), num_outgoing.size(), MPI_INT, 0, MPI_COMM_WORLD);
     myRDMA myrdma;
     Pagerank pagerank;
     
     //D-RDMALib Init
-    //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
-    //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  
     if(rank == 0){
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
     }
-    //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+ 
     // graph partitioning
     int recvcounts[size];
     int displs[size]; 
@@ -204,7 +198,7 @@ int main(int argc, char** argv){
     //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     //cout << "===========================" << endl;
     
-    int div_num_of_vertex;
+    /*int div_num_of_vertex;
     if(my_ip != node[0]){
         for(int i=1;i<num_of_node;i++){
             if(node[i] == my_ip){
@@ -258,9 +252,9 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
-    }
+    }*/
     
-    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 

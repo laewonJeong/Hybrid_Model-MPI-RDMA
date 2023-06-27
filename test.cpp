@@ -96,7 +96,7 @@ void create_graph_data(string path, int rank, string del){
             to = line.substr(pos+1);
             add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
-            if(rank == 0 && line_num%500000 == 0)
+            if(rank == 0 && line_num%5000000 == 0)
                 cerr << "Create " << line_num << " lines" << endl; 
             //if(line_num%500000 == 0)
                 //cerr << "Create " << line_num << " lines" << endl;
@@ -188,9 +188,9 @@ int main(int argc, char** argv){
             end_arr[index] = i;
             if(index<num_of_node-1)
                 start_arr[index+1] = i;
-            cout << "===========================" << endl;
-            cout << "start["<<index<<"]: " << start_arr[index] <<endl;
-            cout << "end["<<index<<"]: " << end_arr[index] <<endl;
+            //cout << "===========================" << endl;
+            //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+            //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
             ttt=0;
             index++;
         }
@@ -198,11 +198,11 @@ int main(int argc, char** argv){
         if(index == num_of_node-2)
             break;
     }
-    cout << "===========================" << endl;
+    //cout << "===========================" << endl;
     end_arr[num_of_node-2] = num_of_vertex;
-    cout << "start["<<index<<"]: " << start_arr[index] <<endl;
-    cout << "end["<<index<<"]: " << end_arr[index] <<endl;
-    cout << "===========================" << endl;
+    //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
+    //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
+    //cout << "===========================" << endl;
     
     int div_num_of_vertex;
     if(my_ip != node[0]){

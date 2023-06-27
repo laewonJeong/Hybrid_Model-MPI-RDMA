@@ -21,9 +21,9 @@
 #define MAXX 50000
 #define num_of_node 5
 #define port 40145
-#define server_ip "192.168.0.100"//"pod-a.svc-k8s-rdma"
+#define server_ip "192.168.0.101"//"pod-a.svc-k8s-rdma"
 
-string node[num_of_node] = {server_ip,"192.168.0.101","192.168.0.102","192.168.0.104","192.168.0.106"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
+string node[num_of_node] = {server_ip,"192.168.0.102","192.168.0.103","192.168.0.104","192.168.0.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 string node_domain[num_of_node];
 std::vector<std::vector<size_t>> graph;
 std::vector<int> num_outgoing;

@@ -460,16 +460,18 @@ int main(int argc, char** argv){
 
                 myrdma.rdma_recv_pagerank(0);
 
+
+                test_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
                 printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
             }
 
             MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-            
-            
+            MPI_Bcast(test_buf[0].data(), test_buf[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            recv1[0] = test_buf[0];
 
-            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            /*clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
@@ -481,7 +483,7 @@ int main(int argc, char** argv){
             }
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);
+            printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);*/
             /*if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }*/

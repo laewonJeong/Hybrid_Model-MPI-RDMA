@@ -340,7 +340,7 @@ int main(int argc, char** argv){
         myrdma.rdma_comm("write_with_imm", "1");
     }
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-    
+    MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     //===============================================================================
     for(step =0;step<10000000;step++){

@@ -352,6 +352,7 @@ int main(int argc, char** argv){
         if(step!=0) {
             if(my_ip != node[0]){
                 //recv1[0] = gather_pr;
+                MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
                         dangling_pr += recv1[0][i];   
@@ -492,9 +493,7 @@ int main(int argc, char** argv){
          //   printf("%d: recv1 수행시간: %Lfs.\n", rank, time1);
         if(my_ip == node[0] && rank == 0)
             cout << "diff: " <<diff << endl;
-        else{
-            MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-        }
+       
         
         if(diff < 0.00001 || recv1[0][0] > 1){
             break;

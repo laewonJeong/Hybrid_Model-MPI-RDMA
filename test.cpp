@@ -215,6 +215,7 @@ int main(int argc, char** argv){
         }
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);
+            recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
         //cout << div_num_of_vertex << ", " << start << ", " << end << endl;
         for(int i=0;i<size;i++){

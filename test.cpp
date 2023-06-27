@@ -358,6 +358,7 @@ int main(int argc, char** argv){
                 }
             }
             else{
+                MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
                 diff = 0;
                 for (size_t i=0;i<num_of_vertex;i++) 
                     diff += fabs(prev_pr[i] - send[0][i]);
@@ -461,7 +462,7 @@ int main(int argc, char** argv){
 
             MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             
-            MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            
 
             /*clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){

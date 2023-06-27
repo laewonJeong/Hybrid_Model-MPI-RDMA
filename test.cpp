@@ -157,12 +157,18 @@ int main(int argc, char** argv){
     //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
+    if(my_ip != node[0]){
+        for(int i=0;i<num_of_node;i++){
+            recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+        }
+    }
+    MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
     if(rank == 0){
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
     }
-    
+    MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
     // graph partitioning
     int recvcounts[size];
     int displs[size]; 
@@ -214,7 +220,6 @@ int main(int argc, char** argv){
         }
         for(int i=0;i<num_of_node;i++){
             send[i].resize(div_num_of_vertex);
-            recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
         //cout << div_num_of_vertex << ", " << start << ", " << end << endl;
         for(int i=0;i<size;i++){
@@ -258,11 +263,7 @@ int main(int argc, char** argv){
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }
-    vector<double> test_buf[num_of_node];
-    for(int i=0;i<num_of_node;i++){
-        test_buf[i].resize(num_of_vertex, 1/num_of_vertex);
-    }
-    MPI_Bcast(test_buf[0].data(), test_buf[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
@@ -461,17 +462,16 @@ int main(int argc, char** argv){
                 myrdma.rdma_recv_pagerank(0);
 
 
-                test_buf[0] = recv1[0];
+                //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
                 printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
             }
+            MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            /*MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+            
 
-            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-            MPI_Bcast(test_buf[0].data(), test_buf[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            recv1[0] = test_buf[0];
-
-            /*clock_gettime(CLOCK_MONOTONIC, &begin1);
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
@@ -487,9 +487,9 @@ int main(int argc, char** argv){
             /*if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }*/
-            double* recv_buffer_ptr = recv1[0].data();
-            cout << recv1[0].size() << endl;
-            cout << recv1[0].data() << endl;
+            //double* recv_buffer_ptr = recv1[0].data();
+            //cout << recv1[0].size() << endl;
+            //cout << recv1[0].data() << endl;
             
             
             

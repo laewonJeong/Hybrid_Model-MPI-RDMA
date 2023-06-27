@@ -157,13 +157,7 @@ int main(int argc, char** argv){
     //MPI_Bcast(&num_of_vertex, 1, MPI_INT, 0, MPI_COMM_WORLD);
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
-    if(my_ip != node[0]){
-        for(int i=0;i<num_of_node;i++){
-            send[i].resize(num_of_vertex);
-            recv1[i].resize(num_of_vertex);
-        }
-    }
-    //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
     if(rank == 0){
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);

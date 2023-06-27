@@ -159,7 +159,8 @@ int main(int argc, char** argv){
     vector<double> recv1[num_of_node];
     if(my_ip != node[0]){
         for(int i=0;i<num_of_node;i++){
-            recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+            send[i].resize(num_of_vertex);
+            recv1[i].resize(num_of_vertex);
         }
     }
     //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);

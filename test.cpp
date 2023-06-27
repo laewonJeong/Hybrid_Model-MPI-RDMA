@@ -198,7 +198,7 @@ int main(int argc, char** argv){
     //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     //cout << "===========================" << endl;
     
-    /*int div_num_of_vertex;
+    int div_num_of_vertex;
     if(my_ip != node[0]){
         for(int i=1;i<num_of_node;i++){
             if(node[i] == my_ip){
@@ -252,9 +252,9 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
-    }*/
+    }
     
-    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
@@ -344,11 +344,9 @@ int main(int argc, char** argv){
         if(rank == 0 || my_ip == node[0])
             cout <<"====="<< step+1 << " step=====" <<endl;
         dangling_pr = 0.0;
-        //gather_pr = recv1[0];
+ 
         if(step!=0) {
             if(my_ip != node[0]){
-                //recv1[0] = gather_pr;
-                //MPI_Bcast(recv_buffer_ptr, recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
                         dangling_pr += recv1[0][i];   

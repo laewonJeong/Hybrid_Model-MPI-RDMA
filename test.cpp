@@ -149,7 +149,14 @@ int main(int argc, char** argv){
         cout << "=====================================================" << endl;
         cout << "[INFO]CREATE GRAPH" << endl;
     }
-    create_graph_data(argv[2],rank,argv[3]);
+    clock_gettime(CLOCK_MONOTONIC, &begin1);
+    
+    create_graph_data(argv[2],rank,argv[3]);      
+    
+    clock_gettime(CLOCK_MONOTONIC, &end1);
+    long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+
+    
 
 
     myRDMA myrdma;
@@ -161,7 +168,7 @@ int main(int argc, char** argv){
   
     
     if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH" << endl;
+        cout << "[INFO]FINISH CREATE GRAPH: " <<  create_graph_time << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
@@ -357,8 +364,8 @@ int main(int argc, char** argv){
     for(step =0;step<10000000;step++){
         
         if(rank == 0 || my_ip == node[0]){
-            cout <<"================STEP "<< step+1 << "================\n" <<endl;
-            cout << "[INFO]COMPUTE PAGERANK" <<endl;
+            cout <<"================STEP "<< step+1 << "================" <<endl;
+            
         }
         dangling_pr = 0.0;
  
@@ -377,8 +384,8 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != node[0]){
-            /*if(rank == 0)
-                cout << "Compute pagerank... ";*/
+            if(rank == 0)
+                cout << "[INFO]COMPUTE PAGERANK" <<endl;
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
             for(size_t i=start;i<end;i++){
@@ -431,7 +438,7 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == node[0]){
             myrdma.recv_t("send");
-            cout << "recv success" << endl;
+            cout << "[INFO]RECEIVE SUCCESS" << endl;
             send[0].clear();
 
             for(size_t i=0;i<num_of_node-1;i++){
@@ -463,7 +470,7 @@ int main(int argc, char** argv){
             
             for(size_t i = 0; i<num_of_node-1;i++)
                 myrdma.rdma_write_pagerank(send[0],i);
-            cout << "send success" << endl;
+            cout << "[INFO]SEND SUCCESS" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -527,7 +534,7 @@ int main(int argc, char** argv){
         //if(rank == 0)
          //   printf("%d: recv1 수행시간: %Lfs.\n", rank, time1);
         if(my_ip == node[0] && rank == 0)
-            cout << "diff: " <<diff << endl;
+            cout << "[INFO]DIFF: " <<diff << endl;
        
         
         if(diff < 0.00001 || recv1[0][0] > 1){
@@ -540,6 +547,7 @@ int main(int argc, char** argv){
     //===============================================================================
     
     if(my_ip != node[0] && rank == 0){
+        cout << "=====================================================" << endl;
         double sum1 = accumulate(recv1[0].begin(), recv1[0].end(), -1.0);
         cout.precision(numeric_limits<double>::digits10);
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){

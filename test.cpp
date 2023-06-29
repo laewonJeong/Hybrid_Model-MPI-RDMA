@@ -562,11 +562,11 @@ int main(int argc, char** argv){
             }
         }
 
-        cout << "[INFO]important page is " << important << " and value is " << tmp1 << endl;
+        cout << "[INFO]IMPORTANT VERTEX: " << important << "\n [INFO]" << important << "'S VALUE: "<<tmp1 << endl;
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }
     if(rank == 0|| my_ip == node[0])
-        printf("[INFO]총 수행시간: %Lfs.\n", time2);
+        printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
     MPI_Finalize();
 }

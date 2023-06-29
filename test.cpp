@@ -343,6 +343,7 @@ int main(int argc, char** argv){
     //vector<double> gather_pr;
     //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
+    long double time3;
     //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
     
     if(my_ip != node[0])
@@ -367,8 +368,9 @@ int main(int argc, char** argv){
             
         }
         dangling_pr = 0.0;
- 
+
         if(step!=0) {
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(my_ip != node[0]){
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
@@ -380,6 +382,9 @@ int main(int argc, char** argv){
                 for (size_t i=0;i<num_of_vertex;i++) 
                     diff += fabs(prev_pr[i] - send[0][i]);
             }
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            compute_time+=time3;
         }
         //===============================================================================
         if(my_ip != node[0]){
@@ -404,8 +409,8 @@ int main(int argc, char** argv){
                 send_buffer_ptr[idx] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
             clock_gettime(CLOCK_MONOTONIC, &end1);
-            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            compute_time = time3;
+            time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            compute_time += time3;
             /*if(rank == 0)
                 printf("%Lfs.\n", time3);*/
             //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);

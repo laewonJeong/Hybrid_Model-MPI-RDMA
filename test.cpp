@@ -198,7 +198,7 @@ int main(int argc, char** argv){
     //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     //cout << "===========================" << endl;
     
-    int div_num_of_vertex;
+    /*int div_num_of_vertex;
     if(my_ip != node[0]){
         for(int i=1;i<num_of_node;i++){
             if(node[i] == my_ip){
@@ -252,9 +252,9 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
-    }
+    }*/
     
-    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
@@ -360,7 +360,9 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != node[0]){
-            //clock_gettime(CLOCK_MONOTONIC, &begin1);
+            if(rank == 0)
+                cout << "Compute pagerank for each vertex within each process... ";
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
             for(size_t i=start;i<end;i++){
                 //cout << i << endl;
@@ -378,21 +380,27 @@ int main(int argc, char** argv){
                 }
                 send_buffer_ptr[idx] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
             }
-            //clock_gettime(CLOCK_MONOTONIC, &end1);
-            //long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%Lfs.\n", time3);
             //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
-            
+            //---------------------------------------------------------------------------------------------------------------------
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             
             
             MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             
             clock_gettime(CLOCK_MONOTONIC, &end1);
-            long double time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            printf("%d: allgatherv 수행시간: %Lfs.\n", rank, time3);
+            time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            
+            if(rank ==0){
+                cout << "[MPI] Gather pagerank computed by each process... ";
+                printf("%Lfs\n", time3);
+            }    
+            //printf("%d: allgatherv 수행시간: %Lfs.\n", rank, time3);
 
-            long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            //long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             //MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
         }
@@ -403,7 +411,7 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == node[0]){
             myrdma.recv_t("send");
-            cout << "recv1 success" << endl;
+            cout << "recv success" << endl;
             send[0].clear();
 
             for(size_t i=0;i<num_of_node-1;i++){
@@ -418,8 +426,8 @@ int main(int argc, char** argv){
         }
         else{
             if(rank == 0){
+                cout << "[RDMA] Send gathered pagerank values to the master." << endl;
                 myrdma.rdma_write_vector(send[0],0);
-                //cout << "send success" << endl;
             }
             
             
@@ -427,17 +435,18 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
         //if(rank == 0)
-        printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
+        //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             
             for(size_t i = 0; i<num_of_node-1;i++)
                 myrdma.rdma_write_pagerank(send[0],i);
+            cout << "send success" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            printf("%d: send 수행시간: %Lfs.\n", rank, time1);
+            //printf("%d: send 수행시간: %Lfs.\n", rank, time1);
         }
         else{
             MPI_Request request;
@@ -448,19 +457,19 @@ int main(int argc, char** argv){
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
 
                 myrdma.rdma_recv_pagerank(0);
-
+                cout << "[RDMA] Receive pagerank values from the master." << endl;
 
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-                printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
+                //printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
             }
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             
-
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
+                cout << "[MPI] Broadcast pagerank value to each process. "; 
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
                 }
@@ -471,7 +480,10 @@ int main(int argc, char** argv){
             }
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);
+            
+            if(rank == 0)
+                printf("%Lfs.\n", time1);
+            //printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);
             /*if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);
             }*/
@@ -486,7 +498,7 @@ int main(int argc, char** argv){
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
         //if(rank == 0)
          //   printf("%d: recv1 수행시간: %Lfs.\n", rank, time1);
-        if(my_ip == node[0] && rank == 0)
+        if(my_ip == node[0] || rank == 0)
             cout << "diff: " <<diff << endl;
        
         

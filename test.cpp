@@ -558,6 +558,7 @@ int main(int argc, char** argv){
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
             cout << "pr[" <<i<<"]: " << recv1[0][i] <<endl;
         }
+        cout << "=====================================================" << endl;
         int important = 0;
         string result = "";
         double important_pr = recv1[0][0]-1;
@@ -570,7 +571,7 @@ int main(int argc, char** argv){
             }
         }
 
-        cout << "\n[INFO]IMPORTANT VERTEX: " << important << "\n[INFO]" << important << "'S VALUE: "<<tmp1 << endl;
+        cout << "[INFO]IMPORTANT VERTEX: " << important << "\n[INFO]" << important << "'S VALUE: "<<tmp1 << endl;
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }

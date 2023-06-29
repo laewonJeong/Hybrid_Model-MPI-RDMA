@@ -550,10 +550,23 @@ int main(int argc, char** argv){
         for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
             cout << "pr[" <<i<<"]: " << recv1[0][i] <<endl;
         }
-        cerr << "s = " <<sum1 << endl;
+        int important = 0;
+        string result = "";
+        double important_pr = recv1[0][0];
+        double tmp1 = important_pr;
+        for (int i=0;i< num_of_vertex;i++){
+            important_pr = max(important_pr, recv1[0][i]);
+            if(tmp1 != important_pr){
+                important = i;
+                tmp1 = important_pr;
+            }
+        }
+
+        cout << "[INFO]important page is " << important << " and value is " << tmp1 << endl;
+       // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }
     if(rank == 0|| my_ip == node[0])
-        printf("총 수행시간: %Lfs.\n", time2);
+        printf("[INFO]총 수행시간: %Lfs.\n", time2);
     MPI_Finalize();
 }

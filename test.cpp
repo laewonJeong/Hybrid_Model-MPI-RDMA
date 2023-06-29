@@ -143,9 +143,13 @@ int main(int argc, char** argv){
 
 
     // Create Graph
-    cout << "Creating Graph..." << endl;
+    if(rank == 0){
+        cout << "================================" << endl;
+        cout << "Creating Graph..." << endl;
+    }
     create_graph_data(argv[2],rank,argv[3]);
-    
+    cout << "================================" << endl;
+
     myRDMA myrdma;
     Pagerank pagerank;
     
@@ -153,12 +157,13 @@ int main(int argc, char** argv){
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
   
+    cout << "================================" << endl;
     if(rank == 0){
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
     }
- 
+    cout << "================================" << endl;
     // graph partitioning
     int recvcounts[size];
     int displs[size]; 
@@ -362,7 +367,7 @@ int main(int argc, char** argv){
         //===============================================================================
         if(my_ip != node[0]){
             if(rank == 0)
-                cout << "Compute pagerank for each vertex within each process... ";
+                cout << "Compute pagerank... ";
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
             for(size_t i=start;i<end;i++){
@@ -397,7 +402,7 @@ int main(int argc, char** argv){
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             if(rank ==0){
-                cout << "[MPI] Gather pagerank computed by each process... ";
+                cout << "[MPI] Gather pagerank ";
                 printf("%Lfs\n", time3);
             }    
             //printf("%d: allgatherv 수행시간: %Lfs.\n", rank, time3);
@@ -428,7 +433,7 @@ int main(int argc, char** argv){
         }
         else{
             if(rank == 0){
-                cout << "[RDMA] Send gathered pagerank values to the master..." << endl;
+                cout << "[RDMA] Send pagerank..." << endl;
                 myrdma.rdma_write_vector(send[0],0);
             }
             
@@ -459,7 +464,7 @@ int main(int argc, char** argv){
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
 
                 myrdma.rdma_recv_pagerank(0);
-                cout << "[RDMA] Receive pagerank values from the master..." << endl;
+                cout << "[RDMA] Receive pagerank..." << endl;
 
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
@@ -471,7 +476,7 @@ int main(int argc, char** argv){
             
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
-                cout << "[MPI] Broadcast pagerank value to each process... "; 
+                cout << "[MPI] Broadcast pagerank... "; 
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
                 }

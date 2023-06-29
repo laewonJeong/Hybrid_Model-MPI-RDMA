@@ -21,9 +21,9 @@
 #define MAXX 50000
 #define num_of_node 5
 #define port 40145
-#define server_ip "192.168.0.101"//"pod-a.svc-k8s-rdma"
+#define server_ip "192.168.1.101"//"pod-a.svc-k8s-rdma"
 
-string node[num_of_node] = {server_ip,"192.168.0.102","192.168.0.103","192.168.0.104","192.168.0.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
+string node[num_of_node] = {server_ip,"192.168.1.102","192.168.1.103","192.168.1.104","192.168.1.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 string node_domain[num_of_node];
 std::vector<std::vector<size_t>> graph;
 std::vector<int> num_outgoing;
@@ -114,6 +114,7 @@ void create_graph_data(string path, int rank, string del){
 }
 
 int main(int argc, char** argv){
+    TCP tcp;
     int rank, size, i ,j;
     int start, end;
     int a,b;
@@ -121,7 +122,8 @@ int main(int argc, char** argv){
     long double compute_time = 0;
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
-    string my_ip(argv[1]);
+    string my_ip= tcp.check_my_ip();
+    
 
     /*TCP tcp;
 
@@ -146,12 +148,13 @@ int main(int argc, char** argv){
 
     // Create Graph
     if(rank == 0){
+        cout << "[INFO] IP: " << my_ip << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]CREATE GRAPH" << endl;
     }
     clock_gettime(CLOCK_MONOTONIC, &begin1);
     
-    create_graph_data(argv[2],rank,argv[3]);      
+    create_graph_data(argv[1],rank,argv[2]);      
     
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

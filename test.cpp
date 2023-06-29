@@ -168,7 +168,7 @@ int main(int argc, char** argv){
   
     
     if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH: " <<  create_graph_time << endl;
+        cout << "[INFO]FINISH CREATE GRAPH: " <<  create_graph_time << "s. " << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
@@ -176,10 +176,6 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
     
-
-    if(rank == 0){
-        cout << "=====================================================" << endl;
-    }
     // graph partitioning
     int recvcounts[size];
     int displs[size]; 
@@ -438,7 +434,7 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == node[0]){
             myrdma.recv_t("send");
-            cout << "[INFO]RECEIVE SUCCESS" << endl;
+            cout << "[INFO]START RECEIVE - SUCCESS" << endl;
             send[0].clear();
 
             for(size_t i=0;i<num_of_node-1;i++){
@@ -450,6 +446,7 @@ int main(int argc, char** argv){
                 send[0][0] += 1; 
             
             fill(&send[1], &send[num_of_node-1], send[0]);
+            cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
         }
         else{
             if(rank == 0){
@@ -470,7 +467,7 @@ int main(int argc, char** argv){
             
             for(size_t i = 0; i<num_of_node-1;i++)
                 myrdma.rdma_write_pagerank(send[0],i);
-            cout << "[INFO]SEND SUCCESS" << endl;
+            cout << "[INFO]START SEND - SUCCESS" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -514,7 +511,7 @@ int main(int argc, char** argv){
                 network_time += time1;
                 printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);
                 printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);
-                printf("STEP %ld EXECUTION TIME: %Lfs.\n\n", step+1, compute_time + network_time);
+                printf("STEP %ld EXECUTION TIME: %Lfs.\n", step+1, compute_time + network_time);
                 network_time = 0;
                 compute_time = 0;
             }

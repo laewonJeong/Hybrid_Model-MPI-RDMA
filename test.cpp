@@ -577,5 +577,6 @@ int main(int argc, char** argv){
     }
     if(rank == 0|| my_ip == node[0])
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
+    cout << "=====================================================" << endl;
     MPI_Finalize();
 }

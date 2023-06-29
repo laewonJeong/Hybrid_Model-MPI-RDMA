@@ -96,8 +96,8 @@ void create_graph_data(string path, int rank, string del){
             to = line.substr(pos+1);
             add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
-            if(rank == 0 && line_num%5000000 == 0)
-                cerr << "[INFO]CREATE " << line_num << " LINES." << endl; 
+            //if(rank == 0 && line_num%5000000 == 0)
+            //   cerr << "[INFO]CREATE " << line_num << " LINES." << endl; 
             //if(line_num%500000 == 0)
                 //cerr << "Create " << line_num << " lines" << endl;
 		}
@@ -168,7 +168,7 @@ int main(int argc, char** argv){
   
     
     if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH: " <<  create_graph_time << "s. " << endl;
+        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);

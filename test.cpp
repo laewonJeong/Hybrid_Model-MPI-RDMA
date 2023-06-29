@@ -575,8 +575,9 @@ int main(int argc, char** argv){
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }
-    if(rank == 0|| my_ip == node[0])
+    if(rank == 0|| my_ip == node[0]){
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
-    cout << "=====================================================" << endl;
+        cout << "=====================================================" << endl;
+    }
     MPI_Finalize();
 }

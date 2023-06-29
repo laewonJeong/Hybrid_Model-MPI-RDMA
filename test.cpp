@@ -148,7 +148,7 @@ int main(int argc, char** argv){
 
     // Create Graph
     if(rank == 0){
-        cout << "[INFO] IP: " << my_ip << endl;
+        cout << "[INFO]IP: " << my_ip << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]CREATE GRAPH" << endl;
     }

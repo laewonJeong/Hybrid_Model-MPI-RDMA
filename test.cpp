@@ -554,7 +554,7 @@ int main(int argc, char** argv){
         string result = "";
         double important_pr = recv1[0][0]-1;
         double tmp1 = important_pr;
-        for (int i=0;i< num_of_vertex;i++){
+        for (int i=1;i< num_of_vertex;i++){
             important_pr = max(important_pr, recv1[0][i]);
             if(tmp1 != important_pr){
                 important = i;

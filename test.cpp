@@ -562,7 +562,7 @@ int main(int argc, char** argv){
             }
         }
 
-        cout << "[INFO]IMPORTANT VERTEX: " << important << "\n [INFO]" << important << "'S VALUE: "<<tmp1 << endl;
+        cout << "\n[INFO]IMPORTANT VERTEX: " << important << "\n[INFO]" << important << "'S VALUE: "<<tmp1 << endl;
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }

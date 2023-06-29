@@ -117,6 +117,7 @@ int main(int argc, char** argv){
     int rank, size, i ,j;
     int start, end;
     int a,b;
+    long double sum_time = 0;
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     string my_ip(argv[1]);
@@ -148,7 +149,7 @@ int main(int argc, char** argv){
         cout << "Creating Graph..." << endl;
     }
     create_graph_data(argv[2],rank,argv[3]);
-    cout << "================================" << endl;
+
 
     myRDMA myrdma;
     Pagerank pagerank;
@@ -157,13 +158,15 @@ int main(int argc, char** argv){
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
   
-    cout << "================================" << endl;
+    
     if(rank == 0){
+        cout << "================================" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
+        cout << "================================" << endl;
     }
-    cout << "================================" << endl;
+    
     // graph partitioning
     int recvcounts[size];
     int displs[size]; 
@@ -402,8 +405,9 @@ int main(int argc, char** argv){
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             if(rank ==0){
-                cout << "[MPI] Gather pagerank ";
-                printf("%Lfs\n", time3);
+                cout << "[MPI]  MPI_Allgatherv " << endl;
+                //printf("%Lfs\n", time3);
+                sum_time += time3;
             }    
             //printf("%d: allgatherv 수행시간: %Lfs.\n", rank, time3);
 
@@ -433,7 +437,7 @@ int main(int argc, char** argv){
         }
         else{
             if(rank == 0){
-                cout << "[RDMA] Send pagerank..." << endl;
+                cout << "[RDMA] Send_RDMA" << endl;
                 myrdma.rdma_write_vector(send[0],0);
             }
             
@@ -441,7 +445,8 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        //if(rank == 0)
+        if(rank == 0)
+            sum_time+=time1;
         //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         if(my_ip == node[0]){
@@ -464,11 +469,12 @@ int main(int argc, char** argv){
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
 
                 myrdma.rdma_recv_pagerank(0);
-                cout << "[RDMA] Receive pagerank..." << endl;
+                cout << "[RDMA] Receive_RDMA" << endl;
 
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+                sum_time += time1;
                 //printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
             }
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -476,7 +482,7 @@ int main(int argc, char** argv){
             
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
-                cout << "[MPI] Broadcast pagerank... "; 
+                cout << "[MPI] MPI_Bcast " << endl; 
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
                 }
@@ -488,8 +494,11 @@ int main(int argc, char** argv){
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
-            if(rank == 0)
-                printf("%Lfs.\n", time1);
+            if(rank == 0){
+                sum_time += time1;
+                printf("%Lfs.\n", sum_time);
+                sum_time = 0;
+            }
             //printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);
             /*if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);

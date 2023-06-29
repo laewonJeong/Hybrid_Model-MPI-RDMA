@@ -305,7 +305,7 @@ void myRDMA::send_info_change_qp(){
     //Send RDMA info
     for(int k = 0;k<2;k++){
         int *clnt_socks = tcp.client_sock();
-        cerr << "[INFO]SEND RDMA INFO[" << k << "] ";
+        cout << "[INFO]SEND RDMA INFO[" << k << "] ";
         if(k==0){
             for(int idx=0; idx < myrdma.connect_num+1; idx++){
                 if(clnt_socks[idx]!=0){
@@ -333,10 +333,10 @@ void myRDMA::send_info_change_qp(){
             tcp.send_msg(change(to_string(rdma_info1[k][j].qp_num)+"\n"),myrdma.sock_idx[j]);
             
         }
-        cerr << "- SUCCESS" <<endl;
+        cout<< "- SUCCESS" <<endl;
         //Read RDMA info
         map<string, string> read_rdma_info;
-        cerr << "[INFO]CHANGE QUEUE PAIR STATE ";
+        cout << "[INFO]CHANGE QUEUE PAIR STATE ";
         for(int i=0;i<myrdma.connect_num;i++){
             if(k == 0 || k == 1){
                 read_rdma_info = tcp.read_rdma_info(myrdma.sock_idx[i]);
@@ -353,7 +353,7 @@ void myRDMA::send_info_change_qp(){
                 }   
             }
         }
-        cerr << "- SUCCESS" << endl;
+        cout << "- SUCCESS" << endl;
     }
     //cerr << "Completely success" << endl;
 }
@@ -398,7 +398,7 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
       
     }
     
-    cerr << " - SUCCESS" << endl;
+    cout << " - SUCCESS" << endl;
 }
 void myRDMA::set_buffer(char send[][buf_size], char recv[][buf_size], int num_of_server){
     myrdma.send_buffer = &send[0];

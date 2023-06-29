@@ -96,8 +96,8 @@ void create_graph_data(string path, int rank, string del){
             to = line.substr(pos+1);
             add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
-            //if(rank == 0 && line_num%5000000 == 0)
-                //cerr << "Create " << line_num << " lines" << endl; 
+            if(rank == 0 && line_num%5000000 == 0)
+                cerr << "[INFO]CREATE " << line_num << " LINES." << endl; 
             //if(line_num%500000 == 0)
                 //cerr << "Create " << line_num << " lines" << endl;
 		}
@@ -146,7 +146,7 @@ int main(int argc, char** argv){
 
     // Create Graph
     if(rank == 0){
-        cout << "================================" << endl;
+        cout << "=====================================================" << endl;
         cout << "[INFO]CREATE GRAPH" << endl;
     }
     create_graph_data(argv[2],rank,argv[3]);
@@ -162,7 +162,7 @@ int main(int argc, char** argv){
     
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH" << endl;
-        cout << "================================" << endl;
+        cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);
@@ -171,7 +171,7 @@ int main(int argc, char** argv){
     
 
     if(rank == 0){
-        cout << "================================" << endl;
+        cout << "=====================================================" << endl;
     }
     // graph partitioning
     int recvcounts[size];
@@ -357,8 +357,8 @@ int main(int argc, char** argv){
     for(step =0;step<10000000;step++){
         
         if(rank == 0 || my_ip == node[0]){
-            cout <<"========="<< step+1 << " STEP=========" <<endl;
-            cout << "[INFO]START COMPUTE PAGERANK - STEP " << step+1 <<endl;
+            cout <<"================STEP "<< step+1 << "================\n" <<endl;
+            cout << "[INFO]COMPUTE PAGERANK" <<endl;
         }
         dangling_pr = 0.0;
  
@@ -414,7 +414,7 @@ int main(int argc, char** argv){
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             if(rank ==0){
-                cout << "[INFO]MPI_ALLGATHERV" << endl;
+                cout << "[INFO]START MPI_ALLGATHERV - SUCCESS" << endl;
                 //printf("%Lfs\n", time3);
                 network_time += time3;
             }    
@@ -446,7 +446,7 @@ int main(int argc, char** argv){
         }
         else{
             if(rank == 0){
-                cout << "[INFO]SEND_RDMA" << endl;
+                cout << "[INFO]START SEND_RDMA - SUCCESS" << endl;
                 myrdma.rdma_write_vector(send[0],0);
             }
             
@@ -478,7 +478,7 @@ int main(int argc, char** argv){
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
 
                 myrdma.rdma_recv_pagerank(0);
-                cout << "[INFO]RECEIVE_RDMA" << endl;
+                cout << "[INFO]START RECEIVE_RDMA - SUCCESS" << endl;
 
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
@@ -491,7 +491,7 @@ int main(int argc, char** argv){
             
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
-                cout << "[INFO]MPI_BCAST" << endl; 
+                cout << "[INFO]START MPI_BCAST - SUCCESS\n" << endl; 
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
                 }
@@ -507,6 +507,7 @@ int main(int argc, char** argv){
                 network_time += time1;
                 printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);
                 printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);
+                printf("STEP %ld EXECUTION TIME: %Lfs.\n\n", step+1, compute_time + network_time);
                 network_time = 0;
                 compute_time = 0;
             }

@@ -425,7 +425,8 @@ int main(int argc, char** argv){
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             if(rank ==0){
-                cout << "[INFO]START MPI_ALLGATHERV - SUCCESS" << endl;
+                cout << "[INFO]START MPI_ALLGATHERV - SUCCESS ";
+                cout << time3 << "s." <<endl;
                 //printf("%Lfs\n", time3);
                 network_time += time3;
             }    
@@ -458,7 +459,7 @@ int main(int argc, char** argv){
         }
         else{
             if(rank == 0){
-                cout << "[INFO]START SEND_RDMA - SUCCESS" << endl;
+                cout << "[INFO]START SEND_RDMA - SUCCESS ";
                 myrdma.rdma_write_vector(send[0],0);
             }
             
@@ -487,14 +488,16 @@ int main(int argc, char** argv){
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
             if(rank == 0){
+                cout << time1 << "s." <<endl;
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
 
                 myrdma.rdma_recv_pagerank(0);
-                cout << "[INFO]START RECEIVE_RDMA - SUCCESS" << endl;
+                cout << "[INFO]START RECEIVE_RDMA - SUCCESS ";
 
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+                cout << time1 << "s." << endl;
                 network_time += time1;
                 //printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
             }
@@ -503,7 +506,7 @@ int main(int argc, char** argv){
             
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(rank == 0){
-                cout << "[INFO]START MPI_BCAST - SUCCESS\n" << endl; 
+                cout << "[INFO]START MPI_BCAST - SUCCESS "; 
                 for(size_t dest=1; dest<size; dest++){
                     MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
                 }
@@ -512,10 +515,16 @@ int main(int argc, char** argv){
                 MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
                 MPI_Wait(&request, MPI_STATUS_IGNORE);
             }
-            clock_gettime(CLOCK_MONOTONIC, &end1);
-            time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
+            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+            //MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+            //clock_gettime(CLOCK_MONOTONIC, &end1);
+            time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+
             if(rank == 0){
+                cout << time1 << "s.\n" << endl;
                 network_time += time1;
                 printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);
                 printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);

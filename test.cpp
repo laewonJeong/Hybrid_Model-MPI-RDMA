@@ -592,9 +592,9 @@ int main(int argc, char** argv){
         //printf("총 수행시간: %Lfs.\n", time2);
     }
     if(rank == 0|| my_ip == node[0]){
-        printf("[INFO]TOTAL EXECUTION TIME: %Lfs", time2);
-        printf("[INFO]AVG MPI_TIME:  %Lfs.", mpi_time/62);
-        printf("[INFO]AVG RDMA_TIME: %Lfs.", rdma_time/62);
+        printf("[INFO]TOTAL EXECUTION TIME: %Lfs\n", time2);
+        printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
+        printf("[INFO]AVG RDMA_TIME: %Lfs.\n", rdma_time/62);
         
         cout << "=====================================================" << endl;
     }

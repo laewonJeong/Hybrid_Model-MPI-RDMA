@@ -344,6 +344,8 @@ int main(int argc, char** argv){
     //gather_pr.resize(num_of_vertex);
     vector<double> div_send;
     long double time3;
+    long double mpi_time = 0;
+    long double rdma_time = 0;
     //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
     
     if(my_ip != node[0])
@@ -429,6 +431,7 @@ int main(int argc, char** argv){
                 cout << time3 << "s." <<endl;
                 //printf("%Lfs\n", time3);
                 network_time += time3;
+                mpi_time += time3;
             }    
             //printf("%d: allgatherv 수행시간: %Lfs.\n", rank, time3);
 
@@ -467,8 +470,10 @@ int main(int argc, char** argv){
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-        if(rank == 0)
+        if(rank == 0){
             network_time+=time1;
+            rdma_time+=time1;
+        }
         //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         if(my_ip == node[0]){
@@ -498,6 +503,7 @@ int main(int argc, char** argv){
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
                 cout << time1 << "s." << endl;
+                rdma_time += time1;
                 network_time += time1;
                 //printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
             }
@@ -526,6 +532,7 @@ int main(int argc, char** argv){
             if(rank == 0){
                 cout << time1 << "s.\n" << endl;
                 network_time += time1;
+                mpi_time += time1;
                 printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);
                 printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);
                 printf("STEP %ld EXECUTION TIME: %Lfs.\n", step+1, compute_time + network_time);
@@ -585,7 +592,10 @@ int main(int argc, char** argv){
         //printf("총 수행시간: %Lfs.\n", time2);
     }
     if(rank == 0|| my_ip == node[0]){
-        printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
+        printf("[INFO]TOTAL EXECUTION TIME: %Lfs", time2);
+        printf("[INFO]AVG MPI_TIME:  %Lfs.", mpi_time/62);
+        printf("[INFO]AVG RDMA_TIME: %Lfs.", rdma_time/62);
+        
         cout << "=====================================================" << endl;
     }
     MPI_Finalize();

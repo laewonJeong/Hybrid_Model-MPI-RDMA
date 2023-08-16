@@ -333,7 +333,7 @@ int main(int argc, char** argv){
     }
     int num_vertex = end-start;
     int num_edge = 0;
-    for (int i = start; i <= end; i++) {
+    for (int i = start; i < end; i++) {
         num_edge += num_outgoing[i];
     }
 

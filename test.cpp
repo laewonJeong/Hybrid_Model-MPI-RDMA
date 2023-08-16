@@ -122,6 +122,8 @@ int main(int argc, char** argv){
     long double compute_time = 0;
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
+    
+
     string my_ip= tcp.check_my_ip();
     
 
@@ -168,8 +170,8 @@ int main(int argc, char** argv){
     //D-RDMALib Init
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
-  
-    
+    vector<double>* send_first = &send[1];
+    vector<double>* send_end = &send[num_of_node-1];
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
         cout << "=====================================================" << endl;
@@ -457,7 +459,7 @@ int main(int argc, char** argv){
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 
             
-            fill(&send[1], &send[num_of_node-1], send[0]);
+            fill(send_first, send_end, send[0]);
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
         }
         else{

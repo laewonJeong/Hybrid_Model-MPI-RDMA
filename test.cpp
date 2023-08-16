@@ -526,7 +526,7 @@ int main(int argc, char** argv){
             //MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
             clock_gettime(CLOCK_MONOTONIC, &end1);*/
             MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            //clock_gettime(CLOCK_MONOTONIC, &end1);
+            clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
 
             if(rank == 0){

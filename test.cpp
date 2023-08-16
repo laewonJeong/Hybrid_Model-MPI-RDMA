@@ -201,7 +201,7 @@ int main(int argc, char** argv){
     cout << "ve: " << ve << endl;
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
-        if( ve-0.1 <= (temp/ttt) <= ve+0.1){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+        if( ve-0.1 <= (temp/ttt) && (temp/ttt)<= ve+0.1){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
             //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;

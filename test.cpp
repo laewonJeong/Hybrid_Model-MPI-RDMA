@@ -182,6 +182,8 @@ int main(int argc, char** argv){
     }
     
     // graph partitioning
+    double ve = num_of_vertex/edge;
+
     int recvcounts[size];
     int displs[size]; 
     int nn[num_of_node];
@@ -199,7 +201,7 @@ int main(int argc, char** argv){
 
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
-        if(temp +ttt*8 > edge_part +vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+        if(double(ttt/temp) > ve){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
             //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;

@@ -182,7 +182,7 @@ int main(int argc, char** argv){
     }
     
     // graph partitioning
-    double ve = edge/num_of_vertex;
+    double ve = edge/num_of_vertex +1 ;
 
     int recvcounts[size];
     int displs[size]; 
@@ -192,8 +192,8 @@ int main(int argc, char** argv){
     int end_arr[num_of_node-1];
     int temp = 0;
     size_t index = 0;
-    int edge_part = ceil((edge/(num_of_node-1))/ve);
-    int vertex_part = ceil((num_of_vertex/(num_of_node-1)));
+    int edge_part = ceil((edge/(num_of_node-1)));
+    int vertex_part = ceil((num_of_vertex/(num_of_node-1)*ve));
     //cout << edge_part << endl;
     long long buffer_size = num_of_vertex * sizeof(double);
     long long buf_part = buffer_size/(num_of_node-1);
@@ -201,7 +201,7 @@ int main(int argc, char** argv){
     cout << "ve: " << ve << endl;
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
-        if( temp/ttt < ve){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+        if( temp+ttt*ve < vertex_part+edge_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
             //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
@@ -210,7 +210,7 @@ int main(int argc, char** argv){
             //cout << "===========================" << endl;
             //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
             //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
-            ttt=1;
+            ttt=0;
             index++;
         }
         ttt++;

@@ -350,10 +350,10 @@ int main(int argc, char** argv){
     
     if(my_ip != node[0])
         div_send.resize(end-start);
-
+    int send_size = div_send.size();
     double* send_buffer_ptr = div_send.data();
     double* recv_buffer_ptr = recv1[0].data();
-
+    double* send_buf_ptr = send[0].data();
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){
@@ -376,7 +376,7 @@ int main(int argc, char** argv){
             if(my_ip != node[0]){
                 for (size_t i=0;i<num_of_vertex;i++) {
                     if (num_outgoing[i] == 0)
-                        dangling_pr += recv1[0][i];   
+                        dangling_pr += recv_buffer_ptr[i];   
                 }
             }
             else{
@@ -421,7 +421,7 @@ int main(int argc, char** argv){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             
             
-            MPI_Allgatherv(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
+            MPI_Allgatherv(send_buffer_ptr,send_size,MPI_DOUBLE,send_buf_ptr,recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -455,7 +455,7 @@ int main(int argc, char** argv){
             }   
 
             if(diff < 0.00001)
-                send[0][0] += 1; 
+                send_buf_ptr[0] += 1; 
             
             fill(&send[1], &send[num_of_node-1], send[0]);
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;

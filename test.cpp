@@ -382,7 +382,7 @@ int main(int argc, char** argv){
             else{
                 diff = 0;
                 for (size_t i=0;i<num_of_vertex;i++) 
-                    diff += fabs(prev_pr[i] - send[0][i]);
+                    diff += fabs(prev_pr[i] - send_buf_ptr[i]);
             }
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

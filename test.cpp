@@ -199,7 +199,7 @@ int main(int argc, char** argv){
 
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
-        if(temp + ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+        if(temp > edge_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
             //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;
@@ -221,7 +221,7 @@ int main(int argc, char** argv){
     //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     //cout << "===========================" << endl;
     
-    /*int div_num_of_vertex;
+    int div_num_of_vertex;
     if(my_ip != node[0]){
         for(int i=1;i<num_of_node;i++){
             if(node[i] == my_ip){
@@ -275,9 +275,9 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
-    }*/
+    }
     
-    int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
+    /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;
 
@@ -330,7 +330,7 @@ int main(int argc, char** argv){
         recv1[num_of_node-2].resize(x);
 
         nn[num_of_node-2] = x;
-    }
+    }*/
     int num_vertex = end-start;
     int num_edge = 0;
     for (int i = start; i < end; i++) {

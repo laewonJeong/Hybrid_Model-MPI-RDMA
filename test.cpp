@@ -418,7 +418,7 @@ int main(int argc, char** argv){
             /*if(rank == 0)
                 printf("%Lfs.\n", time3);*/
             //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
-            MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+            //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             //---------------------------------------------------------------------------------------------------------------------
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             
@@ -528,7 +528,7 @@ int main(int argc, char** argv){
             //MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
             clock_gettime(CLOCK_MONOTONIC, &end1);
            // MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-            clock_gettime(CLOCK_MONOTONIC, &end1);
+            //clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
 
             if(rank == 0){

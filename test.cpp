@@ -331,7 +331,14 @@ int main(int argc, char** argv){
 
         nn[num_of_node-2] = x;
     }
-    
+    int num_vertex = end-start;
+    int num_edge = 0;
+    for (int i = start; i <= end; i++) {
+        num_edge += num_outgoing[i];
+    }
+
+    cout << "\nVertex: " << num_vertex << endl;
+    cout << "Edge: " << num_edge << endl << endl;
   // cout << "end" << endl;*/
     int check;
     int check1[size];

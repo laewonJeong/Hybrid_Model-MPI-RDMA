@@ -521,7 +521,7 @@ int main(int argc, char** argv){
             }
             else{
                 MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
-                //MPI_Wait(&request, MPI_STATUS_IGNORE);
+                MPI_Wait(&request, MPI_STATUS_IGNORE);
             }
             
             MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);

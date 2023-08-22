@@ -282,6 +282,9 @@ int main(int argc, char** argv){
             }
             displs[i] = start_arr_process[i];
             recvcounts[i] = end_arr_process[i] - start_arr_process[i];
+            if(rank == 0){
+                cout << recvcounts[i] << endl;
+            }
         }
         /*if(my_ip == node[num_of_node-1]){
             start += end_arr[2];

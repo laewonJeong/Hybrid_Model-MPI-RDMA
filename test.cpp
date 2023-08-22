@@ -183,10 +183,7 @@ int main(int argc, char** argv){
     
     // graph partitioning
     double ve = edge/num_of_vertex;
-26,943,548
-26,943,578
-26,943,576
-26,943,640
+
     int recvcounts[size];
     int displs[size]; 
     int nn[num_of_node];

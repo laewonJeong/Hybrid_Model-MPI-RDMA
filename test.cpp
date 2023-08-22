@@ -238,7 +238,7 @@ int main(int argc, char** argv){
             recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
         //cout << div_num_of_vertex << ", " << start << ", " << end << endl;
-        /*for(int i=0;i<size;i++){
+        for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
             if(rank == i){
@@ -267,7 +267,7 @@ int main(int argc, char** argv){
         else if(my_ip == node[num_of_node-3]){
             start += end_arr[0];
             end += end_arr[0];
-        }*/
+        }
         //cout << "start, end: " << start <<", "<< end << endl;
     }
     else{

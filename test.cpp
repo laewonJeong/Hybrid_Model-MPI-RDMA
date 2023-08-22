@@ -193,7 +193,7 @@ int main(int argc, char** argv){
     int temp = 0;
     size_t index = 0;
     int edge_part = ceil((edge/(num_of_node-1)));
-    int vertex_part = ceil((num_of_vertex/(num_of_node-1))*6);
+    int vertex_part = ceil((num_of_vertex/(num_of_node-1))*8);
     int part = ceil((edge+num_of_vertex)/(num_of_node-1));
     //cout << edge_part << endl;
     long long buffer_size = num_of_vertex * sizeof(double);
@@ -202,7 +202,7 @@ int main(int argc, char** argv){
     cout << "ve: " << ve << endl;
     for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
-        if( temp+ttt*6 >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+        if( temp+ttt*8 >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
             //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
             temp = num_outgoing[i];
             end_arr[index] = i;

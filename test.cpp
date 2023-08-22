@@ -280,7 +280,7 @@ int main(int argc, char** argv){
                 start = start_arr_process[i];
                 end = end_arr_process[i];
             }
-            displs[i] = start_arr_process[i];
+            displs[i] = start_arr_process[i]-start;
             recvcounts[i] = end_arr_process[i] - start_arr_process[i];
             if(rank == 0){
                 cout << recvcounts[i] << endl;

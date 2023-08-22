@@ -191,7 +191,7 @@ int main(int argc, char** argv){
     start_arr[0] = 0;
     int end_arr[num_of_node-1];
     int start_arr_process[size-1];
-    start_arr[0] = 0;
+    start_arr_process[0] = 0;
     int end_arr_process[size-1];
     int temp = 0;
     size_t index = 0;

@@ -248,6 +248,7 @@ int main(int argc, char** argv){
         for (int i = start; i < end; i++) {
             num_edge += num_outgoing[i];
         }
+        start_arr_process[0] = start;
         for(size_t i =start; i<end;i++){
             temp += num_outgoing[i];
             if( temp+ttt*argvv >= num_edge/size+div_num_of_vertex/size*argvv){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
@@ -273,7 +274,7 @@ int main(int argc, char** argv){
             displs[i] = start_arr_process[i];
             recvcounts[i] = end_arr_process[i] - start_arr_process[i];
         }
-        if(my_ip == node[num_of_node-1]){
+        /*if(my_ip == node[num_of_node-1]){
             start += end_arr[2];
             end += end_arr[2];
         }
@@ -284,7 +285,7 @@ int main(int argc, char** argv){
         else if(my_ip == node[num_of_node-3]){
             start += end_arr[0];
             end += end_arr[0];
-        }
+        }*/
         //=======================================================================
         cout << div_num_of_vertex << ", " << start << ", " << end << endl;
         /*for(int i=0;i<size;i++){

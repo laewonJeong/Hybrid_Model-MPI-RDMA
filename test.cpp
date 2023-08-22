@@ -265,6 +265,15 @@ int main(int argc, char** argv){
                 break;
         }
         end_arr_process[size-1] = div_num_of_vertex;
+        if(my_ip == node[num_of_node-1]){
+            end_arr_process[size-1] +=start_arr[3];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            end_arr_process[size-1] +=start_arr[2];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            end_arr_process[size-1] +=start_arr[1];
+        }
         //=======================================================================
         for(int i=0;i<size;i++){
             if(rank == i){

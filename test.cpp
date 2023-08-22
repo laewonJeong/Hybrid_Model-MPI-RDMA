@@ -190,6 +190,9 @@ int main(int argc, char** argv){
     int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];
+    int start_arr_process[size-1];
+    start_arr[0] = 0;
+    int end_arr_process[size-1];
     int temp = 0;
     size_t index = 0;
     int edge_part = ceil((edge/(num_of_node-1)));
@@ -237,8 +240,54 @@ int main(int argc, char** argv){
             send[i].resize(div_num_of_vertex);
             recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
-        //cout << div_num_of_vertex << ", " << start << ", " << end << endl;
+        //=======================================================================
+        temp =0;
+        index=0;
+        ttt=1;
+        int num_edge = 0;
+        for (int i = start; i < end; i++) {
+            num_edge += num_outgoing[i];
+        }
+        for(size_t i =start; i<end;i++){
+            temp += num_outgoing[i];
+            if( temp+ttt*argvv >= num_edge/size+div_num_of_vertex/size*argvv){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+            //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
+                temp = num_outgoing[i];
+                end_arr_process[index] = i;
+                if(index<size)
+                    start_arr_process[index+1] = i;
+                ttt=0;
+                index++;
+            }
+            ttt++;
+            if(index == size-1)
+                break;
+        }
+        end_arr_process[size-1] = div_num_of_vertex;
+        //=======================================================================
         for(int i=0;i<size;i++){
+            if(rank == i){
+                start = start_arr_process[i];
+                end = end_arr_process[i];
+            }
+            displs[i] = start_arr_process[i];
+            recvcounts[i] = end_arr_process[i] - start_arr_process[i];
+        }
+        if(my_ip == node[num_of_node-1]){
+            start += end_arr[2];
+            end += end_arr[2];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            start += end_arr[1];
+            end += end_arr[1];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            start += end_arr[0];
+            end += end_arr[0];
+        }
+        //=======================================================================
+        //cout << div_num_of_vertex << ", " << start << ", " << end << endl;
+        /*for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
             if(rank == i){
@@ -267,7 +316,7 @@ int main(int argc, char** argv){
         else if(my_ip == node[num_of_node-3]){
             start += end_arr[0];
             end += end_arr[0];
-        }
+        }*/
         //cout << "start, end: " << start <<", "<< end << endl;
     }
     else{
@@ -335,13 +384,10 @@ int main(int argc, char** argv){
         nn[num_of_node-2] = x;
     }*/
     int num_vertex = end-start;
-    int num_edge = 0;
-    for (int i = start; i < end; i++) {
-        num_edge += num_outgoing[i];
-    }
+    
 
     cout << "\nVertex: " << num_vertex << endl;
-    cout << "Edge: " << num_edge << endl << endl;
+    cout << "Edge: " << num_vertex << endl << endl;
   // cout << "end" << endl;*/
     int check;
     int check1[size];

@@ -286,7 +286,7 @@ int main(int argc, char** argv){
             end += end_arr[0];
         }
         //=======================================================================
-        //cout << div_num_of_vertex << ", " << start << ", " << end << endl;
+        cout << div_num_of_vertex << ", " << start << ", " << end << endl;
         /*for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;

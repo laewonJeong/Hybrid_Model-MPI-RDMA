@@ -604,12 +604,13 @@ int main(int argc, char** argv){
                 cout << time1 << "s.\n" << endl;
                 network_time += time1;
                 mpi_time += time1;
-                printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);
+                //printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);
                 printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);
                 printf("STEP %ld EXECUTION TIME: %Lfs.\n", step+1, compute_time + network_time);
                 network_time = 0;
                 compute_time = 0;
             }
+            printf("%d - COMPUTE PAGERANK:  %LFs.\n", rank,compute_time);
             //printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);
             /*if(rank == 0){
                 myrdma.rdma_recv_pagerank(0);

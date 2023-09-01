@@ -179,6 +179,10 @@ int main(int argc, char** argv){
     for(int i =0; i<num_of_vertex;i++){
         vertex_weight[i] = double(vertex_weight[i]/sum_weight);
         sum += vertex_weight[i];
+        if(sum >= 0.25){
+            cout << i << endl;
+            sum = 0;
+        }
         //printf("%llf\n", vertex_weight[i]);
     }
     cout << sum << endl;

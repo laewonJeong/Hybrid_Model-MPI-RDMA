@@ -229,7 +229,7 @@ int main(int argc, char** argv){
     
     int div_num_of_vertex;
     if(my_ip != node[0]){
-        for(int i=1;i<num_of_node;i++){
+        /*for(int i=1;i<num_of_node;i++){
             if(node[i] == my_ip){
                 div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
                 start = start_arr[i-1];
@@ -299,8 +299,8 @@ int main(int argc, char** argv){
             end += end_arr[0];
         }*/
         //=======================================================================
-        cout << rank << ", " <<div_num_of_vertex << ", " << start << ", " << end << endl;
-        /*for(int i=0;i<size;i++){
+        //cout << rank << ", " <<div_num_of_vertex << ", " << start << ", " << end << endl;
+        for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
             if(rank == i){
@@ -329,7 +329,7 @@ int main(int argc, char** argv){
         else if(my_ip == node[num_of_node-3]){
             start += end_arr[0];
             end += end_arr[0];
-        }*/
+        }
         //cout << "start, end: " << start <<", "<< end << endl;
     }
     else{

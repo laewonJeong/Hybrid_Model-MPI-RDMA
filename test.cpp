@@ -229,7 +229,7 @@ int main(int argc, char** argv){
     
     int div_num_of_vertex;
     if(my_ip != node[0]){
-        /*for(int i=1;i<num_of_node;i++){
+        for(int i=1;i<num_of_node;i++){
             if(node[i] == my_ip){
                 div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
                 start = start_arr[i-1];
@@ -241,7 +241,7 @@ int main(int argc, char** argv){
             recv1[i].resize(num_of_vertex, 1/num_of_vertex);
         }
         //=======================================================================
-        temp =0;
+        /*temp =0;
         index=0;
         ttt=1;
         int num_edge = 0;

@@ -176,7 +176,8 @@ int main(int argc, char** argv){
     }
     printf("%lf\n", sum_weight);
     for(int i =0; i<num_of_vertex;i++){
-        vertex_weight[i] = double(vertex_weight[i]/sum_weight); 
+        vertex_weight[i] = double(vertex_weight[i]/sum_weight);
+        printf("%lf\n", vertex_weight[i]);
     }
 
     for(int i=0;i<5;i++){

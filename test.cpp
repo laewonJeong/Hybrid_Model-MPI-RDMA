@@ -174,12 +174,14 @@ int main(int argc, char** argv){
             sum_weight+=1/num_outgoing[i];
         }
     }
+    double sum = 0;
     printf("%Lf\n", sum_weight);
     for(int i =0; i<num_of_vertex;i++){
         vertex_weight[i] = double(vertex_weight[i]/sum_weight);
+        sum += vertex_weight[i];
         //printf("%llf\n", vertex_weight[i]);
     }
-
+    cout << sum << endl;
     for(int i=0;i<5;i++){
         printf("%Lf\n", vertex_weight[i]);
     }

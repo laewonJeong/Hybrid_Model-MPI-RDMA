@@ -166,8 +166,12 @@ int main(int argc, char** argv){
     vector<double> vertex_weight;
     double sum_weight = 0;
     for(int i =0; i<num_of_vertex;i++){
-        vertex_weight.push_back(1/num_outgoing[i]);
-        sum_weight+=vertex_weight[i]; 
+        if(num_outgoing[i] == 0)
+            vertex_weight.push_back(0.0);
+        else{
+            vertex_weight.push_back(1/num_outgoing[i]);
+            sum_weight+=1/num_outgoing[i];
+        }
     }
     for(int i =0; i<num_of_vertex;i++){
         vertex_weight[i] = vertex_weight[i]/sum_weight; 

@@ -167,11 +167,11 @@ int main(int argc, char** argv){
     vector<long double> vertex_weight;
     long double sum_weight = 0;
     for(int i =0; i<num_of_vertex;i++){
-        if(num_outgoing[i] == 0)
+        if(num_of_vertex == 0)
             vertex_weight.push_back(0.0);
         else{
-            vertex_weight.push_back(double(1/num_outgoing[i]));
-            sum_weight+=double(1/num_outgoing[i]);
+            vertex_weight.push_back(double(1/num_of_vertex));
+            sum_weight+=double(1/num_of_vertex);
         }
     }
     double sum = 0;

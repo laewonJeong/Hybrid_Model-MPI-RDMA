@@ -168,7 +168,7 @@ int main(int argc, char** argv){
     long double sum_weight = 0;
     for(int i =0; i<num_of_vertex;i++){
         long double weight = log(static_cast<long double>(num_outgoing[i])+1.0); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
-        long double asd = 1/(num_of_vertex/4);
+        long double asd = 1/(num_of_vertex);
         vertex_weight.push_back(weight+asd);
         sum_weight += weight;
     }

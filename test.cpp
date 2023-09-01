@@ -174,13 +174,13 @@ int main(int argc, char** argv){
             sum_weight+=1/num_outgoing[i];
         }
     }
-    printf("%lf", sum_weight);
+    printf("%lf\n", sum_weight);
     for(int i =0; i<num_of_vertex;i++){
-        vertex_weight[i] = vertex_weight[i]/sum_weight; 
+        vertex_weight[i] = double(vertex_weight[i]/sum_weight); 
     }
 
     for(int i=0;i<5;i++){
-        printf("%lf", vertex_weight[i]);
+        printf("%lf\n", vertex_weight[i]);
     }
 //==================================================================================
     myRDMA myrdma;

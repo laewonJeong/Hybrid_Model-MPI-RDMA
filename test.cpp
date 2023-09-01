@@ -171,7 +171,7 @@ int main(int argc, char** argv){
             vertex_weight.push_back(0.0);
         else{
             vertex_weight.push_back(double(1/num_of_vertex));
-            sum_weight+=double(1/num_of_vertex);
+            sum_weight+=double( 1/num_of_vertex);
         }
     }
     double sum = 0;

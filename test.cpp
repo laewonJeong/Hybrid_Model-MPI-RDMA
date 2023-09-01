@@ -426,7 +426,7 @@ int main(int argc, char** argv){
     }*/
     int num_vertex = end-start;
     
-
+    cout << start << ", " << end <<endl;
     cout << "\nVertex: " << num_vertex << endl;
     cout << "Edge: " << num_vertex << endl << endl;
   // cout << "end" << endl;*/

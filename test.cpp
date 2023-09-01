@@ -164,8 +164,8 @@ int main(int argc, char** argv){
     
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
-    vector<double> vertex_weight;
-    double sum_weight = 0;
+    vector<long double> vertex_weight;
+    long double sum_weight = 0;
     for(int i =0; i<num_of_vertex;i++){
         if(num_outgoing[i] == 0)
             vertex_weight.push_back(0.0);
@@ -174,14 +174,14 @@ int main(int argc, char** argv){
             sum_weight+=1/num_outgoing[i];
         }
     }
-    printf("%lf\n", sum_weight);
+    printf("%Lf\n", sum_weight);
     for(int i =0; i<num_of_vertex;i++){
         vertex_weight[i] = double(vertex_weight[i]/sum_weight);
         //printf("%llf\n", vertex_weight[i]);
     }
 
     for(int i=0;i<5;i++){
-        printf("%llf\n", vertex_weight[i]);
+        printf("%Lf\n", vertex_weight[i]);
     }
 //==================================================================================
     myRDMA myrdma;

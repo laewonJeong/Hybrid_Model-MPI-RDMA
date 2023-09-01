@@ -170,8 +170,8 @@ int main(int argc, char** argv){
         if(num_of_vertex == 0)
             vertex_weight.push_back(0.0);
         else{
-            vertex_weight.push_back(double(1/num_of_vertex));
-            sum_weight+=double( 1/num_of_vertex);
+            vertex_weight.push_back(double(1));
+            sum_weight+=double(1);
         }
     }
     double sum = 0;

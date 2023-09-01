@@ -163,6 +163,7 @@ int main(int argc, char** argv){
 
     
 //==================================================================================
+    cout.precision(numeric_limits<double>::digits10);
     vector<double> vertex_weight;
     double sum_weight = 0;
     for(int i =0; i<num_of_vertex;i++){

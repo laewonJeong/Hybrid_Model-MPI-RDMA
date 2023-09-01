@@ -450,7 +450,7 @@ int main(int argc, char** argv){
         num_edge += num_outgoing[i];
     }
     cout << "\nVertex: " << num_vertex << endl;
-    cout << "Edge: " << num_vertex << endl << endl;
+    cout << "Edge: " << num_edge << endl << endl;
   // cout << "end" << endl;*/
     int check;
     int check1[size];

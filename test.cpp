@@ -174,6 +174,7 @@ int main(int argc, char** argv){
             sum_weight+=1/num_outgoing[i];
         }
     }
+    printf("%lf", sum_weight);
     for(int i =0; i<num_of_vertex;i++){
         vertex_weight[i] = vertex_weight[i]/sum_weight; 
     }

@@ -185,7 +185,8 @@ int main(int argc, char** argv){
         }
         //printf("%llf\n", vertex_weight[i]);
     }
-    cout << sum << endl;
+    cout << num_of_vertex << endl;
+    
     for(int i=0;i<5;i++){
         printf("%Lf\n", vertex_weight[i]);
     }

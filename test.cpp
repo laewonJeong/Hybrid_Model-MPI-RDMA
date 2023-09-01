@@ -162,8 +162,21 @@ int main(int argc, char** argv){
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
 
     
+//==================================================================================
+    vector<double> vertex_weight;
+    double sum_weight = 0;
+    for(int i =0; i<num_of_vertex;i++){
+        vertex_weight.push_back(1/num_outgoing[i]);
+        sum_weight+=vertex_weight[i]; 
+    }
+    for(int i =0; i<num_of_vertex;i++){
+        vertex_weight[i] = vertex_weight[i]/sum_weight; 
+    }
 
-
+    for(int i=0;i<5;i++){
+        cout << vertex_weight[i] << endl;
+    }
+//==================================================================================
     myRDMA myrdma;
     Pagerank pagerank;
     
@@ -181,6 +194,7 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
     int argvv = stoi(argv[3]);
+
     // graph partitioning
     double ve = edge/num_of_vertex;
 

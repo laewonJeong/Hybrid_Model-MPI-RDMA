@@ -167,10 +167,10 @@ int main(int argc, char** argv){
     vector<long double> vertex_weight;
     long double sum_weight = 0;
     for(int i =0; i<num_of_vertex;i++){
-        if(num_outgoing[i] == 0)
+        if(num_of_vertex == 0)
             vertex_weight.push_back(0.0);
         else{
-            long double weight = log(static_cast<long double>(num_outgoing[i])); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+            long double weight = log(static_cast<long double>(num_of_vertex)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             vertex_weight.push_back(weight);
             sum_weight += weight;
         }

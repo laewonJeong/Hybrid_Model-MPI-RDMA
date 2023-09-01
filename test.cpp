@@ -180,7 +180,7 @@ int main(int argc, char** argv){
     }
 
     for(int i=0;i<5;i++){
-        cout << vertex_weight[i] << endl;
+        printf("%lf", vertex_weight[i]);
     }
 //==================================================================================
     myRDMA myrdma;

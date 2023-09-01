@@ -208,7 +208,7 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
     int argvv = stoi(argv[3]);
-
+    sum = 0;
     // graph partitioning
     double ve = edge/num_of_vertex;
 
@@ -231,7 +231,22 @@ int main(int argc, char** argv){
     long long buf_part = buffer_size/(num_of_node-1);
     int ttt = 1;
     cout << "ve: " << ve << endl;
-    for(size_t i=0;i<num_of_vertex;i++){
+    for(int i =0; i<num_of_vertex;i++){
+        sum += vertex_weight[i];
+        if(sum >= 0.25){
+            end_arr[index] = i;
+            sum = 0;
+            if(index<num_of_node-1)
+                start_arr[index+1] = i;
+
+            index++;
+        }
+        if(index == num_of_node-2)
+            break;
+        //printf("%llf\n", vertex_weight[i]);
+    }
+    end_arr[num_of_node-2] = num_of_vertex;
+    /*for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if( temp+ttt*argvv >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
             //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
@@ -250,7 +265,10 @@ int main(int argc, char** argv){
             break;
     }
     //cout << "===========================" << endl;
-    end_arr[num_of_node-2] = num_of_vertex;
+    end_arr[num_of_node-2] = num_of_vertex;*/
+
+    //===============================================================================
+    
     //cout << "start["<<index<<"]: " << start_arr[index] <<endl;
     //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     //cout << "===========================" << endl;

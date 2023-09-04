@@ -30,6 +30,7 @@ std::vector<int> num_outgoing;
 int num_of_vertex;
 int start, end;
 int edge;
+int max_edge = 0;
 using namespace std;
 
 double logistic(double x) {
@@ -72,6 +73,9 @@ bool add_arc(size_t from, size_t to){
 
     if (ret) {
         num_outgoing[from]++;
+        if(num_outgoing[from] > max_edge){
+            max_edge = num_outgoing[from];
+        }
     }
 
     return ret;
@@ -166,7 +170,8 @@ int main(int argc, char** argv){
 
     
 //==================================================================================
-    cout << double(edge/num_of_vertex) << endl;
+    cout << "[INFO]AVG EDGE: "<<double(edge/num_of_vertex) << endl;
+    cout << "[INFO]MAX EDGE: "<<max_edge <<endl;
     cout.precision(numeric_limits<double>::digits10);
     vector<long double> vertex_weight;
     long double sum_weight = 0;

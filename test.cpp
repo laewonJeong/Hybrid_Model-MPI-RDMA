@@ -152,6 +152,9 @@ int main(int argc, char** argv){
 
     // Create Graph
     if(rank == 0){
+        for(int i=0;i<num_of_vertex;i++){
+            cout << i << " " << num_outgoing[i] << endl;
+        }
         cout << "[INFO]IP: " << my_ip << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]CREATE GRAPH" << endl;

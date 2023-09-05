@@ -177,9 +177,14 @@ int main(int argc, char** argv){
     long double sum_weight = 0;
     long double max_weight = sqrt(static_cast<long double>(max_edge+1.0));
     for(int i =0; i<num_of_vertex;i++){
-        long double weight = num_outgoing[i]/edge;//sqrt(static_cast<long double>(num_outgoing[i]+1.0));// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
-        vertex_weight.push_back(weight);
-        sum_weight += weight;
+        if(num_outgoing[i] == 0){
+            vertex_weight.push_back(0.0);
+        }
+        else{
+            long double weight = num_outgoing[i]/edge;//sqrt(static_cast<long double>(num_outgoing[i]+1.0));// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+            vertex_weight.push_back(weight);
+            sum_weight += weight;
+        }
     }
     double sum = 0;
     printf("%Lf\n", sum_weight);

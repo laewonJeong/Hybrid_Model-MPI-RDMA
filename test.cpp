@@ -179,7 +179,7 @@ int main(int argc, char** argv){
     long double max_weight = log(static_cast<long double>(max_edge+1.0));
     
     for(int i =0; i<num_of_vertex;i++){
-        long double weight = log(static_cast<long double>(num_outgoing[i]+1.0))/ log(static_cast<long double>(max_edge+1.0));// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+        long double weight = sqrt(static_cast<long double>(num_outgoing[i]+1.0))/ sqrt(static_cast<long double>(max_edge+1.0));// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
         vertex_weight.push_back(weight);
         sum_weight += weight;
     }

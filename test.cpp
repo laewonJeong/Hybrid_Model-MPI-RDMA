@@ -583,7 +583,7 @@ int main(int argc, char** argv){
             for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
-                send[0].insert(send[0].end(),std::make_move_iterator(recv1[i].begin()),std::make_move_iterator(recv1[i].begin() + size));
+                send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
             }   
            
             if(diff < 0.00001)
@@ -611,12 +611,12 @@ int main(int argc, char** argv){
         //===============================================================================
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
-            std::vector<std::thread> worker;
+            //std::vector<std::thread> worker;
             for(size_t i = 1; i<num_of_node-1;i++)
-                worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
-                //myrdma.rdma_write_pagerank(send[0],i);
-            for(int i=0;i<num_of_node-2;i++)
-                worker[i].detach();
+                //worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
+                myrdma.rdma_write_pagerank(send[0],i);
+            //for(int i=0;i<num_of_node-2;i++)
+            //    worker[i].detach();
             cout << "[INFO]START SEND - SUCCESS" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);

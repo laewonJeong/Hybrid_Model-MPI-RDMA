@@ -36,7 +36,7 @@ int edge;
 int max_edge = 0;
 using namespace std;
 
-class ThreadPool {
+/*class ThreadPool {
 public:
     ThreadPool(size_t numThreads) : stop(false) {
         for (size_t i = 0; i < numThreads; ++i) {
@@ -85,7 +85,7 @@ private:
     std::mutex queueMutex;
     std::condition_variable condition;
     bool stop;
-};
+};*/
 double logistic(double x) {
     return 1.0 / (1.0 + exp(-x));
 }
@@ -173,7 +173,7 @@ void create_graph_data(string path, int rank, string del){
 }
 
 int main(int argc, char** argv){
-    ThreadPool pool(3);
+    //ThreadPool pool(3);
     TCP tcp;
     int rank, size, i ,j;
     int start, end;

@@ -189,7 +189,7 @@ int main(int argc, char** argv){
     for(int i =0; i<num_of_vertex;i++){
         vertex_weight[i] /= sum_weight;
         sum += vertex_weight[i];
-        if(sum >= 0.25){
+        if(sum >= 0.249){
             cout << sum<< " and " << i << endl;
             sum = 0;
         }
@@ -243,7 +243,7 @@ int main(int argc, char** argv){
     cout << "ve: " << ve << endl;
     for(int i =0; i<num_of_vertex;i++){
         sum += vertex_weight[i];
-        if(sum >= 0.25){
+        if(sum >= 0.249){
             end_arr[index] = i;
             sum = 0;
             if(index<num_of_node-1)

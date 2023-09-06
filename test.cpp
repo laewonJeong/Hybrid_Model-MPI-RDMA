@@ -648,13 +648,7 @@ int main(int argc, char** argv){
             
 
             fill(send_first, send_end, send[0]);
-            for(size_t i = 1; i<num_of_node-1;i++){
-                //worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
-                //myrdma.rdma_write_pagerank(send[0],i);
-                pool.enqueue([&myrdma, i, &send] {
-                    myrdma.rdma_write_pagerank(send[0], i);
-                });
-            }
+            
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
         }
         else{
@@ -676,13 +670,13 @@ int main(int argc, char** argv){
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             //std::vector<std::thread> worker;
-            /*for(size_t i = 1; i<num_of_node-1;i++){
+            for(size_t i = 1; i<num_of_node-1;i++){
                 //worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
                 //myrdma.rdma_write_pagerank(send[0],i);
                 pool.enqueue([&myrdma, i, &send] {
                     myrdma.rdma_write_pagerank(send[0], i);
                 });
-            }*/
+            }
             /*for(int i=0;i<num_of_node-2;i++)
                 worker[i].detach();*/
             cout << "[INFO]START SEND - SUCCESS" << endl;

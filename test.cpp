@@ -584,10 +584,8 @@ int main(int argc, char** argv){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
                 send[0].insert(send[0].end(),recv1[i].begin(),recv1[i].begin()+size);
-                if(i==num_of_node-1)
-                    myrdma.rdma_write_pagerank(send[0],0);
             }   
-
+            myrdma.rdma_write_pagerank(send[0],0);
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 
             

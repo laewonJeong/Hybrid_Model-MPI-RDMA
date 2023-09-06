@@ -173,6 +173,7 @@ void create_graph_data(string path, int rank, string del){
 }
 
 int main(int argc, char** argv){
+    ThreadPool pool(4);
     TCP tcp;
     int rank, size, i ,j;
     int start, end;
@@ -663,7 +664,6 @@ int main(int argc, char** argv){
         //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         if(my_ip == node[0]){
-            ThreadPool pool(4);
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
             for(size_t i = 1; i<num_of_node-1;i++){

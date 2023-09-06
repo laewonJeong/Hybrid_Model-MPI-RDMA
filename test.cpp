@@ -583,7 +583,7 @@ int main(int argc, char** argv){
             for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
-                send[0].insert(send[0].end(),recv1[i].begin(),recv1[i].begin()+size);
+                send[0].insert(send[0].end(),std::make_move_iterator(recv1[i].begin()),std::make_move_iterator(recv1[i].begin() + size));
             }   
            
             if(diff < 0.00001)

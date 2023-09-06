@@ -173,7 +173,7 @@ void create_graph_data(string path, int rank, string del){
 }
 
 int main(int argc, char** argv){
-    ThreadPool pool(4);
+    ThreadPool pool(3);
     TCP tcp;
     int rank, size, i ,j;
     int start, end;
@@ -643,9 +643,9 @@ int main(int argc, char** argv){
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 
             
-            pool.enqueue([&myrdma, &send] {
-                myrdma.rdma_write_pagerank(send[0], 0);
-            });
+            
+            myrdma.rdma_write_pagerank(send[0], 0);
+            
 
             fill(send_first, send_end, send[0]);
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;

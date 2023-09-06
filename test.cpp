@@ -580,17 +580,29 @@ int main(int argc, char** argv){
             cout << "[INFO]START RECEIVE - SUCCESS" << endl;
             send[0].clear();
 
+
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
             for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
                 send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
             }   
-           
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            long double time4 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%d: insert 수행시간: %Lfs.\n", rank, time4);
+            
+            
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 
             myrdma.rdma_write_pagerank(send[0],0);
 
+            clock_gettime(CLOCK_MONOTONIC, &begin1);
+
             fill(send_first, send_end, send[0]);
+
+            clock_gettime(CLOCK_MONOTONIC, &end1);
+            time4 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+            printf("%d: fill 수행시간: %Lfs.\n", rank, time4);
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
         }
         else{
@@ -621,7 +633,7 @@ int main(int argc, char** argv){
 
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            //printf("%d: send 수행시간: %Lfs.\n", rank, time1);
+            printf("%d: send 수행시간: %Lfs.\n", rank, time1);
         }
         else{
             MPI_Request request;

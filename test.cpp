@@ -585,10 +585,11 @@ int main(int argc, char** argv){
                 //std::vector<double>::iterator iterator = recv1[i].begin();
                 send[0].insert(send[0].end(),recv1[i].begin(),recv1[i].begin()+size);
             }   
-            myrdma.rdma_write_pagerank(send[0],0);
+           
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 
-            
+            myrdma.rdma_write_pagerank(send[0],0);
+
             fill(send_first, send_end, send[0]);
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
         }
@@ -610,9 +611,12 @@ int main(int argc, char** argv){
         //===============================================================================
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
-            
+            std::vector<std::thread> worker;
             for(size_t i = 1; i<num_of_node-1;i++)
-                myrdma.rdma_write_pagerank(send[0],i);
+                worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
+                //myrdma.rdma_write_pagerank(send[0],i);
+            for(int i=0;i<num_of_node-2;i++)
+                worker[i].detach();
             cout << "[INFO]START SEND - SUCCESS" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);

@@ -37,60 +37,6 @@ int edge;
 int max_edge = 0;
 using namespace std;
 
-class ThreadPool {
-public:
-    ThreadPool(size_t numThreads) : threads(numThreads) {
-        for (size_t i = 0; i < numThreads; ++i) {
-            threads[i] = std::thread(&ThreadPool::worker, this);
-        }
-    }
-
-    ~ThreadPool() {
-        stop = true;
-        for (std::thread& thread : threads) {
-            thread.join();
-        }
-    }
-
-    template<typename Func>
-    auto enqueue(Func&& func) -> std::future<decltype(func())> {
-        auto task = std::make_shared<std::packaged_task<decltype(func())()>>(std::forward<Func>(func));
-        std::unique_lock<std::mutex> lock(queueMutex);
-        tasks.emplace([task]() { (*task)(); });
-        condition.notify_one();
-        return task->get_future();
-    }
-
-    void wait() {
-        for (std::future<void>& future : futures) {
-            future.get();
-        }
-    }
-
-private:
-    std::vector<std::thread> threads;
-    std::vector<std::future<void>> futures;
-    std::queue<std::function<void()>> tasks;
-    std::mutex queueMutex;
-    std::condition_variable condition;
-    bool stop = false;
-
-    void worker() {
-        while (true) {
-            std::function<void()> task;
-            {
-                std::unique_lock<std::mutex> lock(queueMutex);
-                condition.wait(lock, [this]() { return stop || !tasks.empty(); });
-                if (stop && tasks.empty()) {
-                    return;
-                }
-                task = std::move(tasks.front());
-                tasks.pop();
-            }
-            task();
-        }
-    }
-};
 double logistic(double x) {
     return 1.0 / (1.0 + exp(-x));
 }
@@ -178,7 +124,6 @@ void create_graph_data(string path, int rank, string del){
 }
 
 int main(int argc, char** argv){
-    ThreadPool pool(3);
     TCP tcp;
     int rank, size, i ,j;
     int start, end;
@@ -674,17 +619,16 @@ int main(int argc, char** argv){
         //===============================================================================
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
-            //std::vector<std::thread> worker;
+            std::vector<std::thread> worker;
             for(size_t i = 1; i<num_of_node-1;i++){
-                //worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
+                worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
                 //myrdma.rdma_write_pagerank(send[0],i);
-                pool.enqueue([&myrdma, i, &send] {
+                /*pool.enqueue([&myrdma, i, &send] {
                     myrdma.rdma_write_pagerank(send[0], i);
-                });
+                });*/
             }
-            pool.wait();
-            /*for(int i=0;i<num_of_node-2;i++)
-                worker[i].detach();*/
+            for(int i=0;i<num_of_node-2;i++)
+                worker[i].join();
             cout << "[INFO]START SEND - SUCCESS" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);

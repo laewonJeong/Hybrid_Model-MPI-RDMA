@@ -678,7 +678,7 @@ int main(int argc, char** argv){
                 });*/
             }
             for(int i=0;i<num_of_node-2;i++)
-                worker[i].detach();
+                worker[i].join();
             cout << "[INFO]START SEND - SUCCESS" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);

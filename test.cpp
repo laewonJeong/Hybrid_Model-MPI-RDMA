@@ -672,7 +672,7 @@ int main(int argc, char** argv){
             std::vector<std::thread> worker;
             for(size_t i = 1; i<num_of_node-1;i++){
                 worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
-                myrdma.rdma_write_pagerank(send[0],i);
+                //myrdma.rdma_write_pagerank(send[0],i);
                 /*pool.enqueue([&myrdma, i, &send] {
                     myrdma.rdma_write_pagerank(send[0], i);
                 });*/

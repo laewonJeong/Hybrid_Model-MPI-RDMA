@@ -620,12 +620,9 @@ int main(int argc, char** argv){
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
+            worker.reserve(num_of_node - 2);
             for(size_t i = 1; i<num_of_node-1;i++){
-                worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
-                //myrdma.rdma_write_pagerank(send[0],i);
-                /*pool.enqueue([&myrdma, i, &send] {
-                    myrdma.rdma_write_pagerank(send[0], i);
-                });*/
+                worker.emplace_back(&myRDMA::rdma_write_pagerank, &myrdma, send[0], i);
             }
             for(int i=0;i<num_of_node-2;i++)
                 worker[i].join();
@@ -634,6 +631,7 @@ int main(int argc, char** argv){
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             printf("%d: send 수행시간: %Lfs.\n", rank, time1);
+            worker.clear();
         }
         else{
             MPI_Request request;

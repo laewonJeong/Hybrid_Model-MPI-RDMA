@@ -15,6 +15,9 @@
 #include <pagerank.hpp>
 #include <numeric>
 #include "tcp.hpp"
+#include <mutex>
+#include <queue>
+#include <condition_variable>
 
 #define df 0.85
 #define MAX 100000
@@ -33,6 +36,56 @@ int edge;
 int max_edge = 0;
 using namespace std;
 
+class ThreadPool {
+public:
+    ThreadPool(size_t numThreads) : stop(false) {
+        for (size_t i = 0; i < numThreads; ++i) {
+            workers.emplace_back([this] {
+                while (true) {
+                    std::function<void()> task;
+                    {
+                        std::unique_lock<std::mutex> lock(queueMutex);
+                        condition.wait(lock, [this] { return stop || !tasks.empty(); });
+                        if (stop && tasks.empty()) {
+                            return;
+                        }
+                        task = std::move(tasks.front());
+                        tasks.pop();
+                    }
+                    task();
+                }
+            });
+        }
+    }
+
+    ~ThreadPool() {
+        {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            stop = true;
+        }
+        condition.notify_all();
+        for (std::thread &worker : workers) {
+            worker.join();
+        }
+    }
+
+    template <class F>
+    void enqueue(F &&f) {
+        {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            tasks.emplace(std::forward<F>(f));
+        }
+        condition.notify_one();
+    }
+
+private:
+    std::vector<std::thread> workers;
+    std::queue<std::function<void()>> tasks;
+
+    std::mutex queueMutex;
+    std::condition_variable condition;
+    bool stop;
+};
 double logistic(double x) {
     return 1.0 / (1.0 + exp(-x));
 }
@@ -610,13 +663,18 @@ int main(int argc, char** argv){
         //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         if(my_ip == node[0]){
+            ThreadPool pool(4);
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
-            for(size_t i = 1; i<num_of_node-1;i++)
-                worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
+            for(size_t i = 1; i<num_of_node-1;i++){
+                //worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
                 //myrdma.rdma_write_pagerank(send[0],i);
-            for(int i=0;i<num_of_node-2;i++)
-                worker[i].detach();
+                pool.enqueue([&myrdma, i, &send] {
+                    myrdma.rdma_write_pagerank(send[0], i);
+                });
+            }
+            /*for(int i=0;i<num_of_node-2;i++)
+                worker[i].detach();*/
             cout << "[INFO]START SEND - SUCCESS" << endl;
 
             clock_gettime(CLOCK_MONOTONIC, &end1);

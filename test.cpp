@@ -189,7 +189,7 @@ int main(int argc, char** argv){
     for(int i =0; i<num_of_vertex;i++){
         vertex_weight[i] /= sum_weight;
         sum += vertex_weight[i];
-        if(sum >= 0.249){
+        if(sum >= 0.25){
             cout << sum<< " and " << i << endl;
             sum = 0;
         }
@@ -243,7 +243,7 @@ int main(int argc, char** argv){
     cout << "ve: " << ve << endl;
     for(int i =0; i<num_of_vertex;i++){
         sum += vertex_weight[i];
-        if(sum >= 0.249){
+        if(sum >= 0.25){
             end_arr[index] = i;
             sum = 0;
             if(index<num_of_node-1)
@@ -584,6 +584,8 @@ int main(int argc, char** argv){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
                 send[0].insert(send[0].end(),recv1[i].begin(),recv1[i].begin()+size);
+                if(i==num_of_node-1)
+                    myrdma.rdma_write_pagerank(send[0],0);
             }   
 
             if(diff < 0.00001)
@@ -611,7 +613,7 @@ int main(int argc, char** argv){
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             
-            for(size_t i = 0; i<num_of_node-1;i++)
+            for(size_t i = 1; i<num_of_node-1;i++)
                 myrdma.rdma_write_pagerank(send[0],i);
             cout << "[INFO]START SEND - SUCCESS" << endl;
 

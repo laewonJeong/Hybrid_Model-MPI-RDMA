@@ -642,7 +642,7 @@ int main(int argc, char** argv){
            
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 
-            myrdma.rdma_write_pagerank(send[0],0);
+            //myrdma.rdma_write_pagerank(send[0],0);
 
             fill(send_first, send_end, send[0]);
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
@@ -666,7 +666,7 @@ int main(int argc, char** argv){
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
-            for(size_t i = 1; i<num_of_node-1;i++){
+            for(size_t i = 0; i<num_of_node-1;i++){
                 //worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
                 //myrdma.rdma_write_pagerank(send[0],i);
                 pool.enqueue([&myrdma, i, &send] {

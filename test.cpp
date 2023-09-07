@@ -249,10 +249,10 @@ int main(int argc, char** argv){
     for(int i =0; i<num_of_vertex;i++){
         sum += vertex_weight[i];
         if(sum >= 0.25){
-            end_arr[index] = i;
+            end_arr[index] = i-1;
             sum = 0;
             if(index<num_of_node-1)
-                start_arr[index+1] = i;
+                start_arr[index+1] = i-1;
 
             index++;
         }

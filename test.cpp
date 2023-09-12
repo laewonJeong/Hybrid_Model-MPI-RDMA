@@ -276,7 +276,9 @@ int main(int argc, char** argv){
         //printf("%llf\n", vertex_weight[i]);
         }
         end_arr[num_of_node-2] = num_of_vertex;
+
     }
+    vertex_weight.clear();
     /*for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if( temp+ttt*argvv >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
@@ -311,7 +313,6 @@ int main(int argc, char** argv){
                 div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
                 start = start_arr[i-1];
                 end = end_arr[i-1];
-                cout << "div_vertex: " << div_num_of_vertex << endl;
             }
         }
         for(int i=0;i<num_of_node;i++){
@@ -415,7 +416,6 @@ int main(int argc, char** argv){
             end += end_arr[0];
         }
         send[0][0] = div_num_of_vertex;
-        cout << "send[0][0]: " <<send[0][0] << endl;
         myrdma.rdma_write_vector(send[0],0);
         //cout << "start, end: " << start <<", "<< end << endl;
     }
@@ -648,11 +648,11 @@ int main(int argc, char** argv){
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
-        
-            for(size_t i = 1; i<num_of_node-1;i++){
+            size_t i;
+            for(i = 1; i<num_of_node-1;i++){
                 worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));
             }
-            for(int i=0;i<num_of_node-2;i++)
+            for(i=0;i<num_of_node-2;i++)
                 worker[i].join();
             cout << "[INFO]START SEND - SUCCESS" << endl;
 

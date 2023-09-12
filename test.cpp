@@ -315,8 +315,14 @@ int main(int argc, char** argv){
             }
         }
         for(int i=0;i<num_of_node;i++){
-            send[i].resize(div_num_of_vertex);
-            recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+            if(i == 0){
+                send[i].resize(div_num_of_vertex);
+                recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+            }
+            else{
+                send[i].clear();
+                recv1[i].clear();
+            }
         }
         //=======================================================================
         /*temp =0;

@@ -566,7 +566,8 @@ int main(int argc, char** argv){
 
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
-                    const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
+                    const size_t graph_ptr_size = graph[from_page].size();
+                    const double inv_num_outgoing = 1.0 / graph_ptr_size;
 
                     tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }

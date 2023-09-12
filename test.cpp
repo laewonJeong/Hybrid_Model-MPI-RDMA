@@ -260,6 +260,7 @@ int main(int argc, char** argv){
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
     if (my_ip != node[0]){
+        sum = 0;
         for(int i =0; i<num_of_vertex;i++){
             sum += vertex_weight[i];
             if(sum >= 0.25){

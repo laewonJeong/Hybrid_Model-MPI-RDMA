@@ -84,12 +84,13 @@ bool add_arc(size_t from, size_t to){
 
     return ret;
 }
-void create_graph_data(string path, int rank, string del){
+void create_graph_data(string path, int rank, string del, string my_ip){
     //cout << "Creating graph about  "<< path<<"..."  <<endl;
     istream *infile;
 
     infile = new ifstream(path.c_str());
     size_t line_num = 0;
+    size_t max_vertex = 0;
     string line;
 	
 	if(infile){
@@ -104,7 +105,14 @@ void create_graph_data(string path, int rank, string del){
 
             from = line.substr(0,pos);
             to = line.substr(pos+1);
-            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
+            if(my_ip != node[0])
+                add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
+            else{
+                if(max_vertex < strtol(from.c_str(), NULL, 10))
+                    max_vertex = strtol(from.c_str(), NULL, 10);
+                if(max_vertex < strtol(to.c_str(), NULL, 10))
+                    max_vertex = strtol(to.c_str(), NULL, 10);
+            }
             line_num++;
             //if(rank == 0 && line_num%5000000 == 0)
             //   cerr << "[INFO]CREATE " << line_num << " LINES." << endl; 
@@ -118,7 +126,12 @@ void create_graph_data(string path, int rank, string del){
 		cout << "Unable to open file" <<endl;
         exit(1);
 	}
-    num_of_vertex = graph.size();
+    if(my_ip != node[0])
+        num_of_vertex = graph.size();
+    else
+        num_of_vertex = max_vertex+1;
+
+    cout << num_of_vertex << endl;
     edge = line_num;
     delete infile;
 }
@@ -167,7 +180,7 @@ int main(int argc, char** argv){
     }
     clock_gettime(CLOCK_MONOTONIC, &begin1);
     
-    create_graph_data(argv[1],rank,argv[2]);      
+    create_graph_data(argv[1],rank,argv[2], my_ip);      
     
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -175,35 +188,36 @@ int main(int argc, char** argv){
     
 //==================================================================================
     cout << "[INFO]AVG EDGE: "<<double(edge/num_of_vertex) << endl;
-    cout << "[INFO]MAX EDGE: "<<max_edge <<endl;
+    //cout << "[INFO]MAX EDGE: "<<max_edge <<endl;
 
     cout.precision(numeric_limits<double>::digits10);
     vector<double> vertex_weight;
     double sum_weight = 0;
-    //double max_weight = log(static_cast<double>(max_edge+1.0));
-    
-    for(int i =0; i<num_of_vertex;i++){
-        double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
-        vertex_weight.push_back(weight);
-        sum_weight += weight;
-    }
     double sum = 0;
-    //printf("%Lf\n", sum_weight);
-    
-    for(int i =0; i<num_of_vertex;i++){
-        vertex_weight[i] /= sum_weight;
-        sum += vertex_weight[i];
-
-        if(sum >= 0.25){
-            cout << sum-vertex_weight[i-1]<< " and " << i-1 << endl;
-            sum = 0;
+    //double max_weight = log(static_cast<double>(max_edge+1.0));
+    if(my_ip != node[0]){
+        for(int i =0; i<num_of_vertex;i++){
+            double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+            vertex_weight.push_back(weight);
+            sum_weight += weight;
         }
-        //printf("%llf\n", vertex_weight[i]);
-    }
-    cout << num_of_vertex << endl;
+        //printf("%Lf\n", sum_weight);
     
-    for(int i=0;i<5;i++){
-        printf("%lf\n", vertex_weight[i]);
+        for(int i =0; i<num_of_vertex;i++){
+            vertex_weight[i] /= sum_weight;
+            sum += vertex_weight[i];
+
+            if(sum >= 0.25){
+                cout << sum-vertex_weight[i-1]<< " and " << i-1 << endl;
+                sum = 0;
+            }
+            //printf("%llf\n", vertex_weight[i]);
+        }
+        cout << num_of_vertex << endl;
+    
+        for(int i=0;i<5;i++){
+            printf("%lf\n", vertex_weight[i]);
+        }
     }
 //==================================================================================
     myRDMA myrdma;
@@ -223,9 +237,8 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
     int argvv = stoi(argv[3]);
-    sum = 0;
     // graph partitioning
-    double ve = edge/num_of_vertex;
+    //double ve = edge/num_of_vertex;
 
     int recvcounts[size];
     int displs[size]; 
@@ -238,29 +251,31 @@ int main(int argc, char** argv){
     int end_arr_process[size-1];
     int temp = 0;
     size_t index = 0;
-    int edge_part = ceil((edge/(num_of_node-1)));
-    int vertex_part = ceil((num_of_vertex/(num_of_node-1))*argvv);
-    int part = ceil((edge+num_of_vertex)/(num_of_node-1));
+    //int edge_part = ceil((edge/(num_of_node-1)));
+    //int vertex_part = ceil((num_of_vertex/(num_of_node-1))*argvv);
+    //int part = ceil((edge+num_of_vertex)/(num_of_node-1));
     //cout << edge_part << endl;
-    long long buffer_size = num_of_vertex * sizeof(double);
-    long long buf_part = buffer_size/(num_of_node-1);
-    int ttt = 1;
-    cout << "ve: " << ve << endl;
-    for(int i =0; i<num_of_vertex;i++){
-        sum += vertex_weight[i];
-        if(sum >= 0.25){
-            end_arr[index] = i-1;
-            sum = 0;
-            if(index<num_of_node-1)
-                start_arr[index+1] = i-1;
+    //long long buffer_size = num_of_vertex * sizeof(double);
+    //long long buf_part = buffer_size/(num_of_node-1);
+    //int ttt = 1;
+    //cout << "ve: " << ve << endl;
+    if (my_ip != node[0]){
+        for(int i =0; i<num_of_vertex;i++){
+            sum += vertex_weight[i];
+            if(sum >= 0.25){
+                end_arr[index] = i-1;
+                sum = 0;
+                if(index<num_of_node-1)
+                    start_arr[index+1] = i-1;
 
-            index++;
-        }
-        if(index == num_of_node-2)
-            break;
+                index++;
+            }
+            if(index == num_of_node-2)
+                break;
         //printf("%llf\n", vertex_weight[i]);
+        }
+        end_arr[num_of_node-2] = num_of_vertex;
     }
-    end_arr[num_of_node-2] = num_of_vertex;
     /*for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if( temp+ttt*argvv >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
@@ -391,14 +406,17 @@ int main(int argc, char** argv){
             start += end_arr[0];
             end += end_arr[0];
         }
+        send[0][0] = div_num_of_vertex;
+        myrdma.rdma_write_vector(send[0],0);
         //cout << "start, end: " << start <<", "<< end << endl;
     }
     else{
-         for(int i=0;i<num_of_node;i++){
-            int temp1 = end_arr[i] - start_arr[i];
+        myrdma.recv_t("send");
+        for(int i=0;i<num_of_node-1;i++){
+            //int temp1 = end_arr[i] - start_arr[i];
             send[i].resize(num_of_vertex, 1/num_of_vertex);
-            recv1[i].resize(temp1);
-            nn[i] = temp1;
+            recv1[i].resize(recv1[i][0]);
+            nn[i] = recv1[i][0];
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }

@@ -310,6 +310,7 @@ int main(int argc, char** argv){
                 div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
                 start = start_arr[i-1];
                 end = end_arr[i-1];
+                cout << "div_vertex: " << div_num_of_vertex << endl;
             }
         }
         for(int i=0;i<num_of_node;i++){

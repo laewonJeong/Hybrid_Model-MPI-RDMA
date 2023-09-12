@@ -407,6 +407,7 @@ int main(int argc, char** argv){
             end += end_arr[0];
         }
         send[0][0] = div_num_of_vertex;
+        cout << "send[0][0]: " <<send[0][0] << endl;
         myrdma.rdma_write_vector(send[0],0);
         //cout << "start, end: " << start <<", "<< end << endl;
     }

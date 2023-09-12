@@ -413,10 +413,10 @@ int main(int argc, char** argv){
     else{
         myrdma.recv_t("send");
         for(int i=0;i<num_of_node-1;i++){
-            //int temp1 = end_arr[i] - start_arr[i];
+            int temp1 = recv1[i][0];
             send[i].resize(num_of_vertex, 1/num_of_vertex);
-            recv1[i].resize(recv1[i][0]);
-            nn[i] = recv1[i][0];
+            recv1[i].resize(temp1);
+            nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }

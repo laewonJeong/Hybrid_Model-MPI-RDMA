@@ -30,6 +30,7 @@ string node[num_of_node] = {server_ip,"192.168.1.102","192.168.1.103","192.168.1
 string node_domain[num_of_node];
 
 std::vector<std::vector<size_t>> sliced_graph;
+std::vector<std::vector<size_t>> p_sliced_graph;
 std::vector<int> num_outgoing;
 int num_of_vertex;
 int start, end;
@@ -386,8 +387,8 @@ int main(int argc, char** argv){
             start += end_arr[0];
             end += end_arr[0];
         }
-        sliced_graph.resize(end-start);
-        sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);
+        p_sliced_graph.resize(end-start);
+        p_sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);
         //cout << "start, end: " << start <<", "<< end << endl;
     }
      else{
@@ -403,7 +404,8 @@ int main(int argc, char** argv){
         num_outgoing.shrink_to_fit();
     }
     delete graph;
-
+    sliced_graph.resize(0);
+    sliced_graph.shrink_to_fit();
     //D-RDMALib Init
     
     vector<double>* send_first = &send[1];
@@ -677,8 +679,8 @@ int main(int argc, char** argv){
                 //
                 idx = i;
                 double tmp = 0.0;
-                const size_t graph_size = sliced_graph[i].size();
-                const size_t* graph_ptr = sliced_graph[i].data();
+                const size_t graph_size = p_sliced_graph[i].size();
+                const size_t* graph_ptr = p_sliced_graph[i].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

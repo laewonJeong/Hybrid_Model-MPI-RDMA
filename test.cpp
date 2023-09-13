@@ -628,11 +628,11 @@ int main(int argc, char** argv){
     double* recv_buffer_ptr = recv1[0].data();
     double* send_buf_ptr = send[0].data();
     check = 1;
-    MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+    /*MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){
         myrdma.rdma_comm("write_with_imm", "1");
     }
-    MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+    MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);*/
     
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     //===============================================================================

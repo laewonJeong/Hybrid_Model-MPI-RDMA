@@ -65,7 +65,7 @@ void myRDMA::rdma_wrecv_pagerank(int i){
 }
 void myRDMA::rdma_send_vector(vector<double> msg, int i){
     
-    size_t size = sizeof(double)*(myrdma.num_of_vertex);
+    size_t size = sizeof(double)*(msg.size());
 
     rdma.post_rdma_send(rdma_info1[0][i].qp, rdma_info1[0][i].mr, send_adrs[i], 
                                 size, myrdma.qp_key[i].first, myrdma.qp_key[i].second);
@@ -77,7 +77,7 @@ void myRDMA::rdma_send_vector(vector<double> msg, int i){
 void myRDMA::rdma_write_vector(vector<double> msg, int i){
     //myrdma.send[i] = msg;
     struct ibv_wc wc;
-    size_t size = sizeof(double)*(myrdma.num_of_vertex);
+    size_t size = sizeof(double)*(msg.size());
     rdma.post_rdma_write_with_imm(rdma_info1[0][i].qp, rdma_info1[0][i].mr, send_adrs[i], 
                                 size, myrdma.qp_key[i].first, myrdma.qp_key[i].second);
     rdma.pollCompletion(rdma_info1[0][i].cq);

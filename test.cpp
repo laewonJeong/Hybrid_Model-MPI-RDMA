@@ -285,9 +285,9 @@ int main(int argc, char** argv){
                 recv1[i].resize(num_of_vertex, 1/num_of_vertex);
             }
             else{
-                send[i].clear();
+                send[i].resize(1);
                 send[i].shrink_to_fit();
-                recv1[i].clear();
+                recv1[i].resize(1);
                 recv1[i].shrink_to_fit();
             }
         }

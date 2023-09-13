@@ -298,7 +298,7 @@ void Pagerank::init_connection(const char* ip, string server[], int number_of_se
 {
     myrdma1.initialize_rdma_connection_vector(ip,server,number_of_server,Port,send_buffer,recv_buffer,num_of_vertex);
     myrdma1.create_rdma_info(send_buffer, recv_buffer);
-    myrdma1.send_info_change_qp();
+    myrdma1.send_info_change_qp(send_buffer, recv_buffer);
 
     string str_ip(ip);
 

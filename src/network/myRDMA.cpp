@@ -299,14 +299,15 @@ void myRDMA::rdma_many_to_one_recv_msg(string opcode){
     }*/
 }
 
-void myRDMA::send_info_change_qp(){
-    cout << "real start" << endl;
+void myRDMA::send_info_change_qp(vector<double> *send, vector<double> *recv){
     TCP tcp;
     RDMA rdma;
+
     //Send RDMA info
     for(int k = 0;k<2;k++){
-        int *clnt_socks = tcp.client_sock();
         cout << "[INFO]SEND RDMA INFO[" << k << "] ";
+        int *clnt_socks = tcp.client_sock();
+        
         if(k==0){
             for(int idx=0; idx < myrdma.connect_num+1; idx++){
                 if(clnt_socks[idx]!=0){
@@ -318,13 +319,13 @@ void myRDMA::send_info_change_qp(){
             std::ostringstream oss;
 
             if(k==0){
-                oss << myrdma.send[j].data();
-                if(tcp.check_my_ip() == "192.168.0.100"){
-                    oss << myrdma.send[0].data();
-                }
+                oss << send[j].data();
+                //if(tcp.check_my_ip() == "192.168.1.100"){
+                //    oss << myrdma.send[0].data();
+                //}
             }
             else if(k==1)
-                oss << myrdma.recv[j].data();
+                oss << recv[j].data();
             
             tcp.send_msg(change(oss.str()+"\n"),myrdma.sock_idx[j]);
             tcp.send_msg(change(to_string(rdma_info1[k][j].mr->length)+"\n"),myrdma.sock_idx[j]);
@@ -404,6 +405,9 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
     }
     
     cout << " - SUCCESS" << endl;
+    cout << "finish create_rdma_info" << endl;
+        cout << "start send_info_change_qp()" << endl;
+    myRDMA::send_info_change_qp(send, recv);
 }
 void myRDMA::set_buffer(char send[][buf_size], char recv[][buf_size], int num_of_server){
     myrdma.send_buffer = &send[0];

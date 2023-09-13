@@ -284,7 +284,7 @@ int main(int argc, char** argv){
                 end = end_arr[i-1];
             }
         }
-        if(rank == 0){
+        //if(rank == 0){
             for(int i=0;i<num_of_node;i++){
                 if(i == 0){
                     send[i].resize(div_num_of_vertex);
@@ -297,7 +297,7 @@ int main(int argc, char** argv){
                     recv1[i].shrink_to_fit();
                 }
             }
-        }
+        //}
         sliced_graph.resize(end-start);
         sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
          //=======================================================================

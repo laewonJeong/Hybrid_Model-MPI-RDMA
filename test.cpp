@@ -267,25 +267,11 @@ int main(int argc, char** argv){
             vertex_weight.push_back(weight);
             sum_weight += weight;
         }
-        //printf("%Lf\n", sum_weight);
     
         for(int i =0; i<num_of_vertex;i++){
             vertex_weight[i] /= sum_weight;
-            sum += vertex_weight[i];
-
-            if(sum >= 0.25){
-                cout << sum-vertex_weight[i-1]<< " and " << i-1 << endl;
-                sum = 0;
-            }
-            //printf("%llf\n", vertex_weight[i]);
         }
-        cout << num_of_vertex << endl;
     
-        for(int i=0;i<5;i++){
-            printf("%lf\n", vertex_weight[i]);
-        }
-
-        sum = 0;
         for(int i =0; i<num_of_vertex;i++){
             sum += vertex_weight[i];
             if(sum >= 0.25){
@@ -347,10 +333,13 @@ int main(int argc, char** argv){
             }
             else{
                 send[i].clear();
+                send[i].shrink_to_fit();
                 recv1[i].clear();
+                recv1[i].shrink_to_fit();
             }
         }
         sliced_graph = std::vector<std::vector<size_t>>(graph.begin() + start, graph.begin() + end + 1);
+        cout << "Memory Usage(slice): " << sizeof(sliced_graph) << endl;
         //=======================================================================
         /*temp =0;
         index=0;
@@ -457,6 +446,7 @@ int main(int argc, char** argv){
     }
    
     std::vector<std::vector<size_t>>().swap(graph);
+    cout << "Memory Usage(graph): " << sizeof(graph) << endl;
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;

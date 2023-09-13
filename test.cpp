@@ -443,16 +443,16 @@ int main(int argc, char** argv){
             start += end_arr[0];
             end += end_arr[0];
         }
-        send[0][0] = div_num_of_vertex;
+        //send[0][0] = div_num_of_vertex;
         //cout << "start, end: " << start <<", "<< end << endl;
     }
     else{
-        for(int i=0;i<num_of_node-1;i++){
+        /*for(int i=0;i<num_of_node-1;i++){
             int temp1 = end_arr[i]-start_arr[i];
             send[i].resize(num_of_vertex, 1/num_of_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;
-        }
+        }*/
     }
     
     //std::vector<std::vector<size_t>>().swap(graph);

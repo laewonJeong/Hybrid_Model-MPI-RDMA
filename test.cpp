@@ -147,6 +147,12 @@ int main(int argc, char** argv){
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
+    vector<double> send[num_of_node];
+    vector<double> recv1[num_of_node];
+    vector<double>* send_first = &send[1];
+    vector<double>* send_end = &send[num_of_node-1];
+
+
 
     string my_ip= tcp.check_my_ip();
     
@@ -220,20 +226,7 @@ int main(int argc, char** argv){
 //==================================================================================
     myRDMA myrdma;
     Pagerank pagerank;
-    
-    //D-RDMALib Init
-    vector<double> send[num_of_node];
-    vector<double> recv1[num_of_node];
-    vector<double>* send_first = &send[1];
-    vector<double>* send_end = &send[num_of_node-1];
-    if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
-        cout << "=====================================================" << endl;
-        cout << "[INFO]NETWORK CONFIGURATION" << endl;
-        myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
-        myrdma.create_rdma_info(send, recv1);
-        myrdma.send_info_change_qp();
-    }
+
     int argvv = stoi(argv[3]);
     // graph partitioning
     //double ve = edge/num_of_vertex;
@@ -257,6 +250,7 @@ int main(int argc, char** argv){
     //long long buf_part = buffer_size/(num_of_node-1);
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
+    int div_num_of_vertex;
     if (my_ip != node[0]){
         vector<double> vertex_weight;
         double sum_weight = 0;
@@ -287,9 +281,45 @@ int main(int argc, char** argv){
         //printf("%llf\n", vertex_weight[i]);
         }
         end_arr[num_of_node-2] = num_of_vertex;
-
+         for(int i=1;i<num_of_node;i++){
+            if(node[i] == my_ip){
+                div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
+                start = start_arr[i-1];
+                end = end_arr[i-1];
+            }
+        }
+        for(int i=0;i<num_of_node;i++){
+            if(i == 0){
+                send[i].resize(div_num_of_vertex);
+                recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+            }
+            else{
+                send[i].clear();
+                send[i].shrink_to_fit();
+                recv1[i].clear();
+                recv1[i].shrink_to_fit();
+            }
+        }
+        sliced_graph.resize(end-start);
+        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
     }
-   
+    else{
+       for(int i=0;i<num_of_node-1;i++){
+            send[i].resize(num_of_vertex);
+            recv1[i].resize(num_of_vertex);
+       }
+    }
+    delete graph;
+    //D-RDMALib Init
+
+    if(rank == 0){
+        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
+        cout << "=====================================================" << endl;
+        cout << "[INFO]NETWORK CONFIGURATION" << endl;
+        myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
+        myrdma.create_rdma_info(send, recv1);
+        myrdma.send_info_change_qp();
+    }
     /*for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if( temp+ttt*argvv >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
@@ -317,29 +347,7 @@ int main(int argc, char** argv){
     //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     //cout << "===========================" << endl;
     
-    int div_num_of_vertex;
     if(my_ip != node[0]){
-        for(int i=1;i<num_of_node;i++){
-            if(node[i] == my_ip){
-                div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
-                start = start_arr[i-1];
-                end = end_arr[i-1];
-            }
-        }
-        for(int i=0;i<num_of_node;i++){
-            if(i == 0){
-                send[i].resize(div_num_of_vertex);
-                recv1[i].resize(num_of_vertex, 1/num_of_vertex);
-            }
-            else{
-                send[i].clear();
-                send[i].shrink_to_fit();
-                recv1[i].clear();
-                recv1[i].shrink_to_fit();
-            }
-        }
-        sliced_graph.resize(end-start);
-        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
         //=======================================================================
         /*temp =0;
         index=0;
@@ -444,7 +452,7 @@ int main(int argc, char** argv){
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }
-    delete graph;
+    
     //std::vector<std::vector<size_t>>().swap(graph);
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])

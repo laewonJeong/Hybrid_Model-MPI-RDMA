@@ -300,6 +300,7 @@ void myRDMA::rdma_many_to_one_recv_msg(string opcode){
 }
 
 void myRDMA::send_info_change_qp(){
+    cout << "real start" << endl;
     TCP tcp;
     RDMA rdma;
     //Send RDMA info
@@ -382,17 +383,17 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
             for(int i =0;i<myrdma.connect_num;i++){
                 struct ibv_context* context = rdma.createContext();
 //                struct ibv_pd* protection_domain = ibv_alloc_pd(context);
-                cout << "ibv_ct" << endl;
+                //cout << "ibv_ct" << endl;
                 int cq_size = 0x10;
                 struct ibv_cq* completion_queue = ibv_create_cq(context, cq_size, nullptr, nullptr, 0);
-                 cout << "ibv_cq" << endl;
+                // cout << "ibv_cq" << endl;
                 struct ibv_pd* protection_domain = ibv_alloc_pd(context);
-                 cout << "ibv_pd" << endl;
+                // cout << "ibv_pd" << endl;
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
-                 cout << "ibv_qp" << endl;
+                // cout << "ibv_qp" << endl;
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
                                                         send[i].data(), sizeof(double) * send[i].size());//sizeof(myrdma.send[i].data()));
-                 cout << "ibv_mr" << endl;
+                // cout << "ibv_mr" << endl;
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});

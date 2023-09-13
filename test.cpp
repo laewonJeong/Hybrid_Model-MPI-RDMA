@@ -320,6 +320,8 @@ int main(int argc, char** argv){
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);
+        cout << "finish create_rdma_info" << endl;
+        cout << "start send_info_change_qp()" << endl;
         myrdma.send_info_change_qp();
     }
     /*for(size_t i=0;i<num_of_vertex;i++){

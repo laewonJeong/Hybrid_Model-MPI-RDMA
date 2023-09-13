@@ -19,7 +19,6 @@
 #include <queue>
 #include <condition_variable>
 #include <future>
-
 #define df 0.85
 #define MAX 100000
 #define MAXX 50000
@@ -37,7 +36,6 @@ int start, end;
 int edge;
 int max_edge = 0;
 using namespace std;
-
 double logistic(double x) {
     return 1.0 / (1.0 + exp(-x));
 }
@@ -57,6 +55,7 @@ bool insert_into_vector(Vector& v, const T& t){
         return false;
     }
 }
+
 bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
     vector<size_t> v;
     bool ret = false;
@@ -106,7 +105,14 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
 
             from = line.substr(0,pos);
             to = line.substr(pos+1);
-            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+            if(my_ip != node[0])
+                add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+            else{
+                if(max_vertex < strtol(from.c_str(), NULL, 10))
+                    max_vertex = strtol(from.c_str(), NULL, 10);
+                if(max_vertex < strtol(to.c_str(), NULL, 10))
+                    max_vertex = strtol(to.c_str(), NULL, 10);
+            }
           
             line_num++;
             //if(rank == 0 && line_num%5000000 == 0)
@@ -117,12 +123,10 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
         
 	} 
     
-    else {
-		cout << "Unable to open file" <<endl;
-        exit(1);
-	}
-    //if(my_ip != node[0])
-    num_of_vertex = (*graph).size();
+   if(my_ip != node[0])
+        num_of_vertex = (*graph).size();
+    else
+        num_of_vertex = max_vertex+1;
     //else
     //    num_of_vertex = max_vertex+1;
 
@@ -141,10 +145,7 @@ int main(int argc, char** argv){
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
-    vector<double> send[num_of_node];
-    vector<double> recv1[num_of_node];
-    vector<double>* send_first = &send[1];
-    vector<double>* send_end = &send[num_of_node-1];
+
 
 
 
@@ -193,9 +194,6 @@ int main(int argc, char** argv){
     
     cout.precision(numeric_limits<double>::digits10);
     //double max_weight = log(static_cast<double>(max_edge+1.0));
-    vector<double> vertex_weight;
-    double sum_weight = 0;
-    double sum = 0;
     //if(my_ip != node[0]){
         /*for(int i =0; i<num_of_vertex;i++){
             double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
@@ -224,7 +222,10 @@ int main(int argc, char** argv){
     myRDMA myrdma;
     Pagerank pagerank;
     //D-RDMALib Init
-
+    vector<double> send[num_of_node];
+    vector<double> recv1[num_of_node];
+    vector<double>* send_first = &send[1];
+    vector<double>* send_end = &send[num_of_node-1];
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
         cout << "=====================================================" << endl;
@@ -311,7 +312,66 @@ int main(int argc, char** argv){
         }
         sliced_graph.resize(end-start);
         sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
-        
+         //=======================================================================
+        /*temp =0;
+        index=0;
+        ttt=1;
+        int num_edge = 0;
+        for (int i = start; i < end; i++) {
+            num_edge += num_outgoing[i];
+        }
+        start_arr_process[0] = start;
+        for(size_t i =start; i<end;i++){
+            temp += num_outgoing[i];
+            if( temp+ttt*argvv >= num_edge/size+div_num_of_vertex/size*argvv){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+            //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
+                temp = num_outgoing[i];
+                end_arr_process[index] = i;
+                if(index<size)
+                    start_arr_process[index+1] = i;
+                ttt=0;
+                index++;
+            }
+            ttt++;
+            if(index == size-1)
+                break;
+        }
+        end_arr_process[size-1] = div_num_of_vertex;
+        if(my_ip == node[num_of_node-1]){
+            end_arr_process[size-1] +=start_arr[3];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            end_arr_process[size-1] +=start_arr[2];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            end_arr_process[size-1] +=start_arr[1];
+        }
+        //=======================================================================
+        for(int i=0;i<size;i++){
+            if(rank == i){
+                start = start_arr_process[i];
+                end = end_arr_process[i];
+            }
+            displs[i] = start_arr_process[i]-start_arr_process[0];
+            recvcounts[i] = end_arr_process[i] - start_arr_process[i];
+            if(rank == 0){
+                cout << recvcounts[i] << endl;
+            }
+        }
+        /*if(my_ip == node[num_of_node-1]){
+            start += end_arr[2];
+            end += end_arr[2];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            start += end_arr[1];
+            end += end_arr[1];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            start += end_arr[0];
+            end += end_arr[0];
+        }*/
+        //=======================================================================
+        //cout << rank << ", " <<div_num_of_vertex << ", " << start << ", " << end << endl;
         for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
@@ -590,7 +650,6 @@ int main(int argc, char** argv){
             
         }
         dangling_pr = 0.0;
-
         if(step!=0) {
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             if(my_ip != node[0]){
@@ -621,11 +680,9 @@ int main(int argc, char** argv){
                 double tmp = 0.0;
                 const size_t graph_size = sliced_graph[i].size();
                 const size_t* graph_ptr = sliced_graph[i].data();
-
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
-
                     tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }
                 send_buffer_ptr[idx] = (tmp + dangling_pr * inv_num_of_vertex) * df + df_inv * inv_num_of_vertex;
@@ -655,7 +712,6 @@ int main(int argc, char** argv){
                 mpi_time += time3;
             }    
             //printf("%d: allgatherv 수행시간: %Lfs.\n", rank, time3);
-
             //long double time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             //MPI_Allgather(div_send.data(),div_send.size(),MPI_DOUBLE,send[0].data(),div_send.size(),MPI_DOUBLE,MPI_COMM_WORLD);
@@ -669,7 +725,6 @@ int main(int argc, char** argv){
             myrdma.recv_t("send");
             cout << "[INFO]START RECEIVE - SUCCESS" << endl;
             send[0].clear();
-
             for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
@@ -682,7 +737,6 @@ int main(int argc, char** argv){
             
             myrdma.rdma_write_pagerank(send[0], 0);
             
-
             fill(send_first, send_end, send[0]);
             
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
@@ -713,7 +767,6 @@ int main(int argc, char** argv){
             for(i=0;i<num_of_node-2;i++)
                 worker[i].join();
             cout << "[INFO]START SEND - SUCCESS" << endl;
-
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             printf("%d: send 수행시간: %Lfs.\n", rank, time1);
@@ -722,14 +775,11 @@ int main(int argc, char** argv){
             MPI_Request request;
             //std::vector<MPI_Request> requests;
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
             if(rank == 0){
                 cout << time1 << "s." <<endl;
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
-
                 myrdma.rdma_recv_pagerank(0);
                 cout << "[INFO]START RECEIVE_RDMA - SUCCESS ";
-
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -759,7 +809,6 @@ int main(int argc, char** argv){
            // MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
             //clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-
             if(rank == 0){
                 cout << time1 << "s.\n" << endl;
                 network_time += time1;
@@ -796,7 +845,6 @@ int main(int argc, char** argv){
     }
     clock_gettime(CLOCK_MONOTONIC, &end2);
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
-
     //===============================================================================
     
     if(my_ip != node[0] && rank == 0){
@@ -818,7 +866,6 @@ int main(int argc, char** argv){
                 tmp1 = important_pr;
             }
         }
-
         cout << "[INFO]IMPORTANT VERTEX: " << important << "\n[INFO]" << important << "'S VALUE: "<<tmp1 << endl;
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);

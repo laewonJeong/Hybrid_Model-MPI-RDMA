@@ -29,7 +29,7 @@
 
 string node[num_of_node] = {server_ip,"192.168.1.102","192.168.1.103","192.168.1.104","192.168.1.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 string node_domain[num_of_node];
-std::vector<std::vector<size_t>> graph;
+
 std::vector<std::vector<size_t>> sliced_graph;
 std::vector<int> num_outgoing;
 int num_of_vertex;
@@ -57,15 +57,15 @@ bool insert_into_vector(Vector& v, const T& t){
         return false;
     }
 }
-bool add_arc(size_t from, size_t to){
+bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
     vector<size_t> v;
     bool ret = false;
     size_t max_dim = max(from, to);
 
-    if (graph.size() <= max_dim) {
+    if ((*graph).size() <= max_dim) {
         max_dim = max_dim + 1;
         
-        graph.resize(max_dim);
+        (*graph).resize(max_dim);
         //pagerank.outgoing.resize(max_dim);
         if (num_outgoing.size() <= max_dim) {
             num_outgoing.resize(max_dim,0);
@@ -74,7 +74,7 @@ bool add_arc(size_t from, size_t to){
     //pagerank.graph[to].push_back(from);
     //cout << pagerank.graph[to] << endl;
 
-    ret = insert_into_vector(graph[to], from);
+    ret = insert_into_vector((*graph)[to], from);
 
     if (ret) {
         num_outgoing[from]++;
@@ -85,7 +85,7 @@ bool add_arc(size_t from, size_t to){
 
     return ret;
 }
-void create_graph_data(string path, int rank, string del, string my_ip){
+void create_graph_data(string path, int rank, string del, string my_ip,std::vector<std::vector<size_t>>* graph){
     //cout << "Creating graph about  "<< path<<"..."  <<endl;
     istream *infile;
 
@@ -107,7 +107,7 @@ void create_graph_data(string path, int rank, string del, string my_ip){
             from = line.substr(0,pos);
             to = line.substr(pos+1);
             if(my_ip != node[0])
-                add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
+                add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
             else{
                 if(max_vertex < strtol(from.c_str(), NULL, 10))
                     max_vertex = strtol(from.c_str(), NULL, 10);
@@ -128,7 +128,7 @@ void create_graph_data(string path, int rank, string del, string my_ip){
         exit(1);
 	}
     if(my_ip != node[0])
-        num_of_vertex = graph.size();
+        num_of_vertex = (*graph).size();
     else
         num_of_vertex = max_vertex+1;
 
@@ -146,7 +146,7 @@ int main(int argc, char** argv){
     long double compute_time = 0;
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
-    
+    std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
 
     string my_ip= tcp.check_my_ip();
     
@@ -181,7 +181,7 @@ int main(int argc, char** argv){
     }
     clock_gettime(CLOCK_MONOTONIC, &begin1);
     
-    create_graph_data(argv[1],rank,argv[2], my_ip);      
+    create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
     
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -339,7 +339,7 @@ int main(int argc, char** argv){
             }
         }
         sliced_graph.resize(end-start);
-        sliced_graph = std::vector<std::vector<size_t>>(graph.begin() + start, graph.begin() + end + 1);
+        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
         //=======================================================================
         /*temp =0;
         index=0;
@@ -444,8 +444,8 @@ int main(int argc, char** argv){
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }
-   
-    std::vector<std::vector<size_t>>().swap(graph);
+    delete graph;
+    //std::vector<std::vector<size_t>>().swap(graph);
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;

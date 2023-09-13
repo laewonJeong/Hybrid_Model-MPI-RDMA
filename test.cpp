@@ -431,7 +431,7 @@ int main(int argc, char** argv){
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }
-    graph.clear();
+    graph.resize(0);
     graph.shrink_to_fit();
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])

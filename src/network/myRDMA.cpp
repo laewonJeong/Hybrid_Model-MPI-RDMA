@@ -304,10 +304,9 @@ void myRDMA::send_info_change_qp(vector<double> *send, vector<double> *recv){
     RDMA rdma;
 
     //Send RDMA info
-    for(int k = 0;k<2;k++){
-        cout << "[INFO]SEND RDMA INFO[" << k << "] ";
+    for(int k=0;k<2;k++){
+        cout << "[INFO]SEND RDMA INFO[" << k << "] " <<endl;
         int *clnt_socks = tcp.client_sock();
-        
         if(k==0){
             for(int idx=0; idx < myrdma.connect_num+1; idx++){
                 if(clnt_socks[idx]!=0){
@@ -315,6 +314,7 @@ void myRDMA::send_info_change_qp(vector<double> *send, vector<double> *recv){
                 }
             }
         }
+        
         for(int j=0;j<myrdma.connect_num;j++){
             std::ostringstream oss;
 
@@ -327,13 +327,19 @@ void myRDMA::send_info_change_qp(vector<double> *send, vector<double> *recv){
             else if(k==1)
                 oss << recv[j].data();
             
+            cout << "tcp.send_msg() " <<endl;
             tcp.send_msg(change(oss.str()+"\n"),myrdma.sock_idx[j]);
+            cout << "tcp.send_msg(os) " <<endl;
             tcp.send_msg(change(to_string(rdma_info1[k][j].mr->length)+"\n"),myrdma.sock_idx[j]);
+            cout << "tcp.send_msg(mr->length) " <<endl;
             tcp.send_msg(change(to_string(rdma_info1[k][j].mr->lkey)+"\n"),myrdma.sock_idx[j]);
+            cout << "tcp.send_msg(mr->lkey) " <<endl;
             tcp.send_msg(change(to_string(rdma_info1[k][j].mr->rkey)+"\n"),myrdma.sock_idx[j]);
+            cout << "tcp.send_msg(mr->rkey) " <<endl;
             tcp.send_msg(change(to_string(rdma_info1[k][j].lid)+"\n"),myrdma.sock_idx[j]);
+            cout << "tcp.send_msg(lid) " <<endl;
             tcp.send_msg(change(to_string(rdma_info1[k][j].qp_num)+"\n"),myrdma.sock_idx[j]);
-            
+            cout << "fisnish" <<endl;
         }
         cout<< "- SUCCESS" <<endl;
         //Read RDMA info
@@ -406,7 +412,7 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
     
     cout << " - SUCCESS" << endl;
     cout << "finish create_rdma_info" << endl;
-        cout << "start send_info_change_qp()" << endl;
+    cout << "start send_info_change_qp()" << endl;
     myRDMA::send_info_change_qp(send, recv);
 }
 void myRDMA::set_buffer(char send[][buf_size], char recv[][buf_size], int num_of_server){

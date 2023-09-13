@@ -386,6 +386,8 @@ int main(int argc, char** argv){
             start += end_arr[0];
             end += end_arr[0];
         }
+        sliced_graph.resize(end-start);
+        sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);
         //cout << "start, end: " << start <<", "<< end << endl;
     }
      else{

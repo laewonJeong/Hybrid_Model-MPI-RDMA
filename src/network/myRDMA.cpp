@@ -372,7 +372,8 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
                 struct ibv_cq* completion_queue = ibv_create_cq(context, cq_size, nullptr, nullptr, 0);
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
-                                                        recv[i].data(), sizeof(double)*(myrdma.num_of_vertex));//sizeof(myrdma.recv[i].data()));
+                                                        recv[i].data(), sizeof(double)*(recv[i].size()));//sizeof(myrdma.recv[i].data()));
+                cout << mr << endl;
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});
@@ -388,7 +389,8 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
                 struct ibv_pd* protection_domain = ibv_alloc_pd(context);
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
-                                                        send[i].data(), sizeof(double)*(myrdma.num_of_vertex));//sizeof(myrdma.send[i].data()));
+                                                        send[i].data(), sizeof(double)*(send[i].size()));//sizeof(myrdma.send[i].data()));
+                cout << mr << endl;
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});
@@ -428,8 +430,8 @@ void myRDMA::initialize_rdma_connection_vector(const char* ip, string server[], 
    
     //cout << partition << " " << partition1 << endl;
     for(int i=0;i<number_of_server-1;i++){
-        myrdma.send[i].resize(num_of_vertex);
-        myrdma.recv[i].resize(num_of_vertex);
+        //myrdma.send[i].resize(num_of_vertex);
+        //myrdma.recv[i].resize(num_of_vertex);
         send_adrs.push_back(myrdma.send[i].data());
         recv_adrs.push_back(myrdma.recv[i].data());
     }

@@ -139,7 +139,8 @@ int main(int argc, char** argv){
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
-
+    vector<double> send[num_of_node];
+    vector<double> recv1[num_of_node];
 
 
 
@@ -215,21 +216,7 @@ int main(int argc, char** argv){
 //==================================================================================
     myRDMA myrdma;
     Pagerank pagerank;
-    //D-RDMALib Init
-    vector<double> send[num_of_node];
-    vector<double> recv1[num_of_node];
-    vector<double>* send_first = &send[1];
-    vector<double>* send_end = &send[num_of_node-1];
-    if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
-        cout << "=====================================================" << endl;
-        cout << "[INFO]NETWORK CONFIGURATION" << endl;
-        myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
-        myrdma.create_rdma_info(send, recv1);
-        cout << "finish create_rdma_info" << endl;
-        cout << "start send_info_change_qp()" << endl;
-        myrdma.send_info_change_qp();
-    }
+    
     int argvv = stoi(argv[3]);
     // graph partitioning
     //double ve = edge/num_of_vertex;
@@ -406,9 +393,23 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
+        num_outgoing.clear();
+        num_outgoing.shrink_to_fit();
     }
     delete graph;
+
+    //D-RDMALib Init
     
+    vector<double>* send_first = &send[1];
+    vector<double>* send_end = &send[num_of_node-1];
+    if(rank == 0){
+        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
+        cout << "=====================================================" << endl;
+        cout << "[INFO]NETWORK CONFIGURATION" << endl;
+        myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
+        myrdma.create_rdma_info(send, recv1);
+        myrdma.send_info_change_qp();
+    }
     /*for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if( temp+ttt*argvv >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){

@@ -433,6 +433,7 @@ int main(int argc, char** argv){
     }
     graph.resize(0);
     graph.clear();
+    graph.shrink_to_fit();
     std::vector<std::vector<size_t>>(graph).swap(graph);
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])

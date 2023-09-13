@@ -30,7 +30,7 @@ class myRDMA{
         void rdma_many_to_one_recv_msg(string opcode);
         void rdma_comm(string opcode, string msg);
         void create_rdma_info(vector<double> *send, vector<double> *recv);
-        void send_info_change_qp(vector<double> *send, vector<double> *recv);
+        void send_info_change_qp();
         void set_buffer(char send[][buf_size], char recv[][buf_size], int num_of_server);
         void initialize_rdma_connection(const char* ip, string server[], 
                                         int number_of_server, int Port,

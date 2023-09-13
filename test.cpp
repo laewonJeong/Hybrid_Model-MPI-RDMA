@@ -230,7 +230,7 @@ int main(int argc, char** argv){
         myrdma.create_rdma_info(send, recv1);
         cout << "finish create_rdma_info" << endl;
         cout << "start send_info_change_qp()" << endl;
-        myrdma.send_info_change_qp(send,recv1);
+        myrdma.send_info_change_qp();
     }
     int argvv = stoi(argv[3]);
     // graph partitioning

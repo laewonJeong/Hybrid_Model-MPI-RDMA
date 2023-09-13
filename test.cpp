@@ -124,7 +124,7 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
     //else
     //    num_of_vertex = max_vertex+1;
 
-    cout << num_of_vertex << endl;
+    //cout << num_of_vertex << endl;
     edge = line_num;
     delete infile;
 }
@@ -216,7 +216,11 @@ int main(int argc, char** argv){
 //==================================================================================
     myRDMA myrdma;
     Pagerank pagerank;
-    
+    if(rank == 0){
+        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
+        cout << "=====================================================" << endl;
+        cout << "[INFO]GRAPH PARTITIONING" << endl;
+    }
     int argvv = stoi(argv[3]);
     // graph partitioning
     //double ve = edge/num_of_vertex;
@@ -393,7 +397,7 @@ int main(int argc, char** argv){
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
         }
-        num_outgoing.clear();
+        num_outgoing.resize(0);
         num_outgoing.shrink_to_fit();
     }
     delete graph;
@@ -403,7 +407,7 @@ int main(int argc, char** argv){
     vector<double>* send_first = &send[1];
     vector<double>* send_end = &send[num_of_node-1];
     if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
+        cout << "[INFO]FINISH GRAPH PARTITIONING" << endl; // <<  create_graph_time << "s. " << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);

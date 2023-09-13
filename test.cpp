@@ -30,6 +30,7 @@
 string node[num_of_node] = {server_ip,"192.168.1.102","192.168.1.103","192.168.1.104","192.168.1.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 string node_domain[num_of_node];
 std::vector<std::vector<size_t>> graph;
+std::vector<std::vector<size_t>> sliced_graph;
 std::vector<int> num_outgoing;
 int num_of_vertex;
 int start, end;
@@ -325,6 +326,8 @@ int main(int argc, char** argv){
                 recv1[i].clear();
             }
         }
+         sliced_graph = std::vector<std::vector<size_t>>(graph.begin() + start, graph.begin() + end + 1);
+        graph.clear();
         //=======================================================================
         /*temp =0;
         index=0;
@@ -556,18 +559,17 @@ int main(int argc, char** argv){
                 cout << "[INFO]COMPUTE PAGERANK" <<endl;
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
-            for(size_t i=start;i<end;i++){
+            for(size_t i=start-start;i<end-start;i++){
                 //cout << i << endl;
                 //
-                idx = i-start;
+                idx = i;
                 double tmp = 0.0;
-                const size_t graph_size = graph[i].size();
-                const size_t* graph_ptr = graph[i].data();
+                const size_t graph_size = sliced_graph[i].size();
+                const size_t* graph_ptr = sliced_graph[i].data();
 
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
-                    const size_t graph_ptr_size = graph[from_page].size();
-                    const double inv_num_outgoing = 1.0 / graph_ptr_size;
+                    const double inv_num_outgoing = 1.0 / num_outgoing[from_page];
 
                     tmp += recv_buffer_ptr[from_page] * inv_num_outgoing;
                 }

@@ -415,7 +415,7 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
     cout << " - SUCCESS" << endl;
     cout << "finish create_rdma_info" << endl;
     cout << "start send_info_change_qp()" << endl;
-    myRDMA::send_info_change_qp(send, recv);
+    //myRDMA::send_info_change_qp(send, recv);
 }
 void myRDMA::set_buffer(char send[][buf_size], char recv[][buf_size], int num_of_server){
     myrdma.send_buffer = &send[0];

@@ -113,6 +113,10 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
                     max_vertex = strtol(from.c_str(), NULL, 10);
                 if(max_vertex < strtol(to.c_str(), NULL, 10))
                     max_vertex = strtol(to.c_str(), NULL, 10);
+                if (num_outgoing.size() <= max_vertex) {
+                    num_outgoing.resize(max_vertex,0);
+                }
+                num_outgoing[strtol(from.c_str(),NULL,10)]++;
             }
             line_num++;
             //if(rank == 0 && line_num%5000000 == 0)
@@ -251,7 +255,7 @@ int main(int argc, char** argv){
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
     int div_num_of_vertex;
-    if (my_ip != node[0]){
+    if (my_ip != node[0] && my_ip == node[0]){
         vector<double> vertex_weight;
         double sum_weight = 0;
         double sum = 0;
@@ -281,34 +285,42 @@ int main(int argc, char** argv){
         //printf("%llf\n", vertex_weight[i]);
         }
         end_arr[num_of_node-2] = num_of_vertex;
-         for(int i=1;i<num_of_node;i++){
-            if(node[i] == my_ip){
-                div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
-                start = start_arr[i-1];
-                end = end_arr[i-1];
+
+        if(my_ip != node[0]){
+            for(int i=1;i<num_of_node;i++){
+                if(node[i] == my_ip){
+                    div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
+                    start = start_arr[i-1];
+                    end = end_arr[i-1];
+                }
+            }
+            for(int i=0;i<num_of_node;i++){
+                if(i == 0){
+                    send[i].resize(div_num_of_vertex);
+                    recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+                }
+                else{
+                    send[i].clear();
+                    send[i].shrink_to_fit();
+                    recv1[i].clear();
+                    recv1[i].shrink_to_fit();
+                }
+            } 
+            sliced_graph.resize(end-start);
+            sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+        }
+        else{
+            for(int i=0;i<num_of_node-1;i++){
+                int temp1 = end_arr[i]-start_arr[i];
+                send[i].resize(num_of_vertex, 1/num_of_vertex);
+                recv1[i].resize(temp1);
+                nn[i] = temp1;
+            //cout << "nn[i]: " <<nn[i] << endl;
             }
         }
-        for(int i=0;i<num_of_node;i++){
-            if(i == 0){
-                send[i].resize(div_num_of_vertex);
-                recv1[i].resize(num_of_vertex, 1/num_of_vertex);
-            }
-            else{
-                send[i].clear();
-                send[i].shrink_to_fit();
-                recv1[i].clear();
-                recv1[i].shrink_to_fit();
-            }
-        }
-        sliced_graph.resize(end-start);
-        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+       
     }
-    else{
-       for(int i=0;i<num_of_node-1;i++){
-            send[i].resize(num_of_vertex);
-            recv1[i].resize(num_of_vertex);
-       }
-    }
+    
     delete graph;
     //D-RDMALib Init
 
@@ -439,18 +451,16 @@ int main(int argc, char** argv){
             end += end_arr[0];
         }
         send[0][0] = div_num_of_vertex;
-        myrdma.rdma_write_vector(send[0],0);
         //cout << "start, end: " << start <<", "<< end << endl;
     }
     else{
-        myrdma.recv_t("send");
-        for(int i=0;i<num_of_node-1;i++){
+        /*for(int i=0;i<num_of_node-1;i++){
             int temp1 = recv1[i][0];
             send[i].resize(num_of_vertex, 1/num_of_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;
             //cout << "nn[i]: " <<nn[i] << endl;
-        }
+        }*/
     }
     
     //std::vector<std::vector<size_t>>().swap(graph);

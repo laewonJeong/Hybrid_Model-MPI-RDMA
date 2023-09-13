@@ -290,10 +290,10 @@ int main(int argc, char** argv){
                     recv1[i].resize(num_of_vertex, 1/num_of_vertex);
                 }
                 else{
-                    send[i].resize(1);
-                    send[i].shrink_to_fit();
-                    recv1[i].resize(1);
-                    recv1[i].shrink_to_fit();
+                    send[i].resize(div_num_of_vertex);
+                    //send[i].shrink_to_fit();
+                    recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+                    //recv1[i].shrink_to_fit();
                 }
             } 
             sliced_graph.resize(end-start);

@@ -190,7 +190,7 @@ int main(int argc, char** argv){
 //==================================================================================
     cout << "[INFO]AVG EDGE: "<<double(edge/num_of_vertex) << endl;
     //cout << "[INFO]MAX EDGE: "<<max_edge <<endl;
-
+    
     cout.precision(numeric_limits<double>::digits10);
     //double max_weight = log(static_cast<double>(max_edge+1.0));
     /*if(my_ip != node[0]){
@@ -220,7 +220,18 @@ int main(int argc, char** argv){
 //==================================================================================
     myRDMA myrdma;
     Pagerank pagerank;
+    //D-RDMALib Init
 
+    if(rank == 0){
+        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
+        cout << "=====================================================" << endl;
+        cout << "[INFO]NETWORK CONFIGURATION" << endl;
+        myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
+        myrdma.create_rdma_info(send, recv1);
+        cout << "finish create_rdma_info" << endl;
+        cout << "start send_info_change_qp()" << endl;
+        myrdma.send_info_change_qp(send,recv1);
+    }
     int argvv = stoi(argv[3]);
     // graph partitioning
     //double ve = edge/num_of_vertex;
@@ -312,18 +323,7 @@ int main(int argc, char** argv){
     }
     
     delete graph;
-    //D-RDMALib Init
-
-    if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
-        cout << "=====================================================" << endl;
-        cout << "[INFO]NETWORK CONFIGURATION" << endl;
-        myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
-        myrdma.create_rdma_info(send, recv1);
-        cout << "finish create_rdma_info" << endl;
-        cout << "start send_info_change_qp()" << endl;
-        //myrdma.send_info_change_qp();
-    }
+    
     /*for(size_t i=0;i<num_of_vertex;i++){
         temp += num_outgoing[i];
         if( temp+ttt*argvv >= edge_part+vertex_part){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){

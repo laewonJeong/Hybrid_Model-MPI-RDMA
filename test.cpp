@@ -105,14 +105,9 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
 
             from = line.substr(0,pos);
             to = line.substr(pos+1);
-            if(my_ip != node[0])
-                add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
-            else{
-                if(max_vertex < strtol(from.c_str(), NULL, 10))
-                    max_vertex = strtol(from.c_str(), NULL, 10);
-                if(max_vertex < strtol(to.c_str(), NULL, 10))
-                    max_vertex = strtol(to.c_str(), NULL, 10);
-            }
+           
+            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+            
           
             line_num++;
             //if(rank == 0 && line_num%5000000 == 0)
@@ -123,10 +118,9 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
         
 	} 
     
-   if(my_ip != node[0])
-        num_of_vertex = (*graph).size();
-    else
-        num_of_vertex = max_vertex+1;
+  
+    num_of_vertex = (*graph).size();
+    
     //else
     //    num_of_vertex = max_vertex+1;
 
@@ -259,7 +253,7 @@ int main(int argc, char** argv){
     //long long buf_part = buffer_size/(num_of_node-1);
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
-    if (my_ip != node[0]){
+    if (my_ip != "1235"){
         vector<double> vertex_weight;
         double sum_weight = 0;
         double sum = 0;
@@ -401,14 +395,12 @@ int main(int argc, char** argv){
             start += end_arr[0];
             end += end_arr[0];
         }
-        send[0][0] = div_num_of_vertex;
-        myrdma.rdma_write_vector(send[0],0);
         //cout << "start, end: " << start <<", "<< end << endl;
     }
      else{
-        myrdma.recv_t("send");
+        //myrdma.recv_t("send");
         for(int i=0;i<num_of_node-1;i++){
-            int temp1 = recv1[i][0];
+            int temp1 = end_arr[i] - start_arr[i];
             send[i].resize(num_of_vertex, 1/num_of_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;

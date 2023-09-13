@@ -258,11 +258,10 @@ int main(int argc, char** argv){
     //long long buf_part = buffer_size/(num_of_node-1);
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
-    int div_num_of_vertex;
-    //if (my_ip != node[0]){
-        
-    
-
+    if (my_ip != node[0]){
+        vector<double> vertex_weight;
+        double sum_weight = 0;
+        double sum = 0;
         for(int i =0; i<num_of_vertex;i++){
             double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             vertex_weight.push_back(weight);
@@ -280,7 +279,6 @@ int main(int argc, char** argv){
                 sum = 0;
                 if(index<num_of_node-1)
                     start_arr[index+1] = i-1;
-
                 index++;
             }
             if(index == num_of_node-2)
@@ -288,41 +286,75 @@ int main(int argc, char** argv){
         //printf("%llf\n", vertex_weight[i]);
         }
         end_arr[num_of_node-2] = num_of_vertex;
+    }
 
-       
-       
-    //}
+    int div_num_of_vertex;
     if(my_ip != node[0]){
-        for(int i=1;i<num_of_node;i++){
-                if(node[i] == my_ip){
-                    div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
-                    start = start_arr[i-1];
-                    end = end_arr[i-1];
-                }
-            }
-            for(int i=0;i<num_of_node;i++){
-                if(i == 0){
-                    send[i].resize(div_num_of_vertex);
-                    recv1[i].resize(num_of_vertex, 1/num_of_vertex);
-                }
-                else{
-                    send[i].resize(0);
-                    send[i].shrink_to_fit();
-                    recv1[i].resize(0);
-                    recv1[i].shrink_to_fit();
-                }
-            } 
-            sliced_graph.resize(end-start);
-            sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
-     }else{
-            for(int i=0;i<num_of_node-1;i++){
-                int temp1 = end_arr[i]-start_arr[i];
-                send[i].resize(num_of_vertex, 1/num_of_vertex);
-                recv1[i].resize(temp1);
-                nn[i] = temp1;
-            //cout << "nn[i]: " <<nn[i] << endl;
+       for(int i=1;i<num_of_node;i++){
+            if(node[i] == my_ip){
+                div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
+                start = start_arr[i-1];
+                end = end_arr[i-1];
             }
         }
+        for(int i=0;i<num_of_node;i++){
+            if(i == 0){
+                send[i].resize(div_num_of_vertex);
+                recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+            }
+            else{
+                send[i].clear();
+                send[i].shrink_to_fit();
+                recv1[i].clear();
+                recv1[i].shrink_to_fit();
+            }
+        }
+        sliced_graph.resize(end-start);
+        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+        
+        for(int i=0;i<size;i++){
+            a = div_num_of_vertex/size*i;
+            b = a + div_num_of_vertex/size;
+            if(rank == i){
+                start = a;
+                end = b;
+            }
+            if(rank ==size-1 && rank == i){
+                end = div_num_of_vertex;
+            }
+            displs[i] = a;
+            recvcounts[i] = b-a;
+            if(i ==size-1)
+                recvcounts[i] = div_num_of_vertex-displs[i];
+            //cout << "displs[" << i << "]: " <<displs[i] << endl;
+            //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
+        }
+        if(my_ip == node[num_of_node-1]){
+            start += end_arr[2];
+            end += end_arr[2];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            start += end_arr[1];
+            end += end_arr[1];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            start += end_arr[0];
+            end += end_arr[0];
+        }
+        send[0][0] = div_num_of_vertex;
+        myrdma.rdma_write_vector(send[0],0);
+        //cout << "start, end: " << start <<", "<< end << endl;
+    }
+     else{
+        myrdma.recv_t("send");
+        for(int i=0;i<num_of_node-1;i++){
+            int temp1 = recv1[i][0];
+            send[i].resize(num_of_vertex, 1/num_of_vertex);
+            recv1[i].resize(temp1);
+            nn[i] = temp1;
+            //cout << "nn[i]: " <<nn[i] << endl;
+        }
+    }
     delete graph;
     
     /*for(size_t i=0;i<num_of_vertex;i++){
@@ -352,7 +384,7 @@ int main(int argc, char** argv){
     //cout << "end["<<index<<"]: " << end_arr[index] <<endl;
     //cout << "===========================" << endl;
     
-    if(my_ip != node[0]){
+    /*if(my_ip != node[0]){
         //=======================================================================
         /*temp =0;
         index=0;
@@ -413,7 +445,7 @@ int main(int argc, char** argv){
         }*/
         //=======================================================================
         //cout << rank << ", " <<div_num_of_vertex << ", " << start << ", " << end << endl;
-        for(int i=0;i<size;i++){
+        /*for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
             if(rank == i){
@@ -442,18 +474,18 @@ int main(int argc, char** argv){
         else if(my_ip == node[num_of_node-3]){
             start += end_arr[0];
             end += end_arr[0];
-        }
+        }*/
         //send[0][0] = div_num_of_vertex;
         //cout << "start, end: " << start <<", "<< end << endl;
-    }
-    else{
+    //}
+    //else{
         /*for(int i=0;i<num_of_node-1;i++){
             int temp1 = end_arr[i]-start_arr[i];
             send[i].resize(num_of_vertex, 1/num_of_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;
         }*/
-    }
+    //}
     
     //std::vector<std::vector<size_t>>().swap(graph);
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    

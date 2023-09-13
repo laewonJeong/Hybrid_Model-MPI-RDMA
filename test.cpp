@@ -326,8 +326,7 @@ int main(int argc, char** argv){
                 recv1[i].clear();
             }
         }
-         sliced_graph = std::vector<std::vector<size_t>>(graph.begin() + start, graph.begin() + end + 1);
-        graph.clear();
+        sliced_graph = std::vector<std::vector<size_t>>(graph.begin() + start, graph.begin() + end + 1);
         //=======================================================================
         /*temp =0;
         index=0;
@@ -432,7 +431,7 @@ int main(int argc, char** argv){
             //cout << "nn[i]: " <<nn[i] << endl;
         }
     }
-    
+    graph.clear();
     /*int div_num_of_vertex = num_of_vertex/(num_of_node-1);    
     if(my_ip == node[num_of_node-1])
         div_num_of_vertex = num_of_vertex - num_of_vertex/(num_of_node-1)*3;

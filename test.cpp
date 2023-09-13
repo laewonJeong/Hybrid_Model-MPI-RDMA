@@ -193,7 +193,10 @@ int main(int argc, char** argv){
     
     cout.precision(numeric_limits<double>::digits10);
     //double max_weight = log(static_cast<double>(max_edge+1.0));
-    /*if(my_ip != node[0]){
+    vector<double> vertex_weight;
+    double sum_weight = 0;
+    double sum = 0;
+    //if(my_ip != node[0]){
         for(int i =0; i<num_of_vertex;i++){
             double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             vertex_weight.push_back(weight);
@@ -216,7 +219,7 @@ int main(int argc, char** argv){
         for(int i=0;i<5;i++){
             printf("%lf\n", vertex_weight[i]);
         }
-    }*/
+    //}
 //==================================================================================
     myRDMA myrdma;
     Pagerank pagerank;
@@ -256,10 +259,9 @@ int main(int argc, char** argv){
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
     int div_num_of_vertex;
-    if (my_ip != node[0] && my_ip == node[0]){
-        vector<double> vertex_weight;
-        double sum_weight = 0;
-        double sum = 0;
+    //if (my_ip != node[0]){
+        
+    
 
         for(int i =0; i<num_of_vertex;i++){
             double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
@@ -287,8 +289,11 @@ int main(int argc, char** argv){
         }
         end_arr[num_of_node-2] = num_of_vertex;
 
-        if(my_ip != node[0]){
-            for(int i=1;i<num_of_node;i++){
+       
+       
+    //}
+    if(my_ip != node[0]){
+        for(int i=1;i<num_of_node;i++){
                 if(node[i] == my_ip){
                     div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
                     start = start_arr[i-1];
@@ -301,16 +306,15 @@ int main(int argc, char** argv){
                     recv1[i].resize(num_of_vertex, 1/num_of_vertex);
                 }
                 else{
-                    send[i].resize(div_num_of_vertex);
-                    //send[i].shrink_to_fit();
-                    recv1[i].resize(num_of_vertex, 1/num_of_vertex);
-                    //recv1[i].shrink_to_fit();
+                    send[i].resize(0);
+                    send[i].shrink_to_fit();
+                    recv1[i].resize(0);
+                    recv1[i].shrink_to_fit();
                 }
             } 
             sliced_graph.resize(end-start);
             sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
-        }
-        else{
+     }else{
             for(int i=0;i<num_of_node-1;i++){
                 int temp1 = end_arr[i]-start_arr[i];
                 send[i].resize(num_of_vertex, 1/num_of_vertex);
@@ -319,9 +323,6 @@ int main(int argc, char** argv){
             //cout << "nn[i]: " <<nn[i] << endl;
             }
         }
-       
-    }
-    
     delete graph;
     
     /*for(size_t i=0;i<num_of_vertex;i++){

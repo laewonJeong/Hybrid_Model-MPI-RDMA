@@ -29,8 +29,6 @@
 string node[num_of_node] = {server_ip,"192.168.1.102","192.168.1.103","192.168.1.104","192.168.1.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 string node_domain[num_of_node];
 
-std::vector<std::vector<size_t>> sliced_graph;
-std::vector<std::vector<size_t>> p_sliced_graph;
 std::vector<int> num_outgoing;
 int num_of_vertex;
 int start, end;
@@ -140,6 +138,10 @@ int main(int argc, char** argv){
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
+    std::vector<std::vector<size_t>> sliced_graph;
+    std::vector<std::vector<size_t>> p_sliced_graph;
+    std::vector<std::vector<size_t>> sliced_graph1;
+
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
 
@@ -298,8 +300,10 @@ int main(int argc, char** argv){
                 }
             }
         //}
-        sliced_graph.resize(end-start);
-        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+        sliced_graph1 = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+        sliced_graph = sliced_graph1;
+
+        delete graph;
          //=======================================================================
         /*temp =0;
         index=0;
@@ -394,20 +398,20 @@ int main(int argc, char** argv){
         //cout << "start, end: " << start <<", "<< end << endl;
     }
      else{
-        //myrdma.recv_t("send");
         for(int i=0;i<num_of_node-1;i++){
             int temp1 = end_arr[i] - start_arr[i];
             send[i].resize(num_of_vertex, 1/num_of_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;
-            //cout << "nn[i]: " <<nn[i] << endl;
         }
         num_outgoing.resize(0);
         num_outgoing.shrink_to_fit();
+        delete graph;
     }
-    delete graph;
+
     //sliced_graph.resize(0);
     //sliced_graph.shrink_to_fit();
+
     //D-RDMALib Init
     
     vector<double>* send_first = &send[1];

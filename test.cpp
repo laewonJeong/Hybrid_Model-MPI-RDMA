@@ -285,7 +285,7 @@ int main(int argc, char** argv){
         //}
         sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
 
-        delete graph;
+        //delete graph;
        
          //=======================================================================
         /*temp =0;
@@ -389,7 +389,7 @@ int main(int argc, char** argv){
         }
         num_outgoing.resize(0);
         num_outgoing.shrink_to_fit();
-        delete graph;
+        //delete graph;
     }
     delete graph;
     //sliced_graph.resize(0);

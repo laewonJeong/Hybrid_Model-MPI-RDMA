@@ -194,7 +194,7 @@ int main(int argc, char** argv){
     for (const auto& innerVector : *graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
-    size_t totalSize = pointerSize + innerVectorPointersSize + innerVectorsSize;
+    size_t totalSize = pointerSize + innerVectorsSize;
 
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);

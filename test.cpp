@@ -29,7 +29,7 @@
 string node[num_of_node] = {server_ip,"192.168.1.102","192.168.1.103","192.168.1.104","192.168.1.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 string node_domain[num_of_node];
 
-std::vector<size_t> num_outgoing;
+std::vector<int> num_outgoing;
 int num_of_vertex;
 int start, end;
 int edge;

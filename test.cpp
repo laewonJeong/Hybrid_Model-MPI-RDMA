@@ -218,17 +218,18 @@ int main(int argc, char** argv){
         }
         //===============================================================================
         if(my_ip != node[0]){
+            //const size_t sg_size = sliced_graph.size();
             if(rank == 0)
                 cout << "[INFO]COMPUTE PAGERANK" <<endl;
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
-            for(size_t i=start;i<end;i++){
+            for(size_t i=start;i<end-start;i++){
                 //cout << i << endl;
                 //
                 idx = i-start;
                 double tmp = 0.0;
-                const size_t graph_size = sliced_graph[i].size();
-                const size_t* graph_ptr = sliced_graph[i].data();
+                const size_t graph_size = sliced_graph[idx].size();
+                const size_t* graph_ptr = sliced_graph[idx].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

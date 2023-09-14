@@ -107,7 +107,8 @@ int main(int argc, char** argv){
     int displs[size]; 
     int nn[num_of_node];
 
-    pagerank.graph_partition(graph, sliced_graph, start, end, nn, num_of_node,size,
+    pagerank.graph_partition(graph, sliced_graph, num_outgoing, num_of_vertex,
+                            start, end, nn, num_of_node,size,
                             node, my_ip, rank, displs, recvcounts, send, recv1);
     delete graph;
     if(my_ip == node[0]){

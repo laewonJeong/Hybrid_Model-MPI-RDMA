@@ -93,10 +93,11 @@ void Pagerank::create_graph(string path, string del,std::vector<std::vector<size
     delete infile;
 }
 void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vector<std::vector<size_t>>& sliced_graph,
+                             vector<int>& num_outgoing, int num_of_vertex,
                              int start, int end, int* nn, int num_of_node, int size,string* node, string my_ip, int rank,
                              int* displs, int* recvcounts, vector<double> *send, vector<double> *recv1)
 {
-    int num_of_vertex = pagerank.num_of_vertex;
+    
     int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];

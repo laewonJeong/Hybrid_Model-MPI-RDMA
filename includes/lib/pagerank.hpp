@@ -21,6 +21,7 @@ class Pagerank{
        void create_graph(string path, string del, std::vector<std::vector<size_t>>* graph, vector<int>& num_outgoing);
        void create_graph_data(string path, string del);
        void graph_partition(std::vector<std::vector<size_t>>* graph,std::vector<std::vector<size_t>>& sliced_graph,
+                            vector<int>& num_outgoing, int num_of_vertex,
                              int start, int end, int* nn,int num_of_node, int size,string* node, string my_ip, int rank,
                              int* displs, int* recvcounts,vector<double> *send, vector<double> *recv1);
        void initial_pagerank_value();

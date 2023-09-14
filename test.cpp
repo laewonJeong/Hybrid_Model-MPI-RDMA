@@ -55,15 +55,15 @@ bool insert_into_vector(Vector& v, const T& t){
     }
 }
 
-bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
+bool add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>& graph){
     vector<size_t> v;
     bool ret = false;
     size_t max_dim = max(from, to);
 
-    if ((*graph).size() <= max_dim) {
+    if (graph.size() <= max_dim) {
         max_dim = max_dim + 1;
         
-        (*graph).resize(max_dim);
+        graph.resize(max_dim);
         //pagerank.outgoing.resize(max_dim);
         //if (num_outgoing.size() <= max_dim) {
         //    num_outgoing.resize(max_dim,0);
@@ -72,7 +72,7 @@ bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
     //pagerank.graph[to].push_back(from);
     //cout << pagerank.graph[to] << endl;
 
-    ret = insert_into_vector((*graph)[to], from);
+    ret = insert_into_vector(graph[to], from);
 
     if (ret) {
         //num_outgoing[from]++;
@@ -83,7 +83,7 @@ bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
 
     return ret;
 }
-void create_graph_data(string path, int rank, string del, string my_ip,std::vector<std::vector<size_t>>* graph){
+void create_graph_data(const std::string& path, int rank, const std::string& del, const std::string& my_ip, std::vector<std::vector<size_t>>& graph){
     //cout << "Creating graph about  "<< path<<"..."  <<endl;
     istream *infile;
 
@@ -117,7 +117,7 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
         
 	} 
     
-    int a = (*graph).size();
+    int a = graph.size();
     num_of_vertex = a;
     a = 0;
     //else
@@ -138,7 +138,7 @@ int main(int argc, char** argv){
     long double compute_time = 0;
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
-    std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
+    std::vector<std::vector<size_t>> graph;
     std::vector<std::vector<size_t>> sliced_graph;
     std::vector<std::vector<size_t>> p_sliced_graph;
 
@@ -186,11 +186,12 @@ int main(int argc, char** argv){
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
-    vector<vector<size_t>>().swap(*graph);
+    vector<vector<size_t>>().swap(graph);
+    
     size_t pointerSize = sizeof(graph);
 
     size_t innerVectorsSize = 0;
-    for (const auto& innerVector : *graph) {
+    for (const auto& innerVector : graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
     size_t totalSize = pointerSize + innerVectorsSize;
@@ -283,9 +284,9 @@ int main(int argc, char** argv){
                 }
             }
         //}
-        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+        sliced_graph = std::vector<std::vector<size_t>>(graph.begin() + start,graph.begin() + end + 1);
 
-        delete graph;
+        
        
          //=======================================================================
         /*temp =0;
@@ -389,7 +390,6 @@ int main(int argc, char** argv){
         }
         num_outgoing.resize(0);
         num_outgoing.shrink_to_fit();
-        delete graph;
     }
 
     //sliced_graph.resize(0);

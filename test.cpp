@@ -105,7 +105,7 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
             from = line.substr(0,pos);
             to = line.substr(pos+1);
            
-            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+            //add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
             
           
             line_num++;
@@ -192,8 +192,8 @@ int main(int argc, char** argv){
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
-    vector<vector<size_t>>().swap(*graph);
     delete graph;
+    
     
     
     myRDMA myrdma;

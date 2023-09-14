@@ -206,9 +206,9 @@ int main(int argc, char** argv){
     int argvv = stoi(argv[3]);
     cout << "check Memory Usage" << endl;
 
-    while(1){
+    //while(1){
 
-    }
+    //}
     // graph partitioning
 
     int recvcounts[size];

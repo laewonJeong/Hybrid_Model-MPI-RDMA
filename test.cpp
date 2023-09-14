@@ -65,9 +65,9 @@ bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
         
         (*graph).resize(max_dim);
         //pagerank.outgoing.resize(max_dim);
-        if (num_outgoing.size() <= max_dim) {
-            num_outgoing.resize(max_dim,0);
-        }
+        //if (num_outgoing.size() <= max_dim) {
+        //    num_outgoing.resize(max_dim,0);
+        //}
     }
     //pagerank.graph[to].push_back(from);
     //cout << pagerank.graph[to] << endl;
@@ -75,10 +75,10 @@ bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
     ret = insert_into_vector((*graph)[to], from);
 
     if (ret) {
-        num_outgoing[from]++;
-        if(num_outgoing[from] > max_edge){
-            max_edge = num_outgoing[from];
-        }
+        //num_outgoing[from]++;
+        //if(num_outgoing[from] > max_edge){
+        //    max_edge = num_outgoing[from];
+        //}
     }
 
     return ret;
@@ -145,8 +145,6 @@ int main(int argc, char** argv){
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
 
-
-
     string my_ip= tcp.check_my_ip();
     
 
@@ -167,9 +165,6 @@ int main(int argc, char** argv){
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-    
-
 
     // Create Graph
     if(rank == 0){

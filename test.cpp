@@ -192,12 +192,12 @@ int main(int argc, char** argv){
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
-    delete graph;
+    delete[] graph;
 
     cout << "check Memory Usage" << endl;
 
     while(1){
-        
+
     }
     
     myRDMA myrdma;

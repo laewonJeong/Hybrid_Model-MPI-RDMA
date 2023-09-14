@@ -61,8 +61,14 @@ int main(int argc, char** argv){
     vector<double> recv1[num_of_node];
     vector<double>* send_first = &send[1];
     vector<double>* send_end = &send[num_of_node-1];
-    string my_ip= tcp.check_my_ip();
+    int my_idx;
+    
 
+    string my_ip= tcp.check_my_ip();
+    for(int i=1;i<num_of_node;i++){
+        if(my_ip == node[i])
+            my_idx = i-1;
+    }
     //MPI Init=====================================================================
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -228,8 +234,8 @@ int main(int argc, char** argv){
                 //
                 idx = i-start;
                 double tmp = 0.0;
-                const size_t graph_size = sliced_graph[i-displs[rank]].size();
-                const size_t* graph_ptr = sliced_graph[i-displs[rank]].data();
+                const size_t graph_size = sliced_graph[i-displs[my_idx]].size();
+                const size_t* graph_ptr = sliced_graph[i-displs[my_idx]].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

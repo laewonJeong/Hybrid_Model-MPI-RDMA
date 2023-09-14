@@ -192,6 +192,14 @@ int main(int argc, char** argv){
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
+    delete graph;
+
+    cout << "check Memory Usage" << endl;
+
+    while(1){
+        
+    }
+    
     myRDMA myrdma;
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH " <<  create_graph_time << "s. " << endl;

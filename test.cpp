@@ -165,9 +165,11 @@ int main(int argc, char** argv){
 
     vector<double> div_send;
     double* send_buf_ptr;// = send[0].data();
+    //int send_size;
     if(my_ip != node[0] && size > 1){
         div_send.resize(end-start);
         send_buf_ptr = div_send.data();
+        //send_size = div_send.size();
     }
     else if(my_ip != node[0] && size <= 1){
         send_buf_ptr = send[0].data();
@@ -176,7 +178,7 @@ int main(int argc, char** argv){
     if(my_ip == node[0]){
         send_buf_ptr = send[0].data();
     }
-    int send_size = div_send.size();
+    //int send_size = div_send.size();
     //int send_size = div_send.size();
     //
     double* recv_buffer_ptr = recv1[0].data();
@@ -246,7 +248,7 @@ int main(int argc, char** argv){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             
             if(size > 1)
-                MPI_Allgatherv(send_buf_ptr,send_size,MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
+                MPI_Allgatherv(send_buf_ptr,div_send.size(),MPI_DOUBLE,send[0].data(),recvcounts,displs,MPI_DOUBLE,MPI_COMM_WORLD);
             
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

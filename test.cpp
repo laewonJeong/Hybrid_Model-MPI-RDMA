@@ -229,7 +229,7 @@ int main(int argc, char** argv){
                 cout << "[INFO]COMPUTE PAGERANK" <<endl;
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
-            for(size_t i=start;i<end-start;i++){
+            for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 //
                 idx = i-start;

@@ -189,6 +189,8 @@ int main(int argc, char** argv){
     //
     double* recv_buffer_ptr = recv1[0].data();
    
+    
+
     check = 1;
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     if(rank == 0){
@@ -196,6 +198,19 @@ int main(int argc, char** argv){
     }
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     
+    int start_idx;
+    if(rank == 0){
+        start_idx = start;
+        for (int dest = 1; dest < size; dest++) {
+            MPI_Send(&start_idx, 1, MPI_INT, dest, 0, MPI_COMM_WORLD);
+        }
+    } else {
+        // 다른 프로세스는 Rank 0으로부터 데이터를 받습니다.
+        MPI_Recv(&start_idx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+    
+
+
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     //===============================================================================
     for(step =0;step<10000000;step++){
@@ -234,8 +249,8 @@ int main(int argc, char** argv){
                 //
                 idx = i-start;
                 double tmp = 0.0;
-                const size_t graph_size = sliced_graph[i-displs[0]].size();
-                const size_t* graph_ptr = sliced_graph[i-displs[0]].data();
+                const size_t graph_size = sliced_graph[i-start_idx].size();
+                const size_t* graph_ptr = sliced_graph[i-start_idx].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

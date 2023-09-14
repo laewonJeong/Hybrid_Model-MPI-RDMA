@@ -234,8 +234,8 @@ int main(int argc, char** argv){
                 //
                 idx = i-start;
                 double tmp = 0.0;
-                const size_t graph_size = sliced_graph[i-displs[my_idx]].size();
-                const size_t* graph_ptr = sliced_graph[i-displs[my_idx]].data();
+                const size_t graph_size = sliced_graph[i-displs[0]].size();
+                const size_t* graph_ptr = sliced_graph[i-displs[0]].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

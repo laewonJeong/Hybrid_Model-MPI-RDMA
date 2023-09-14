@@ -105,16 +105,16 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
             from = line.substr(0,pos);
             to = line.substr(pos+1);
            
-            //if(my_ip != node[0])
-            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
-           /* else{
+            if(my_ip != node[0])
+                add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+           else{
                 size_t max_dim = max(strtol(from.c_str(), NULL, 10), strtol(to.c_str(), NULL, 10));
                 if (num_outgoing.size() <= max_dim) {
                     max_dim = max_dim + 1;
                     num_outgoing.resize(max_dim,0);
                 }
                 num_outgoing[strtol(from.c_str(), NULL, 10)]++;
-            }*/
+            }
           
             line_num++;
             //if(rank == 0 && line_num%5000000 == 0)
@@ -125,11 +125,13 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
         
 	} 
     
-    int a = (*graph).size();
-    num_of_vertex = a;
-    a = 0;
-    //else
-    //    num_of_vertex = max_vertex+1;
+    if(my_ip != node[0]){
+        int a = (*graph).size();
+        num_of_vertex = a;
+        a = 0;
+    }
+    else
+        num_of_vertex = num_outgoing.size();
 
     cout << num_of_vertex << endl;
     edge = line_num;

@@ -65,9 +65,9 @@ bool add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>& graph){
         
         graph.resize(max_dim);
         //pagerank.outgoing.resize(max_dim);
-        //if (num_outgoing.size() <= max_dim) {
-        //    num_outgoing.resize(max_dim,0);
-        //}
+        if (num_outgoing.size() <= max_dim) {
+            num_outgoing.resize(max_dim,0);
+        }
     }
     //pagerank.graph[to].push_back(from);
     //cout << pagerank.graph[to] << endl;
@@ -75,10 +75,10 @@ bool add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>& graph){
     ret = insert_into_vector(graph[to], from);
 
     if (ret) {
-        //num_outgoing[from]++;
-        //if(num_outgoing[from] > max_edge){
-        //    max_edge = num_outgoing[from];
-        //}
+        num_outgoing[from]++;
+        if(num_outgoing[from] > max_edge){
+            max_edge = num_outgoing[from];
+        }
     }
 
     return ret;
@@ -186,7 +186,7 @@ int main(int argc, char** argv){
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
-    vector<vector<size_t>>().swap(graph);
+    //vector<vector<size_t>>().swap(graph);
     
     size_t pointerSize = sizeof(graph);
 
@@ -207,9 +207,9 @@ int main(int argc, char** argv){
     int argvv = stoi(argv[3]);
     cout << "check Memory Usage" << endl;
 
-    while(1){
+    //while(1){
 
-    }
+    //}
     // graph partitioning
 
     int recvcounts[size];

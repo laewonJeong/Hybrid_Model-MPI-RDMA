@@ -186,19 +186,26 @@ int main(int argc, char** argv){
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
     
-    size_t s = sizeof(graph);
-    for (const auto& innerVector : (*graph)){
-        s += innerVector.size() * sizeof(size_t);
+    // 포인터 자체의 메모리 사용량을 구합니다.
+    size_t pointerSize = sizeof(graph);
+
+    // 내부 벡터 포인터들의 메모리 사용량을 구합니다.
+    size_t innerVectorPointersSize = graph->size() * sizeof(std::vector<size_t>*);
+
+    // 각 내부 벡터의 메모리 사용량을 구합니다.
+    size_t innerVectorsSize = 0;
+    for (const auto& innerVector : *graph) {
+        innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
-    //std::cout << "graph의 메모리 사용량: " << size << " 바이트" << std::endl;
-    
+    size_t totalSize = pointerSize + innerVectorPointersSize + innerVectorsSize;
+
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
     myRDMA myrdma;
     if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH" << endl <<  create_graph_time << "s. " << endl;
-        cout << "[INFO]GRAPH MEMORY USAGE: " << size << " byte." << endl;
+        cout << "[INFO]FINISH CREATE GRAPH" <<  create_graph_time << "s. " << endl;
+        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }

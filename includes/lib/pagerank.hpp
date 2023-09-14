@@ -18,6 +18,7 @@
 using namespace std;
 class Pagerank{
     public:
+       vector<vector<size_t>> create_graph(string path, string del, int num_of_node, int size, string* node, string my_ip);
        void create_graph_data(string path, string del);
        void initial_pagerank_value();
        static void calc_pagerank_value(int start, int end, double x, double y);
@@ -41,7 +42,8 @@ class Pagerank{
         int end1;
         double diff;
         vector<int> num_outgoing;
-        bool add_arc(size_t from, size_t to);
+        bool add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>& graph);
         template <class Vector, class T> bool insert_into_vector(Vector& v,
                                                              const T& t);
+        vector<vector<size_t>> slice_graph(std::vector<std::vector<size_t>>& graph, int num_of_node, int size,string* node, string my_ip);
 };

@@ -130,6 +130,7 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
 
 int main(int argc, char** argv){
     TCP tcp;
+    Pagerank pagerank;
     int rank, size, i ,j;
     int start, end;
     int a,b;
@@ -140,7 +141,6 @@ int main(int argc, char** argv){
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> sliced_graph;
     std::vector<std::vector<size_t>> p_sliced_graph;
-    std::vector<std::vector<size_t>> sliced_graph1;
 
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
@@ -178,47 +178,27 @@ int main(int argc, char** argv){
         cout << "=====================================================" << endl;
         cout << "[INFO]CREATE GRAPH" << endl;
     }
-    clock_gettime(CLOCK_MONOTONIC, &begin1);
+    if(my_ip == node[0]){
+        clock_gettime(CLOCK_MONOTONIC, &begin1);
     
-    create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
+        create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
     
-    clock_gettime(CLOCK_MONOTONIC, &end1);
-    long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-
-    
+        clock_gettime(CLOCK_MONOTONIC, &end1);
+        long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+    }
+    else{
+        sliced_graph = pagerank.create_graph(argv[1],argv[2],num_of_node, size, node, my_ip);
+    }
+    while(1){
+        
+    }
 //==================================================================================
     cout << "[INFO]AVG EDGE: "<<double(edge/num_of_vertex) << endl;
     //cout << "[INFO]MAX EDGE: "<<max_edge <<endl;
     
     cout.precision(numeric_limits<double>::digits10);
-    //double max_weight = log(static_cast<double>(max_edge+1.0));
-    //if(my_ip != node[0]){
-        /*for(int i =0; i<num_of_vertex;i++){
-            double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
-            vertex_weight.push_back(weight);
-            sum_weight += weight;
-        }
-        //printf("%Lf\n", sum_weight);
-    
-        for(int i =0; i<num_of_vertex;i++){
-            vertex_weight[i] /= sum_weight;
-            sum += vertex_weight[i];
-
-            if(sum >= 0.25){
-                cout << sum-vertex_weight[i-1]<< " and " << i-1 << endl;
-                sum = 0;
-            }
-            //printf("%llf\n", vertex_weight[i]);
-        }
-        cout << num_of_vertex << endl;
-    
-        for(int i=0;i<5;i++){
-            printf("%lf\n", vertex_weight[i]);
-        }*/
-    //}
 //==================================================================================
     myRDMA myrdma;
-    Pagerank pagerank;
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
         cout << "=====================================================" << endl;
@@ -300,8 +280,7 @@ int main(int argc, char** argv){
                 }
             }
         //}
-        sliced_graph1 = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
-        sliced_graph = sliced_graph1;
+        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
 
         delete graph;
          //=======================================================================

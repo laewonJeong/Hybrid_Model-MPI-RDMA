@@ -38,21 +38,21 @@ bool Pagerank::insert_into_vector(Vector& v, const T& t) {
         return false;
     }
 }
-bool Pagerank::add_arc(size_t from, size_t to) {
+bool Pagerank::add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>& graph) {
     vector<size_t> v;
     bool ret = false;
     size_t max_dim = max(from, to);
 
-    if (pagerank.graph.size() <= max_dim) {
+    if (graph.size() <= max_dim) {
         max_dim = max_dim + 1;
         
-        pagerank.graph.resize(max_dim);;
+        graph.resize(max_dim);
         if (pagerank.num_outgoing.size() <= max_dim) {
             pagerank.num_outgoing.resize(max_dim,0);
         }
     }
 
-    ret = insert_into_vector(pagerank.graph[to], from);
+    ret = insert_into_vector(graph[to], from);
 
     if (ret) {
         pagerank.num_outgoing[from]++;
@@ -60,6 +60,92 @@ bool Pagerank::add_arc(size_t from, size_t to) {
     }
 
     return ret;
+}
+vector<vector<size_t>> Pagerank::create_graph(string path, string del,int num_of_node, int size, string* node, string my_ip){
+    istream *infile;
+    std::vector<std::vector<size_t>> graph;
+    infile = new ifstream(path.c_str());
+    size_t line_num = 0;
+    string line;
+    int edge;
+	
+	if(infile){
+        while(getline(*infile, line)) {
+            string from, to;
+            size_t pos;
+            if(del == " ")
+                pos = line.find(" ");
+            else
+                pos = line.find("\t");
+
+            from = line.substr(0,pos);
+            to = line.substr(pos+1);
+           
+            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+            
+            line_num++;
+		}
+	} 
+    
+    pagerank.num_of_vertex = graph.size();
+    edge = line_num;
+    delete infile;
+    return slice_graph(graph, num_of_node, size, node, my_ip);
+}
+vector<vector<size_t>> Pagerank::slice_graph(std::vector<std::vector<size_t>>& graph, int num_of_node, int size, string* node, string my_ip){
+    int recvcounts[size];
+    int displs[size]; 
+    int nn[num_of_node];
+    int start_arr[num_of_node-1];
+    start_arr[0] = 0;
+    int end_arr[num_of_node-1];
+    int start_arr_process[size-1];
+    start_arr_process[0] = 0;
+    int end_arr_process[size-1];
+    int temp = 0;
+    size_t index = 0;
+    std::vector<std::vector<size_t>> sliced_graph;
+    int start, end;
+
+
+    vector<double> vertex_weight;
+    double sum_weight = 0;
+    double sum = 0;
+    for(int i =0; i<pagerank.num_of_vertex;i++){
+        double weight = sqrt(pagerank.num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+        vertex_weight.push_back(weight);
+        sum_weight += weight;
+    }
+    
+    for(int i =0; i<pagerank.num_of_vertex;i++){
+        vertex_weight[i] /= sum_weight;
+    }
+    
+    for(int i =0; i<pagerank.num_of_vertex;i++){
+        sum += vertex_weight[i];
+        if(sum >= 0.25){
+            end_arr[index] = i-1;
+            sum = 0;
+            if(index<num_of_node-1)
+                start_arr[index+1] = i-1;
+            index++;
+        }
+        if(index == num_of_node-2)
+            break;
+        //printf("%llf\n", vertex_weight[i]);
+    }
+    end_arr[num_of_node-2] = pagerank.num_of_vertex;
+
+    int div_num_of_vertex;
+    for(int i=1;i<num_of_node;i++){
+        if(node[i] == my_ip){
+            div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
+            start = start_arr[i-1];
+            end = end_arr[i-1];
+        }
+    }
+    
+    return std::vector<std::vector<size_t>>(graph.begin() + start,graph.begin() + end + 1);
 }
 void Pagerank::create_graph_data(string path, string del){
     //cout << "Creating graph about  "<< path<<"..."  <<endl;
@@ -82,7 +168,7 @@ void Pagerank::create_graph_data(string path, string del){
             from = line.substr(0,pos);
             to = line.substr(pos+1);
            
-            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
+            //add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
             line_num++;
             //if(line_num%5000000 == 0)
                 //cerr << "Create " << line_num << " lines" << endl;

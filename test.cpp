@@ -176,7 +176,7 @@ int main(int argc, char** argv){
     if(my_ip == node[0]){
         send_buf_ptr = send[0].data();
     }
-    int send_size = sliced_graph.size();
+    int send_size = div_send.size();
     //int send_size = div_send.size();
     //
     double* recv_buffer_ptr = recv1[0].data();

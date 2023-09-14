@@ -105,7 +105,7 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
             from = line.substr(0,pos);
             to = line.substr(pos+1);
            
-            //add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
             
           
             line_num++;
@@ -181,6 +181,12 @@ int main(int argc, char** argv){
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
     
+    
+
+//==================================================================================
+    cout.precision(numeric_limits<double>::digits10);
+//==================================================================================
+    vector<vector<size_t>>().swap(*graph);
     size_t pointerSize = sizeof(graph);
 
     size_t innerVectorsSize = 0;
@@ -188,12 +194,6 @@ int main(int argc, char** argv){
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
     size_t totalSize = pointerSize + innerVectorsSize;
-
-//==================================================================================
-    cout.precision(numeric_limits<double>::digits10);
-//==================================================================================
-    delete graph;
-    
     
     
     myRDMA myrdma;

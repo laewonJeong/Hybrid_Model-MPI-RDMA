@@ -169,10 +169,13 @@ int main(int argc, char** argv){
         div_send.resize(end-start);
         send_buf_ptr = div_send.data();
     }
-    else if(size < 1){
+    else if(my_ip != node[0] && size < 1){
         send_buf_ptr = send[0].data();
     }
 
+    if(my_ip == node[0]){
+        send_buf_ptr = send[0].data();
+    }
     int send_size = sliced_graph.size();
     //int send_size = div_send.size();
     //

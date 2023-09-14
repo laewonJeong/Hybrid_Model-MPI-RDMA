@@ -35,112 +35,21 @@ int start, end;
 int edge;
 int max_edge = 0;
 using namespace std;
-double logistic(double x) {
-    return 1.0 / (1.0 + exp(-x));
-}
+
 bool is_server(string ip){
   if(ip == server_ip)
     return true;
   return false;
 }
 
-template <class Vector, class T>
-bool insert_into_vector(Vector& v, const T& t){
-    typename Vector::iterator i = lower_bound(v.begin(), v.end(), t);
-    if (i == v.end() || t < *i) {
-        v.insert(i, t);
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool add_arc(size_t from, size_t to,std::vector<std::vector<size_t>>* graph){
-    vector<size_t> v;
-    bool ret = false;
-    size_t max_dim = max(from, to);
-
-    if ((*graph).size() <= max_dim) {
-        max_dim = max_dim + 1;
-        
-        (*graph).resize(max_dim);
-        //pagerank.outgoing.resize(max_dim);
-        if (num_outgoing.size() <= max_dim) {
-            num_outgoing.resize(max_dim,0);
-        }
-    }
-    //pagerank.graph[to].push_back(from);
-    //cout << pagerank.graph[to] << endl;
-
-    ret = insert_into_vector((*graph)[to], from);
-
-    if (ret) {
-        num_outgoing[from]++;
-        //if(num_outgoing[from] > max_edge){
-        //    max_edge = num_outgoing[from];
-        //}
-    }
-
-    return ret;
-}
-void create_graph_data(string path, int rank, string del, string my_ip,std::vector<std::vector<size_t>>* graph){
-    //cout << "Creating graph about  "<< path<<"..."  <<endl;
-    istream *infile;
-
-    infile = new ifstream(path.c_str());
-    size_t line_num = 0;
-    size_t max_vertex = 0;
-    string line;
-	
-	if(infile){
-       
-        while(getline(*infile, line)) {
-            string from, to;
-            size_t pos;
-            if(del == " ")
-                pos = line.find(" ");
-            else
-                pos = line.find("\t");
-
-            from = line.substr(0,pos);
-            to = line.substr(pos+1);
-           
-            //if(my_ip != node[0])
-            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
-            /*else{
-                size_t max_dim = max(strtol(from.c_str(), NULL, 10), strtol(to.c_str(), NULL, 10));
-                if (num_outgoing.size() <= max_dim) {
-                    max_dim = max_dim + 1;
-                    num_outgoing.resize(max_dim,0);
-                }
-                num_outgoing[strtol(from.c_str(), NULL, 10)]++;
-            }*/
-          
-            line_num++;
-            //if(rank == 0 && line_num%5000000 == 0)
-            //   cerr << "[INFO]CREATE " << line_num << " LINES." << endl; 
-            //if(line_num%500000 == 0)
-                //cerr << "Create " << line_num << " lines" << endl;
-		}
-        
-	} 
-    
-    
-    int a = (*graph).size();
-    num_of_vertex = a;
-
-
-    cout << num_of_vertex << endl;
-    edge = line_num;
-    delete infile;
-}
-
 int main(int argc, char** argv){
     TCP tcp;
     Pagerank pagerank;
+    myRDMA myrdma;
     int rank, size, i ,j;
     int start, end;
     int a,b;
+    int argvv = stoi(argv[3]);
     long double network_time = 0;
     long double compute_time = 0;
     struct timespec begin1, end1 ;
@@ -148,10 +57,8 @@ int main(int argc, char** argv){
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> sliced_graph;
     std::vector<std::vector<size_t>> p_sliced_graph;
-
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
-
     string my_ip= tcp.check_my_ip();
 
     //MPI Init
@@ -172,17 +79,11 @@ int main(int argc, char** argv){
     //create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
     pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     num_of_vertex = (*graph).size();
+
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-    
-    
 
-//==================================================================================
-    cout.precision(numeric_limits<double>::digits10);
-//==================================================================================
-    
-    //size_t pointerSize = sizeof(graph);
-
+    //Check Graph size
     size_t innerVectorsSize = 0;
     for (const auto& innerVector : *graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
@@ -191,7 +92,6 @@ int main(int argc, char** argv){
     
     size_t outgoing_size = sizeof(size_t) * num_outgoing.size();
     
-    myRDMA myrdma;
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH " <<  create_graph_time << "s. " << endl;
         cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
@@ -200,17 +100,21 @@ int main(int argc, char** argv){
         cout << "=====================================================" << endl;
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
-    int argvv = stoi(argv[3]);
 
-    //while(1){
-
-    //}
     // graph partitioning
-
+    
     int recvcounts[size];
     int displs[size]; 
     int nn[num_of_node];
-    int start_arr[num_of_node-1];
+
+    pagerank.graph_partition(graph, sliced_graph, start, end, nn, num_of_node,size,
+                            node, my_ip, rank, displs, recvcounts, send, recv1);
+    delete graph;
+    if(my_ip == node[0]){
+        num_outgoing.clear();
+        num_outgoing.shrink_to_fit();
+    }
+    /*int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];
     int start_arr_process[size-1];
@@ -343,7 +247,7 @@ int main(int argc, char** argv){
         }*/
         //=======================================================================
         //cout << rank << ", " <<div_num_of_vertex << ", " << start << ", " << end << endl;
-        for(int i=0;i<size;i++){
+        /*for(int i=0;i<size;i++){
             a = div_num_of_vertex/size*i;
             b = a + div_num_of_vertex/size;
             if(rank == i){
@@ -386,8 +290,8 @@ int main(int argc, char** argv){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();
         //delete graph;
-    }
-    delete graph;
+    }*/
+
     //sliced_graph.resize(0);
     //sliced_graph.shrink_to_fit();
 

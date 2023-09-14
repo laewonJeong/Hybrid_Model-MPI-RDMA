@@ -92,6 +92,189 @@ void Pagerank::create_graph(string path, string del,std::vector<std::vector<size
     
     delete infile;
 }
+void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vector<std::vector<size_t>>& sliced_graph,
+                             int start, int end, int* nn, int num_of_node, int size,string* node, string my_ip, int rank,
+                             int* displs, int* recvcounts, vector<double> *send, vector<double> *recv1)
+{
+    int start_arr[num_of_node-1];
+    start_arr[0] = 0;
+    int end_arr[num_of_node-1];
+    int start_arr_process[size-1];
+    start_arr_process[0] = 0;
+    int end_arr_process[size-1];
+    int temp = 0;
+    size_t index = 0;
+    int a,b;
+    //int edge_part = ceil((edge/(num_of_node-1)));
+    //int vertex_part = ceil((num_of_vertex/(num_of_node-1))*argvv);
+    //int part = ceil((edge+num_of_vertex)/(num_of_node-1));
+    //cout << edge_part << endl;
+    //long long buffer_size = num_of_vertex * sizeof(double);
+    //long long buf_part = buffer_size/(num_of_node-1);
+    //int ttt = 1;
+    //cout << "ve: " << ve << endl;
+    if (my_ip != "1235"){
+        vector<double> vertex_weight;
+        double sum_weight = 0;
+        double sum = 0;
+        for(int i =0; i<num_of_vertex;i++){
+            double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+            vertex_weight.push_back(weight);
+            sum_weight += weight;
+        }
+    
+        for(int i =0; i<num_of_vertex;i++){
+            vertex_weight[i] /= sum_weight;
+        }
+    
+        for(int i =0; i<num_of_vertex;i++){
+            sum += vertex_weight[i];
+            if(sum >= 0.25){
+                end_arr[index] = i-1;
+                sum = 0;
+                if(index<num_of_node-1)
+                    start_arr[index+1] = i-1;
+                index++;
+            }
+            if(index == num_of_node-2)
+                break;
+        //printf("%llf\n", vertex_weight[i]);
+        }
+        end_arr[num_of_node-2] = num_of_vertex;
+    }
+
+    int div_num_of_vertex;
+    if(my_ip != node[0]){
+       for(int i=1;i<num_of_node;i++){
+            if(node[i] == my_ip){
+                div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
+                start = start_arr[i-1];
+                end = end_arr[i-1];
+            }
+        }
+        //if(rank == 0){
+            for(int i=0;i<num_of_node;i++){
+                if(i == 0){
+                    send[i].resize(div_num_of_vertex);
+                    recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+                }
+                else{
+                    send[i].resize(1);
+                    send[i].shrink_to_fit();
+                    recv1[i].resize(1);
+                    recv1[i].shrink_to_fit();
+                }
+            }
+        //}
+        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+
+        //delete graph;
+       
+         //=======================================================================
+        /*temp =0;
+        index=0;
+        ttt=1;
+        int num_edge = 0;
+        for (int i = start; i < end; i++) {
+            num_edge += num_outgoing[i];
+        }
+        start_arr_process[0] = start;
+        for(size_t i =start; i<end;i++){
+            temp += num_outgoing[i];
+            if( temp+ttt*argvv >= num_edge/size+div_num_of_vertex/size*argvv){//+ ttt + (ttt*sizeof(double))> edge_part+vertex_part+buf_part){
+            //cout << i << ", " << temp - num_outgoing[i] + ttt << endl;
+                temp = num_outgoing[i];
+                end_arr_process[index] = i;
+                if(index<size)
+                    start_arr_process[index+1] = i;
+                ttt=0;
+                index++;
+            }
+            ttt++;
+            if(index == size-1)
+                break;
+        }
+        end_arr_process[size-1] = div_num_of_vertex;
+        if(my_ip == node[num_of_node-1]){
+            end_arr_process[size-1] +=start_arr[3];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            end_arr_process[size-1] +=start_arr[2];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            end_arr_process[size-1] +=start_arr[1];
+        }
+        //=======================================================================
+        for(int i=0;i<size;i++){
+            if(rank == i){
+                start = start_arr_process[i];
+                end = end_arr_process[i];
+            }
+            displs[i] = start_arr_process[i]-start_arr_process[0];
+            recvcounts[i] = end_arr_process[i] - start_arr_process[i];
+            if(rank == 0){
+                cout << recvcounts[i] << endl;
+            }
+        }
+        /*if(my_ip == node[num_of_node-1]){
+            start += end_arr[2];
+            end += end_arr[2];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            start += end_arr[1];
+            end += end_arr[1];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            start += end_arr[0];
+            end += end_arr[0];
+        }*/
+        //=======================================================================
+        //cout << rank << ", " <<div_num_of_vertex << ", " << start << ", " << end << endl;
+        for(int i=0;i<size;i++){
+            a = div_num_of_vertex/size*i;
+            b = a + div_num_of_vertex/size;
+            if(rank == i){
+                start = a;
+                end = b;
+            }
+            if(rank ==size-1 && rank == i){
+                end = div_num_of_vertex;
+            }
+            displs[i] = a;
+            recvcounts[i] = b-a;
+            if(i ==size-1)
+                recvcounts[i] = div_num_of_vertex-displs[i];
+            //cout << "displs[" << i << "]: " <<displs[i] << endl;
+            //cout << "recvcounts["<<i<<"]: " << recvcounts[i] << endl;
+        }
+        if(my_ip == node[num_of_node-1]){
+            start += end_arr[2];
+            end += end_arr[2];
+        }
+        else if(my_ip == node[num_of_node-2]){
+            start += end_arr[1];
+            end += end_arr[1];
+        }
+        else if(my_ip == node[num_of_node-3]){
+            start += end_arr[0];
+            end += end_arr[0];
+        }
+        //p_sliced_graph.resize(end-start);
+        //p_sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);
+        //cout << "start, end: " << start <<", "<< end << endl;
+    }
+     else{
+        for(int i=0;i<num_of_node-1;i++){
+            int temp1 = end_arr[i] - start_arr[i];
+            send[i].resize(num_of_vertex, 1/num_of_vertex);
+            recv1[i].resize(temp1);
+            nn[i] = temp1;
+        }
+        //num_outgoing.clear();
+        //num_outgoing.shrink_to_fit();
+        //delete graph;
+    }
+}
 vector<vector<size_t>> Pagerank::slice_graph(std::vector<std::vector<size_t>>& graph, int num_of_node, int size, string* node, string my_ip){
     int recvcounts[size];
     int displs[size]; 

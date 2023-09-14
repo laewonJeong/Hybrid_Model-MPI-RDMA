@@ -228,8 +228,8 @@ int main(int argc, char** argv){
                 //
                 idx = i-start;
                 double tmp = 0.0;
-                const size_t graph_size = sliced_graph[idx].size();
-                const size_t* graph_ptr = sliced_graph[idx].data();
+                const size_t graph_size = sliced_graph[i-displs[rank]].size();
+                const size_t* graph_ptr = sliced_graph[i-displs[rank]].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

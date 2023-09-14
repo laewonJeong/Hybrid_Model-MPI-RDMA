@@ -391,7 +391,7 @@ int main(int argc, char** argv){
         num_outgoing.shrink_to_fit();
         delete graph;
     }
-
+    delete graph;
     //sliced_graph.resize(0);
     //sliced_graph.shrink_to_fit();
 

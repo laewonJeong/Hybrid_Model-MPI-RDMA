@@ -195,19 +195,22 @@ int main(int argc, char** argv){
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
     
-    size_t pointerSize = sizeof(graph);
+    //size_t pointerSize = sizeof(graph);
 
     size_t innerVectorsSize = 0;
     for (const auto& innerVector : *graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
-    size_t totalSize = pointerSize + innerVectorsSize;
+    size_t totalSize = innerVectorsSize;
     
+    size_t outgoing_size = sizeof(size_t) * num_outgoing.size();
     
     myRDMA myrdma;
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH " <<  create_graph_time << "s. " << endl;
         cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
+        cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
+        cout << totalSize + outgoing_size << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }

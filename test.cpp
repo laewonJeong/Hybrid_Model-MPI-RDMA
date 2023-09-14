@@ -395,7 +395,7 @@ int main(int argc, char** argv){
             recv1[i].resize(temp1);
             nn[i] = temp1;
         }
-        num_outgoing.resize(0);
+        num_outgoing.clear();
         num_outgoing.shrink_to_fit();
         //delete graph;
     }

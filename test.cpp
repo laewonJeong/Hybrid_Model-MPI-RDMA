@@ -153,20 +153,6 @@ int main(int argc, char** argv){
     vector<double> recv1[num_of_node];
 
     string my_ip= tcp.check_my_ip();
-    
-
-    /*TCP tcp;
-
-    cout << "check my ip" << endl;
-    my_ip = tcp.check_my_ip();
-    cout << "finish! this pod's ip is " <<my_ip << endl;
-
-    cout << "Changing domain to ip ..." << endl;
-    for(int i = 0 ;i < num_of_node;i++){
-        node[i]=tcp.domain_to_ip(node_domain[i]);
-        cout << node_domain[i] << " ----> " << node[i] <<endl;
-    }
-    cout << "Success" << endl;*/
 
     //MPI Init
     MPI_Init(&argc, &argv);
@@ -183,8 +169,9 @@ int main(int argc, char** argv){
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
     
-    create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
-    
+    //create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
+    pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
+    num_of_vertex = (*graph).size();
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
     
@@ -214,7 +201,6 @@ int main(int argc, char** argv){
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
     int argvv = stoi(argv[3]);
-    cout << "check Memory Usage" << endl;
 
     //while(1){
 

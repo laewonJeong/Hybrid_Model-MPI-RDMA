@@ -38,32 +38,35 @@ bool Pagerank::insert_into_vector(Vector& v, const T& t) {
         return false;
     }
 }
-bool Pagerank::add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>& graph) {
-    vector<size_t> v;
+bool Pagerank::add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>* graph,vector<int>& num_outgoing) {
     bool ret = false;
     size_t max_dim = max(from, to);
 
-    if (graph.size() <= max_dim) {
+    if ((*graph).size() <= max_dim) {
         max_dim = max_dim + 1;
         
-        graph.resize(max_dim);
-        if (pagerank.num_outgoing.size() <= max_dim) {
-            pagerank.num_outgoing.resize(max_dim,0);
+        (*graph).resize(max_dim);
+        //pagerank.outgoing.resize(max_dim);
+        if (num_outgoing.size() <= max_dim) {
+            num_outgoing.resize(max_dim,0);
         }
     }
+    //pagerank.graph[to].push_back(from);
+    //cout << pagerank.graph[to] << endl;
 
-    ret = insert_into_vector(graph[to], from);
+    ret = insert_into_vector((*graph)[to], from);
 
     if (ret) {
-        pagerank.num_outgoing[from]++;
-        //number_outgoing++;
+        num_outgoing[from]++;
+        //if(num_outgoing[from] > max_edge){
+        //    max_edge = num_outgoing[from];
+        //}
     }
 
     return ret;
 }
-vector<vector<size_t>> Pagerank::create_graph(string path, string del,int num_of_node, int size, string* node, string my_ip){
+void Pagerank::create_graph(string path, string del,std::vector<std::vector<size_t>>* graph, vector<int>& num_outgoing){
     istream *infile;
-    std::vector<std::vector<size_t>> graph;
     infile = new ifstream(path.c_str());
     size_t line_num = 0;
     string line;
@@ -81,16 +84,13 @@ vector<vector<size_t>> Pagerank::create_graph(string path, string del,int num_of
             from = line.substr(0,pos);
             to = line.substr(pos+1);
            
-            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph);
+            add_arc(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),graph,num_outgoing);
             
             line_num++;
 		}
 	} 
     
-    pagerank.num_of_vertex = graph.size();
-    edge = line_num;
     delete infile;
-    return slice_graph(graph, num_of_node, size, node, my_ip);
 }
 vector<vector<size_t>> Pagerank::slice_graph(std::vector<std::vector<size_t>>& graph, int num_of_node, int size, string* node, string my_ip){
     int recvcounts[size];

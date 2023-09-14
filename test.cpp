@@ -285,16 +285,7 @@ int main(int argc, char** argv){
         sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
 
         delete graph;
-        pointerSize = sizeof(graph);
-
-        innerVectorPointersSize = graph->size() * sizeof(std::vector<size_t>*);
-
-        innerVectorsSize = 0;
-        for (const auto& innerVector : *graph) {
-            innerVectorsSize += innerVector.size() * sizeof(size_t);
-        }
-        totalSize = pointerSize + innerVectorPointersSize + innerVectorsSize;
-        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
+       
          //=======================================================================
         /*temp =0;
         index=0;
@@ -404,11 +395,16 @@ int main(int argc, char** argv){
     //sliced_graph.shrink_to_fit();
 
     //D-RDMALib Init
-    
+    size_t s = sizeof(sliced_graph); // 외부 벡터의 크기
+
+    for (const auto& innerVector : sliced_graph) {
+        s += innerVector.size() * sizeof(size_t); // 내부 벡터의 크기
+    }
     vector<double>* send_first = &send[1];
     vector<double>* send_end = &send[num_of_node-1];
     if(rank == 0){
         cout << "[INFO]FINISH GRAPH PARTITIONING" << endl; // <<  create_graph_time << "s. " << endl;
+        cout << "[INFO]GRAPH MEMORY USAGE: " << s << " byte." << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);

@@ -117,9 +117,9 @@ void create_graph_data(string path, int rank, string del, string my_ip,std::vect
         
 	} 
     
-  
-    num_of_vertex = (*graph).size();
-    
+    int a = (*graph).size();
+    num_of_vertex = a;
+    a = 0;
     //else
     //    num_of_vertex = max_vertex+1;
 
@@ -178,35 +178,33 @@ int main(int argc, char** argv){
         cout << "=====================================================" << endl;
         cout << "[INFO]CREATE GRAPH" << endl;
     }
-    if(my_ip == node[0]){
-        clock_gettime(CLOCK_MONOTONIC, &begin1);
     
-        create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
+    clock_gettime(CLOCK_MONOTONIC, &begin1);
     
-        clock_gettime(CLOCK_MONOTONIC, &end1);
-        long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+    create_graph_data(argv[1],rank,argv[2], my_ip,graph);      
+    
+    clock_gettime(CLOCK_MONOTONIC, &end1);
+    long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+    
+    size_t s = sizeof(graph);
+    for (const auto& innerVector : (*graph)){
+        s += innerVector.size() * sizeof(size_t);
     }
-    else{
-        sliced_graph = pagerank.create_graph(argv[1],argv[2],num_of_node, size, node, my_ip);
-    }
-    while(1){
-        
-    }
+    //std::cout << "graph의 메모리 사용량: " << size << " 바이트" << std::endl;
+    
 //==================================================================================
-    cout << "[INFO]AVG EDGE: "<<double(edge/num_of_vertex) << endl;
-    //cout << "[INFO]MAX EDGE: "<<max_edge <<endl;
-    
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
     myRDMA myrdma;
     if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH" << endl; // <<  create_graph_time << "s. " << endl;
+        cout << "[INFO]FINISH CREATE GRAPH" << endl <<  create_graph_time << "s. " << endl;
+        cout << "[INFO]GRAPH MEMORY USAGE: " << size << " byte." << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
     int argvv = stoi(argv[3]);
+
     // graph partitioning
-    //double ve = edge/num_of_vertex;
 
     int recvcounts[size];
     int displs[size]; 

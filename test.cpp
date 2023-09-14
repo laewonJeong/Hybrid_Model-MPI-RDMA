@@ -115,6 +115,7 @@ int main(int argc, char** argv){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();
     }
+    cout << start <<", " << end << endl;
     /*int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];

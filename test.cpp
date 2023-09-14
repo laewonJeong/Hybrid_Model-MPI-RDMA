@@ -29,7 +29,7 @@
 string node[num_of_node] = {server_ip,"192.168.1.102","192.168.1.103","192.168.1.104","192.168.1.105"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 string node_domain[num_of_node];
 
-std::vector<int> num_outgoing;
+std::vector<size_t> num_outgoing;
 int num_of_vertex;
 int start, end;
 int edge;
@@ -187,8 +187,6 @@ int main(int argc, char** argv){
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
     
     size_t pointerSize = sizeof(graph);
-
-    size_t innerVectorPointersSize = graph->size() * sizeof(std::vector<size_t>*);
 
     size_t innerVectorsSize = 0;
     for (const auto& innerVector : *graph) {
@@ -404,7 +402,7 @@ int main(int argc, char** argv){
     vector<double>* send_end = &send[num_of_node-1];
     if(rank == 0){
         cout << "[INFO]FINISH GRAPH PARTITIONING" << endl; // <<  create_graph_time << "s. " << endl;
-        cout << "[INFO]GRAPH MEMORY USAGE: " << s << " byte." << endl;
+        cout << "[INFO]SLICED GRAPH MEMORY USAGE: " << s << " byte." << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);

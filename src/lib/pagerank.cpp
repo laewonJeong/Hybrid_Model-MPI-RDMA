@@ -104,7 +104,6 @@ vector<vector<size_t>> Pagerank::slice_graph(std::vector<std::vector<size_t>>& g
     int end_arr_process[size-1];
     int temp = 0;
     size_t index = 0;
-    std::vector<std::vector<size_t>> sliced_graph;
     int start, end;
 
 

@@ -373,7 +373,6 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
                                                         recv[i].data(), sizeof(double)*(recv[i].size()));//sizeof(myrdma.recv[i].data()));
-                cout << mr->length << endl;
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});
@@ -390,7 +389,6 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
                                                         send[i].data(), sizeof(double)*(send[i].size()));//sizeof(myrdma.send[i].data()));
-                cout << mr->length << endl;
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});

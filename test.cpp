@@ -192,13 +192,9 @@ int main(int argc, char** argv){
 //==================================================================================
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
-    delete[] graph;
+    vector<vector<size_t>>().swap(*graph);
 
-    cout << "check Memory Usage" << endl;
-
-    while(1){
-
-    }
+    
     
     myRDMA myrdma;
     if(rank == 0){
@@ -208,7 +204,11 @@ int main(int argc, char** argv){
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
     int argvv = stoi(argv[3]);
+    cout << "check Memory Usage" << endl;
 
+    while(1){
+
+    }
     // graph partitioning
 
     int recvcounts[size];

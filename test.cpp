@@ -220,10 +220,10 @@ int main(int argc, char** argv){
                 cout << "[INFO]COMPUTE PAGERANK" <<endl;
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
-            for(size_t i=start-start;i<end-start;i++){
+            for(size_t i=start;i<end;i++){
                 //cout << i << endl;
                 //
-                idx = i;
+                idx = i-start;
                 double tmp = 0.0;
                 const size_t graph_size = sliced_graph[i].size();
                 const size_t* graph_ptr = sliced_graph[i].data();

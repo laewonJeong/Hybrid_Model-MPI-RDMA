@@ -193,7 +193,7 @@ int main(int argc, char** argv){
     cout.precision(numeric_limits<double>::digits10);
 //==================================================================================
     vector<vector<size_t>>().swap(*graph);
-
+    delete graph;
     
     
     myRDMA myrdma;

@@ -56,7 +56,7 @@ int main(int argc, char** argv){
     struct timespec begin2, end2 ;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> sliced_graph;
-    std::vector<std::vector<size_t>> p_sliced_graph;
+    
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
     vector<double>* send_first = &send[1];
@@ -70,11 +70,13 @@ int main(int argc, char** argv){
             my_idx = i-1;
     }
     //MPI Init=====================================================================
+    
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     // Create Graph================================================================
+   
     if(rank == 0){
         
         cout << "[INFO]IP: " << my_ip << endl;
@@ -91,6 +93,7 @@ int main(int argc, char** argv){
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
 
     //Check Graph size==============================================================
+    
     size_t innerVectorsSize = 0;
     for (const auto& innerVector : *graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
@@ -119,6 +122,7 @@ int main(int argc, char** argv){
                             displs, recvcounts, send, recv1);
 
     //Delete Graph===================================================================
+    
     delete graph;
     if(my_ip == node[0]){
         num_outgoing.clear();
@@ -126,6 +130,7 @@ int main(int argc, char** argv){
     }
 
     //Check sliced_graph size==========================================================
+    
     size_t s = sizeof(sliced_graph); // 외부 벡터의 크기
 
     for (const auto& innerVector : sliced_graph) {
@@ -133,6 +138,7 @@ int main(int argc, char** argv){
     }
 
     //D-RDMALib Init===================================================================
+    
     if(rank == 0){
         cout << "[INFO]FINISH GRAPH PARTITIONING" << endl; // <<  create_graph_time << "s. " << endl;
         cout << "[INFO]SLICED GRAPH MEMORY USAGE: " << s << " byte." << endl;
@@ -244,13 +250,13 @@ int main(int argc, char** argv){
                 cout << "[INFO]COMPUTE PAGERANK" <<endl;
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
-            for(size_t i=start;i<end;i++){
+            for(size_t i=start-start;i<end-start;i++){
                 //cout << i << endl;
                 //
-                idx = i-start;
+                idx = i;
                 double tmp = 0.0;
-                const size_t graph_size = sliced_graph[i-start_idx].size();
-                const size_t* graph_ptr = sliced_graph[i-start_idx].data();
+                const size_t graph_size = sliced_graph[i].size();
+                const size_t* graph_ptr = sliced_graph[i].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

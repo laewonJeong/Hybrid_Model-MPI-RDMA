@@ -97,7 +97,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
                              int& start, int& end, int* nn, int num_of_node, int size,string* node, string my_ip, int rank,
                              int* displs, int* recvcounts, vector<double> *send, vector<double> *recv1)
 {
-    
+    //std::vector<std::vector<size_t>>* slice_graph = new vector<vector<size_t>>();
     int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];
@@ -168,7 +168,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
                 }
             }
         //}
-        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
+        
 
         //delete graph;
        
@@ -264,6 +264,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
         //p_sliced_graph.resize(end-start);
         //p_sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);
         //cout << "start, end: " << start <<", "<< end << endl;
+        sliced_graph = std::vector<std::vector<size_t>>((*graph).begin() + start,(*graph).begin() + end + 1);
     }
      else{
         for(int i=0;i<num_of_node-1;i++){

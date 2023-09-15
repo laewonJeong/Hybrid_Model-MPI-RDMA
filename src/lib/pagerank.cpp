@@ -278,13 +278,13 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
                 sum_weight += weight;
             }
     
-            for(int i =start; i<end;i++){
+            for(int i=start; i<end;i++){
                 vertex_weight[i-start] /= sum_weight;
             }
     
             for(int i =start; i<end;i++){
                 sum += vertex_weight[i-start];
-                if(sum >= div_weight){
+                if(sum >= 0.5){
                     end_arr1[index] = i-1;
                     sum = 0;
                     if(index<size)

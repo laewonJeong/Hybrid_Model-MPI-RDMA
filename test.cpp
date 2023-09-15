@@ -204,7 +204,7 @@ int main(int argc, char** argv){
     }
     MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
     
-    int start_idx;
+    /*int start_idx;
     if(rank == 0){
         start_idx = start;
         for (int dest = 1; dest < size; dest++) {
@@ -213,7 +213,7 @@ int main(int argc, char** argv){
     } else {
         // 다른 프로세스는 Rank 0으로부터 데이터를 받습니다.
         MPI_Recv(&start_idx, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-    }
+    }*/
     
 
 

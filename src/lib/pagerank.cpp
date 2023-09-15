@@ -270,6 +270,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
             int start_arr1[size];
             start_arr1[0] = start;
             int end_arr1[size];
+            float div_weight = 1/size;
 
             for(int i =start; i<end;i++){
                 double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
@@ -283,7 +284,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
     
             for(int i =start; i<end;i++){
                 sum += vertex_weight[i-start];
-                if(sum >= 0.25){
+                if(sum >= div_weight){
                     end_arr1[index] = i-1;
                     sum = 0;
                     if(index<size)

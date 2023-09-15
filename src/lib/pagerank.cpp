@@ -273,24 +273,24 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
                 sum_weight += weight;
             }
     
-            for(int i =start; i<end;i++){
+            for(int i =start-start; i<end-start;i++){
                 vertex_weight[i] /= sum_weight;
             }
     
-            for(int i =start; i<end;i++){
+            for(int i =start-start; i<end-start;i++){
                 sum += vertex_weight[i];
                 if(sum >= 0.25){
                     end_arr[index] = i-1;
                     sum = 0;
-                    if(index<num_of_node-1)
+                    if(index<size)
                         start_arr[index+1] = i-1;
                     index++;
                 }
-                if(index == num_of_node-2)
+                if(index == size-1)
                     break;
             //printf("%llf\n", vertex_weight[i]);
             }
-            end_arr[num_of_node-2] = end;
+            end_arr[size-1] = end;
             for(int i=0;i<size;i++){
                 if(rank == i){
                     //div_num_of_vertex = end_arr[i-1] - start_arr[i-1];

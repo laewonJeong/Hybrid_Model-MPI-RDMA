@@ -304,6 +304,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
                 }
             }
         }
+        cout << end-start << ", " <<div_num_of_vertex << endl;
         //p_sliced_graph.resize(end-start);
         //p_sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);
         //cout << "start, end: " << start <<", "<< end << endl;

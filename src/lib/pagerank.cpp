@@ -301,10 +301,13 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
                     //div_num_of_vertex = end_arr[i-1] - start_arr[i-1];
                     start = start_arr1[i];
                     end = end_arr1[i];
+                    
                 }
+                displs[i] = start_arr1[i]-start_arr1[0];
+                recvcounts[i] = end_arr1[i] - start_arr1[i];
             }
         }
-        cout << end-start << ", " <<div_num_of_vertex << endl;
+        
         //p_sliced_graph.resize(end-start);
         //p_sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);
         //cout << "start, end: " << start <<", "<< end << endl;

@@ -62,7 +62,9 @@ int main(int argc, char** argv){
     vector<double>* send_first = &send[1];
     vector<double>* send_end = &send[num_of_node-1];
     int my_idx;
-    
+    int recvcounts[size];
+    int displs[size]; 
+    int nn[num_of_node];
 
     string my_ip= tcp.check_my_ip();
     for(int i=1;i<num_of_node;i++){
@@ -84,6 +86,13 @@ int main(int argc, char** argv){
         cout << "[INFO]CREATE GRAPH" << endl;
     }
     
+    pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
+                                start, end, nn, num_of_node, size, node, my_ip, 
+                                rank, displs, recvcounts, send, recv1);
+    while(1){
+        
+    }
+
     clock_gettime(CLOCK_MONOTONIC, &begin1);
       
     pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
@@ -113,9 +122,6 @@ int main(int argc, char** argv){
 
     //graph partitioning=============================================================
     
-    int recvcounts[size];
-    int displs[size]; 
-    int nn[num_of_node];
 
     pagerank.graph_partition(graph, sliced_graph, num_outgoing, num_of_vertex,
                             start, end, nn, num_of_node, size, node, my_ip, rank, 

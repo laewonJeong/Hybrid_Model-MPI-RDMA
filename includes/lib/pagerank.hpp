@@ -19,6 +19,10 @@ using namespace std;
 class Pagerank{
     public:
        void create_graph(string path, string del, std::vector<std::vector<size_t>>* graph, vector<int>& num_outgoing);
+       void create_vertex_weight(string path, string del, vector<int>& num_outgoing, 
+                                int& num_of_vertex, int& start, int& end, int* nn,int num_of_node, 
+                                int size,string* node, string my_ip, int rank, int* displs, 
+                                int* recvcounts,vector<double> *send, vector<double> *recv1);
        void create_graph_data(string path, string del);
        void graph_partition(std::vector<std::vector<size_t>>* graph,std::vector<std::vector<size_t>>& sliced_graph,
                             vector<int>& num_outgoing, int num_of_vertex,
@@ -47,6 +51,7 @@ class Pagerank{
         double diff;
         vector<int> num_outgoing;
         bool add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>* graph,vector<int>& num_outgoing);
+        bool add_arc1(size_t from, size_t to,vector<int>& num_outgoing);
         template <class Vector, class T> bool insert_into_vector(Vector& v,
                                                              const T& t);
         vector<vector<size_t>> slice_graph(std::vector<std::vector<size_t>>& graph, int num_of_node, int size,string* node, string my_ip);

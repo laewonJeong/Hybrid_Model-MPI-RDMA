@@ -65,6 +65,63 @@ bool Pagerank::add_arc(size_t from, size_t to, std::vector<std::vector<size_t>>*
 
     return ret;
 }
+bool Pagerank::add_arc1(size_t from, size_t to,vector<int>& num_outgoing) {
+    bool ret = true;
+    size_t max_dim = max(from, to);
+
+    if (num_outgoing.size() <= max_dim) {
+        max_dim = max_dim + 1;
+        
+        num_outgoing.resize(max_dim,0);
+        //pagerank.outgoing.resize(max_dim);
+    }
+    //pagerank.graph[to].push_back(from);
+    //cout << pagerank.graph[to] << endl;
+
+    //ret = insert_into_vector((*graph)[to], from);
+
+    num_outgoing[from]++;
+        //if(num_outgoing[from] > max_edge){
+        //    max_edge = num_outgoing[from];
+
+    return ret;
+}
+void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_outgoing, 
+                                int& num_of_vertex, int& start, int& end, int* nn,int num_of_node, 
+                                int size,string* node, string my_ip, int rank, int* displs, 
+                                int* recvcounts,vector<double> *send, vector<double> *recv1)
+{
+    istream *infile;
+    infile = new ifstream(path.c_str());
+    size_t line_num = 0;
+    string line;
+    int num_vertex = 0;
+    int temp;
+	
+	if(infile){
+        while(getline(*infile, line)) {
+            string from, to;
+            size_t pos;
+            if(del == " ")
+                pos = line.find(" ");
+            else
+                pos = line.find("\t");
+
+            from = line.substr(0,pos);
+            to = line.substr(pos+1);
+            temp = max(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10));
+            if(num_vertex < temp)
+                num_vertex = temp + 1;
+            add_arc1(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),num_outgoing);
+            
+            line_num++;
+		}
+	} 
+    num_of_vertex = num_vertex;
+    cout << num_of_vertex << ", " << line_num << endl;
+    cout << num_outgoing.size() << endl;
+    delete infile;  
+}
 void Pagerank::create_graph(string path, string del,std::vector<std::vector<size_t>>* graph, vector<int>& num_outgoing){
     istream *infile;
     infile = new ifstream(path.c_str());

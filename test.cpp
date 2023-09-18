@@ -138,7 +138,7 @@ int main(int argc, char** argv){
 
     //Delete Graph===================================================================
     
-    //delete graph;
+    delete graph;
     if(my_ip == node[0]){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();

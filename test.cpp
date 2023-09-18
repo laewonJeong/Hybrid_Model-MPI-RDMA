@@ -91,7 +91,7 @@ int main(int argc, char** argv){
     
     num_of_vertex = num_outgoing.size();
     
-    //cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
+    cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
@@ -330,6 +330,7 @@ int main(int argc, char** argv){
             if(rank == 0){
                 cout << "[INFO]START SEND_RDMA - SUCCESS ";
                 myrdma.rdma_write_vector(send[0],0);
+                myrdma.rdma_recv_pagerank(0);
             }
             
             
@@ -363,7 +364,7 @@ int main(int argc, char** argv){
             if(rank == 0){
                 cout << time1 << "s." <<endl;
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
-                myrdma.rdma_recv_pagerank(0);
+                //myrdma.rdma_recv_pagerank(0);
                 cout << "[INFO]START RECEIVE_RDMA - SUCCESS ";
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);

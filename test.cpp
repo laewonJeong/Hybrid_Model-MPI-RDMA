@@ -105,7 +105,7 @@ int main(int argc, char** argv){
 
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-    sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin(),sliced_graph.end());
+    sliced_graph = sliced_graph;//(sliced_graph.begin(),sliced_graph.end());
     //slice_graph = (*sliced_graph);
    // delete sliced_graph;
     //if(my_ip != node[0]){

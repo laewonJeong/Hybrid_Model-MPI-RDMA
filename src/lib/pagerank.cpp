@@ -147,6 +147,7 @@ void Pagerank::create_graph(string path, string del,std::vector<std::vector<size
 		}
 	} 
     pagerank.num_of_vertex = (*graph).size();
+    cout << line_num << endl;
     delete infile;
 }
 void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vector<std::vector<size_t>>& sliced_graph,

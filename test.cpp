@@ -54,8 +54,8 @@ int main(int argc, char** argv){
     long double compute_time = 0;
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
-    //std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
-    std::vector<std::vector<size_t>> *sliced_graph = new std::vector<std::vector<size_t>>();
+    std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
+    //std::vector<std::vector<size_t>> *sliced_graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> slice_graph;
 
     vector<double> send[num_of_node];
@@ -85,17 +85,18 @@ int main(int argc, char** argv){
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
-    pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
-                                start, end, nn, num_of_node, size, node, my_ip, 
-                                rank, displs, recvcounts, send, recv1);
+    //pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
+    //                            start, end, nn, num_of_node, size, node, my_ip, 
+     //                           rank, displs, recvcounts, send, recv1);
     
-    num_of_vertex = num_outgoing.size();
+    //num_of_vertex = num_outgoing.size();
     
-    cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
-    //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
-    pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
-    slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
-    delete sliced_graph;
+    //cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
+    pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
+    num_of_vertex = (*graph).size();
+    //pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
+    //slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
+    //delete sliced_graph;
 
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -131,9 +132,9 @@ int main(int argc, char** argv){
     //graph partitioning=============================================================
     
 
-    /*pagerank.graph_partition(graph, sliced_graph, num_outgoing, num_of_vertex,
+    pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
                             start, end, nn, num_of_node, size, node, my_ip, rank, 
-                            displs, recvcounts, send, recv1);*/
+                            displs, recvcounts, send, recv1);
 
     //Delete Graph===================================================================
     
@@ -145,7 +146,7 @@ int main(int argc, char** argv){
 
     //Check sliced_graph size==========================================================
     
-    size_t s = sizeof(sliced_graph); // 외부 벡터의 크기
+    size_t s = sizeof(slice_graph); // 외부 벡터의 크기
 
     for (const auto& innerVector : slice_graph) {
         s += innerVector.size() * sizeof(size_t); // 내부 벡터의 크기

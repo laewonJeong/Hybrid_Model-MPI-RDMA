@@ -122,19 +122,19 @@ int main(int argc, char** argv){
         cout << "=====================================================" << endl;
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
-    while(1){
-
-    }
+    //while(1){
+//
+    //}
     //graph partitioning=============================================================
     
 
-    pagerank.graph_partition(graph, sliced_graph, num_outgoing, num_of_vertex,
+    /*pagerank.graph_partition(graph, sliced_graph, num_outgoing, num_of_vertex,
                             start, end, nn, num_of_node, size, node, my_ip, rank, 
-                            displs, recvcounts, send, recv1);
+                            displs, recvcounts, send, recv1);*/
 
     //Delete Graph===================================================================
     
-    delete graph;
+    //delete graph;
     if(my_ip == node[0]){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();

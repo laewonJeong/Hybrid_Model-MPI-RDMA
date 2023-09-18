@@ -110,7 +110,7 @@ int main(int argc, char** argv){
     //Check Graph size==============================================================
     
     size_t innerVectorsSize = 0;
-    for (const auto& innerVector : (*sliced_graph)) {
+    for (const auto& innerVector : slice_graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
     size_t totalSize = innerVectorsSize;

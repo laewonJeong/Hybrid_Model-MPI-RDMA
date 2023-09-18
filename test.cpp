@@ -107,7 +107,7 @@ int main(int argc, char** argv){
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
     
     if(my_ip != node[0]){
-        slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end() - 1);
+        slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
         delete sliced_graph;
     }
     //Check Graph size==============================================================

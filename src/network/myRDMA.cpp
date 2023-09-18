@@ -52,7 +52,7 @@ void myRDMA::rdma_write_pagerank(vector<double> msg, int i){
     struct ibv_wc wc;
     rdma.post_rdma_write_with_imm(rdma_info1[0][i].qp, rdma_info1[0][i].mr, send_adrs[i], 
                         size, myrdma.qp_key[i].first, myrdma.qp_key[i].second);
-    //while(ibv_poll_cq(rdma_info1[0][i].cq,1,&wc)==0){}
+    while(ibv_poll_cq(rdma_info1[0][i].cq,1,&wc)==0){}
 }
 void myRDMA::rdma_wrecv_pagerank(int i){
    //TCP tcp;

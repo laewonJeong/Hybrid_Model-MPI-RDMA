@@ -86,13 +86,13 @@ bool Pagerank::add_arc1(size_t from, size_t to,vector<int>& num_outgoing) {
 
     return ret;
 }
-std::vector<std::vector<size_t>>* Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
+void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
     istream *infile;
     infile = new ifstream(path.c_str());
     string line;
     int temp;
-    std::vector<std::vector<size_t>>* slice_graph = new std::vector<std::vector<size_t>>();
-	(*slice_graph).resize(end-start);
+    //std::vector<std::vector<size_t>>* slice_graph = new std::vector<std::vector<size_t>>();
+	sliced_graph.resize(end-start);
     bool ret =false;
     size_t x;
     size_t y;
@@ -111,14 +111,14 @@ std::vector<std::vector<size_t>>* Pagerank::create_sliced_graph(string path, str
             x = strtol(from.c_str(), NULL, 10);
             y = strtol(to.c_str(), NULL, 10);
             if(y >= start && y < end)
-                ret = insert_into_vector((*slice_graph)[y-start], x);
+                ret = insert_into_vector(sliced_graph[y-start], x);
             
 		}
 	} 
     
     delete infile;
 
-    return slice_graph;
+    //return slice_graph;
 
 }
 void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_outgoing, 

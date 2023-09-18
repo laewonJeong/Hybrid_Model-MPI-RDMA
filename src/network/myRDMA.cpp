@@ -179,8 +179,8 @@ void myRDMA::rdma_send_rcv(int i, int* nn, int num_of_node, vector<double> *send
                         rdma_info1[1][i].cq, recv_adrs[i], size);//sizeof(myrdma.recv[i].data()));
     rdma.pollCompletion(rdma_info1[1][i].cq);
 
-    size = nn[i];
-    send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
+    //size = nn[i];
+    //send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
     //if(!rdma.pollCompletion(get<3>(myrdma.rdma_info[1][i])))
     //    cerr << "recv failed" << endl;
     //else{
@@ -274,14 +274,17 @@ void myRDMA::recv_t(string opcode){
 
 void myRDMA::t_recv(string opcode,int* nn, int num_of_node, vector<double> *send, vector<double> *recv1){
     std::vector<std::thread> worker;
+    size_t size;
     worker.reserve(myrdma.connect_num);
-   
+    
     if (opcode == "send_with_imm" || opcode == "write_with_imm" || opcode == "send"){
         for(int i=0;i<myrdma.connect_num;i++){
             worker.push_back(std::thread(&myRDMA::rdma_send_rcv,myRDMA(),i, nn, num_of_node, send, recv1));
         }
     }
     for(int i=0;i<myrdma.connect_num;i++){
+        size = nn[i];
+        send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
         worker[i].join();
     }
 }

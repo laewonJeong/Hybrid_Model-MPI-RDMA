@@ -63,9 +63,7 @@ int main(int argc, char** argv){
     vector<double>* send_first = &send[1];
     vector<double>* send_end = &send[num_of_node-1];
     int my_idx;
-    int recvcounts[size];
-    int displs[size]; 
-    int nn[num_of_node];
+    
 
     string my_ip= tcp.check_my_ip();
     for(int i=1;i<num_of_node;i++){
@@ -79,7 +77,9 @@ int main(int argc, char** argv){
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     // Create Graph================================================================
-   
+    int recvcounts[size];
+    int displs[size]; 
+    int nn[num_of_node];
     if(rank == 0){
         
         cout << "[INFO]IP: " << my_ip << endl;

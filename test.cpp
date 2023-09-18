@@ -348,7 +348,7 @@ int main(int argc, char** argv){
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
-            worker.reserve(num_of_node-2);
+            //worker.reserve(num_of_node-2);
             size_t i;
             for(i = 1; i<num_of_node-1;i++){
                 worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));

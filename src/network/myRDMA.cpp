@@ -249,7 +249,7 @@ void myRDMA::rdma_recv_msg(string opcode, int i){
 }
 void myRDMA::recv_t(string opcode){
     std::vector<std::thread> worker;
-    worker.reserve(myrdma.connect_num);
+    //worker.reserve(myrdma.connect_num);
     //omp_set_num_threads(myrdma.connect_num);
     if (opcode == "send_with_imm" || opcode == "write_with_imm" || opcode == "send"){
         //#pragma omp parallel

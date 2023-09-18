@@ -77,6 +77,7 @@ int main(int argc, char** argv){
     int recvcounts[size];
     int displs[size]; 
     int nn[num_of_node];
+
     if(rank == 0){
         
         cout << "[INFO]IP: " << my_ip << endl;
@@ -85,6 +86,7 @@ int main(int argc, char** argv){
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
+
     pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
                                 start, end, nn, num_of_node, size, node, my_ip, 
                                 rank, displs, recvcounts, send, recv1);
@@ -155,14 +157,14 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
    
-    int num_vertex = end-start;
-    int num_edge =0;
+   // int num_vertex = end-start;
+   // int num_edge =0;
     //cout << start << ", " << end <<endl;
-    for(int i=start; i<end;i++){
-        num_edge += num_outgoing[i];
-    }
-    cout << "\nVertex: " << num_vertex << endl;
-    cout << "Edge: " << num_edge << endl << endl;
+    //for(int i=start; i<end;i++){
+    //    num_edge += num_outgoing[i];
+    //}
+    //cout << "\nVertex: " << num_vertex << endl;
+    //cout << "Edge: " << num_edge << endl << endl;
   // cout << "end" << endl;*/
     int check;
     int check1[size];
@@ -346,6 +348,7 @@ int main(int argc, char** argv){
         if(my_ip == node[0]){
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
+            worker.reserve(num_of_node-2);
             size_t i;
             for(i = 1; i<num_of_node-1;i++){
                 worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,send[0],i));

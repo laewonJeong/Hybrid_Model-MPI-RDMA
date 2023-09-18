@@ -94,7 +94,7 @@ int main(int argc, char** argv){
     cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
-    //slice_graph = sliced_graph.begin();
+    sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin(),sliced_graph.end());
 
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

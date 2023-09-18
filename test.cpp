@@ -90,13 +90,12 @@ int main(int argc, char** argv){
                                 start, end, nn, num_of_node, size, node, my_ip, 
                                 rank, displs, recvcounts, send, recv1);
     cout << start<< ", " << end <<endl;
-    while(1){
-
-    }
+    
 
     clock_gettime(CLOCK_MONOTONIC, &begin1);
       
-    pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
+    //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
+    pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
     //while(1){
 
     //}
@@ -108,7 +107,7 @@ int main(int argc, char** argv){
     //Check Graph size==============================================================
     
     size_t innerVectorsSize = 0;
-    for (const auto& innerVector : *graph) {
+    for (const auto& innerVector : sliced_graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
     size_t totalSize = innerVectorsSize;
@@ -123,7 +122,9 @@ int main(int argc, char** argv){
         cout << "=====================================================" << endl;
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
+    while(1){
 
+    }
     //graph partitioning=============================================================
     
 

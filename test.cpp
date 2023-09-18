@@ -122,12 +122,13 @@ int main(int argc, char** argv){
     
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH " <<  create_graph_time << "s. " << endl;
-        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
+        //cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
         cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
         cout << totalSize + outgoing_size << " byte."<<endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
+    cout << "[INFO]"<<rank<<": GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
     //while(1){
 //
     //}

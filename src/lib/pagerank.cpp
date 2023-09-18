@@ -86,13 +86,13 @@ bool Pagerank::add_arc1(size_t from, size_t to,vector<int>& num_outgoing) {
 
     return ret;
 }
-void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
+void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>* sliced_graph){
     istream *infile;
     infile = new ifstream(path.c_str());
     size_t line_num = 0;
     string line;
     int temp;
-	sliced_graph.resize(end-start);
+	(*sliced_graph).resize(end-start);
     bool ret =false;
 
 	if(infile){
@@ -109,7 +109,7 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
             //from = strtol(from.c_str(), NULL, 10);
             //to = strtol(to.c_str(), NULL, 10);
             if(strtol(to.c_str(), NULL, 10) >= start && strtol(to.c_str(), NULL, 10) < end)
-                ret = insert_into_vector(sliced_graph[strtol(to.c_str(), NULL, 10)-start], strtol(from.c_str(), NULL, 10));
+                ret = insert_into_vector((*sliced_graph)[strtol(to.c_str(), NULL, 10)-start], strtol(from.c_str(), NULL, 10));
             
             line_num++;
 		}
@@ -151,7 +151,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             line_num++;
 		}
 	} 
-    num_of_vertex = num_vertex;
+    //num_of_vertex = num_vertex;
     
     delete infile;
 
@@ -176,17 +176,17 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         vector<double> vertex_weight;
         double sum_weight = 0;
         double sum = 0;
-        for(int i =0; i<num_of_vertex;i++){
+        for(int i =0; i<num_vertex;i++){
             double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             vertex_weight.push_back(weight);
             sum_weight += weight;
         }
     
-        for(int i =0; i<num_of_vertex;i++){
+        for(int i =0; i<num_vertex;i++){
             vertex_weight[i] /= sum_weight;
         }
     
-        for(int i =0; i<num_of_vertex;i++){
+        for(int i =0; i<num_vertex;i++){
             sum += vertex_weight[i];
             if(sum >= 0.25){
                 end_arr[index] = i-1;
@@ -199,7 +199,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 break;
         //printf("%llf\n", vertex_weight[i]);
         }
-        end_arr[num_of_node-2] = num_of_vertex;
+        end_arr[num_of_node-2] = num_vertex;
     }
 
     int div_num_of_vertex;
@@ -215,7 +215,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             for(int i=0;i<num_of_node;i++){
                 if(i == 0){
                     send[i].resize(div_num_of_vertex);
-                    recv1[i].resize(num_of_vertex, 1/num_of_vertex);
+                    recv1[i].resize(num_vertex, 1/num_vertex);
                 }
                 else{
                     send[i].resize(1);
@@ -279,7 +279,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
      else{
         for(int i=0;i<num_of_node-1;i++){
             int temp1 = end_arr[i] - start_arr[i];
-            send[i].resize(num_of_vertex, 1/num_of_vertex);
+            send[i].resize(num_vertex, 1/num_vertex);
             recv1[i].resize(temp1);
             nn[i] = temp1;
         }

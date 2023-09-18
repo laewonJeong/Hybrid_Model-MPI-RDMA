@@ -86,20 +86,21 @@ int main(int argc, char** argv){
         cout << "[INFO]CREATE GRAPH" << endl;
     }
     
-    //pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
-    //                            start, end, nn, num_of_node, size, node, my_ip, 
-    //                            rank, displs, recvcounts, send, recv1);
-    //while(1){
+    pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
+                                start, end, nn, num_of_node, size, node, my_ip, 
+                                rank, displs, recvcounts, send, recv1);
+    cout << start<< ", " << end <<endl;
+    while(1){
 
-    //}
+    }
 
     clock_gettime(CLOCK_MONOTONIC, &begin1);
       
     pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
-    while(1){
-        
-    }
-    num_of_vertex = (*graph).size();
+    //while(1){
+
+    //}
+    //num_of_vertex = (*graph).size();
 
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

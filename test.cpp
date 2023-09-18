@@ -330,7 +330,7 @@ int main(int argc, char** argv){
             if(rank == 0){
                 cout << "[INFO]START SEND_RDMA - SUCCESS ";
                 myrdma.rdma_write_vector(send[0],0);
-                myrdma.rdma_recv_pagerank(0);
+                //myrdma.rdma_recv_pagerank(0);
             }
             
             
@@ -364,7 +364,7 @@ int main(int argc, char** argv){
             if(rank == 0){
                 cout << time1 << "s." <<endl;
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
-                //myrdma.rdma_recv_pagerank(0);
+                myrdma.rdma_recv_pagerank(0);
                 cout << "[INFO]START RECEIVE_RDMA - SUCCESS ";
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);

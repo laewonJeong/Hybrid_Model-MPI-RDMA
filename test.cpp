@@ -87,19 +87,19 @@ int main(int argc, char** argv){
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
 
-    pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
-                                start, end, nn, num_of_node, size, node, my_ip, 
-                                rank, displs, recvcounts, send, recv1);
+    //pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
+    //                            start, end, nn, num_of_node, size, node, my_ip, 
+     //                           rank, displs, recvcounts, send, recv1);
     
-    num_of_vertex = num_outgoing.size();
+    //num_of_vertex = num_outgoing.size();
     
     cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
-    //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
-    //num_of_vertex = (*graph).size();
-    pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
+    pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
+    num_of_vertex = (*graph).size();
+    //pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
     
-    slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
-    delete sliced_graph;
+    //slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
+    //delete sliced_graph;
 
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -135,13 +135,13 @@ int main(int argc, char** argv){
     //graph partitioning=============================================================
     
 
-    //pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
-    //                        start, end, nn, num_of_node, size, node, my_ip, rank, 
-    //                        displs, recvcounts, send, recv1);
+    pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
+                            start, end, nn, num_of_node, size, node, my_ip, rank, 
+                            displs, recvcounts, send, recv1);
 
     //Delete Graph===================================================================
     
-    //delete graph;
+    delete graph;
     if(my_ip == node[0]){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();

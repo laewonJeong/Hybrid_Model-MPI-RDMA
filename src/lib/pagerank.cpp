@@ -89,7 +89,6 @@ bool Pagerank::add_arc1(size_t from, size_t to,vector<int>& num_outgoing) {
 std::vector<std::vector<size_t>>* Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
     istream *infile;
     infile = new ifstream(path.c_str());
-    //size_t line_num = 0;
     string line;
     int temp;
     std::vector<std::vector<size_t>>* slice_graph = new std::vector<std::vector<size_t>>();
@@ -114,13 +113,9 @@ std::vector<std::vector<size_t>>* Pagerank::create_sliced_graph(string path, str
             if(y >= start && y < end)
                 ret = insert_into_vector((*slice_graph)[y-start], x);
             
-            //line_num++;
 		}
 	} 
-    //num_of_vertex = num_vertex;
-    //sliced_graph = (*slice_graph);//std::vector<std::vector<size_t>>((*slice_graph).begin(),(*slice_graph).end());
     
-    //delete slice_graph;
     delete infile;
 
     return slice_graph;
@@ -183,7 +178,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         double sum_weight = 0;
         double sum = 0;
         for(int i =0; i<num_vertex;i++){
-            double weight = sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+            double weight = sqrt(num_outgoing[i]*sizeof(size_t) + 1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             vertex_weight.push_back(weight);
             sum_weight += weight;
         }

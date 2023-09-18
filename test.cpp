@@ -91,7 +91,7 @@ int main(int argc, char** argv){
                                 rank, displs, recvcounts, send, recv1);
     cout << start<< ", " << end <<endl;
     
-
+    num_of_vertex = num_outgoing.size();
     clock_gettime(CLOCK_MONOTONIC, &begin1);
       
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);

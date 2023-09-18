@@ -120,13 +120,13 @@ int main(int argc, char** argv){
     
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH " <<  create_graph_time << "s. " << endl;
-        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize + outgoing_size << " byte." << endl;
+        //cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize + outgoing_size << " byte." << endl;
         //cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
         //cout << totalSize + outgoing_size << " byte."<<endl;
         //cout << "=====================================================" << endl;
         //cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
-    cout << "[INFO]"<<rank<<": GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
+    cout << "[INFO]"<<rank<<": GRAPH MEMORY USAGE: " << totalSize+outgoing_size << " byte." << endl;
     //while(1){
 //
     //}
@@ -145,19 +145,9 @@ int main(int argc, char** argv){
         num_outgoing.shrink_to_fit();
     }
 
-    //Check sliced_graph size==========================================================
-    
-    size_t s = sizeof(slice_graph); // 외부 벡터의 크기
-
-    for (const auto& innerVector : slice_graph) {
-        s += innerVector.size() * sizeof(size_t); // 내부 벡터의 크기
-    }
-
     //D-RDMALib Init===================================================================
     
     if(rank == 0){
-        //cout << "[INFO]FINISH GRAPH PARTITIONING" << endl; // <<  create_graph_time << "s. " << endl;
-        //cout << "[INFO]SLICED GRAPH MEMORY USAGE: " << s << " byte." << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
@@ -171,8 +161,8 @@ int main(int argc, char** argv){
     for(int i=start; i<end;i++){
         num_edge += num_outgoing[i];
     }
-    //cout << "\nVertex: " << num_vertex << endl;
-    //cout << "Edge: " << num_edge << endl << endl;
+    cout << "\nVertex: " << num_vertex << endl;
+    cout << "Edge: " << num_edge << endl << endl;
   // cout << "end" << endl;*/
     int check;
     int check1[size];

@@ -118,7 +118,7 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
 		}
 	} 
     //num_of_vertex = num_vertex;
-    sliced_graph = std::vector<std::vector<size_t>>((*slice_graph).begin(),(*slice_graph).end());
+    sliced_graph = (*slice_graph);//std::vector<std::vector<size_t>>((*slice_graph).begin(),(*slice_graph).end());
     
     delete slice_graph;
     delete infile;

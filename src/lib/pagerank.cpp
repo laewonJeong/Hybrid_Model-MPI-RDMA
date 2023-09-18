@@ -94,6 +94,8 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
     int temp;
 	(*sliced_graph).resize(end-start);
     bool ret =false;
+    size_t x;
+    size_t y;
 
 	if(infile){
         while(getline(*infile, line)) {
@@ -106,10 +108,10 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
 
             from = line.substr(0,pos);
             to = line.substr(pos+1);
-            //from = strtol(from.c_str(), NULL, 10);
-            //to = strtol(to.c_str(), NULL, 10);
-            if(strtol(to.c_str(), NULL, 10) >= start && strtol(to.c_str(), NULL, 10) < end)
-                ret = insert_into_vector((*sliced_graph)[strtol(to.c_str(), NULL, 10)-start], strtol(from.c_str(), NULL, 10));
+            x = strtol(from.c_str(), NULL, 10);
+            y = strtol(to.c_str(), NULL, 10);
+            if(y >= start && y < end)
+                ret = insert_into_vector((*sliced_graph)[y-start], x);
             
             line_num++;
 		}

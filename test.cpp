@@ -55,7 +55,7 @@ int main(int argc, char** argv){
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
-    //std::vector<std::vector<size_t>> *sliced_graph = new std::vector<std::vector<size_t>>();
+    std::vector<std::vector<size_t>> *sliced_graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> slice_graph;
 
     vector<double> send[num_of_node];
@@ -85,18 +85,19 @@ int main(int argc, char** argv){
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
-    //pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
-    //                            start, end, nn, num_of_node, size, node, my_ip, 
-     //                           rank, displs, recvcounts, send, recv1);
+    pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
+                                start, end, nn, num_of_node, size, node, my_ip, 
+                                rank, displs, recvcounts, send, recv1);
     
-    //num_of_vertex = num_outgoing.size();
+    num_of_vertex = num_outgoing.size();
     
     //cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
-    pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
-    num_of_vertex = (*graph).size();
-    //pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
-    //slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
-    //delete sliced_graph;
+    //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
+    //num_of_vertex = (*graph).size();
+    pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
+    
+    slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
+    delete sliced_graph;
 
     clock_gettime(CLOCK_MONOTONIC, &end1);
     long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -119,11 +120,11 @@ int main(int argc, char** argv){
     
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH " <<  create_graph_time << "s. " << endl;
-        //cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
-        cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
-        cout << totalSize + outgoing_size << " byte."<<endl;
-        cout << "=====================================================" << endl;
-        cout << "[INFO]GRAPH PARTITIONING" << endl;
+        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize + outgoing_size << " byte." << endl;
+        //cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
+        //cout << totalSize + outgoing_size << " byte."<<endl;
+        //cout << "=====================================================" << endl;
+        //cout << "[INFO]GRAPH PARTITIONING" << endl;
     }
     cout << "[INFO]"<<rank<<": GRAPH MEMORY USAGE: " << totalSize << " byte." << endl;
     //while(1){
@@ -132,13 +133,13 @@ int main(int argc, char** argv){
     //graph partitioning=============================================================
     
 
-    pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
-                            start, end, nn, num_of_node, size, node, my_ip, rank, 
-                            displs, recvcounts, send, recv1);
+    //pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
+    //                        start, end, nn, num_of_node, size, node, my_ip, rank, 
+    //                        displs, recvcounts, send, recv1);
 
     //Delete Graph===================================================================
     
-    delete graph;
+    //delete graph;
     if(my_ip == node[0]){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();
@@ -155,8 +156,8 @@ int main(int argc, char** argv){
     //D-RDMALib Init===================================================================
     
     if(rank == 0){
-        cout << "[INFO]FINISH GRAPH PARTITIONING" << endl; // <<  create_graph_time << "s. " << endl;
-        cout << "[INFO]SLICED GRAPH MEMORY USAGE: " << s << " byte." << endl;
+        //cout << "[INFO]FINISH GRAPH PARTITIONING" << endl; // <<  create_graph_time << "s. " << endl;
+        //cout << "[INFO]SLICED GRAPH MEMORY USAGE: " << s << " byte." << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]NETWORK CONFIGURATION" << endl;
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);

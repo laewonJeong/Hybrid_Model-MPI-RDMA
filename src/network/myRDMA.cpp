@@ -170,7 +170,33 @@ void myRDMA::rdma_send_recv(int i){
     
     //}
 }
+void myRDMA::rdma_send_rcv(int i, int* nn, int num_of_node, vector<double> *send, vector<double> *recv1){
+    RDMA rdma;
+    //vector<long double> x1;
+    size_t size = sizeof(double)*(myrdma.num_of_vertex);
+   
+    rdma.post_rdma_recv(rdma_info1[1][i].qp, rdma_info1[1][i].mr, 
+                        rdma_info1[1][i].cq, recv_adrs[i], size);//sizeof(myrdma.recv[i].data()));
+    rdma.pollCompletion(rdma_info1[1][i].cq);
 
+    size = nn[i];
+    send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
+    //if(!rdma.pollCompletion(get<3>(myrdma.rdma_info[1][i])))
+    //    cerr << "recv failed" << endl;
+    //else{
+        //cerr << strlen(myrdma.recv_buffer[i])/(1024*1024) <<"Mb data ";
+        
+        
+        //for(int j=0;j<20;j++){
+        //    cout << j << ": " << myrdma.recv[i][j] << endl;
+        //}
+        //x = &myrdma.recv[i];
+        //cout.precision(numeric_limits<double>::digits10);
+        //cerr << "receive success" << endl;
+        
+    
+    //}
+}
 void myRDMA::rdma_write_recv(int i){
     TCP tcp;
     while(tcp.recv_msg(myrdma.sock_idx[i]) <= 0);
@@ -240,6 +266,20 @@ void myRDMA::recv_t(string opcode){
     else{
         cerr << "recv_t opcode error" << endl;
         exit(1);
+    }
+    for(int i=0;i<myrdma.connect_num;i++){
+        worker[i].join();
+    }
+}
+
+void myRDMA::t_recv(string opcode,int* nn, int num_of_node, vector<double> *send, vector<double> *recv1){
+    std::vector<std::thread> worker;
+    worker.reserve(myrdma.connect_num);
+   
+    if (opcode == "send_with_imm" || opcode == "write_with_imm" || opcode == "send"){
+        for(int i=0;i<myrdma.connect_num;i++){
+            worker.push_back(std::thread(&myRDMA::rdma_send_rcv,myRDMA(),i, nn, num_of_node, send, recv1));
+        }
     }
     for(int i=0;i<myrdma.connect_num;i++){
         worker[i].join();

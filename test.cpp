@@ -305,14 +305,16 @@ int main(int argc, char** argv){
         //===============================================================================
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == node[0]){
-            myrdma.recv_t("send");
-            cout << "[INFO]START RECEIVE - SUCCESS" << endl;
             send[0].clear();
-            for(size_t i=0;i<num_of_node-1;i++){
+            //myrdma.recv_t("send");
+            myrdma.t_recv("send", nn, num_of_node, send, recv1);
+            cout << "[INFO]START RECEIVE - SUCCESS" << endl;
+            
+            /*for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
                 send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
-            }   
+            }*/   
            
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 

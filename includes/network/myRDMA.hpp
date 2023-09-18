@@ -19,10 +19,12 @@ class myRDMA{
         void rdma_write(string msg, int i);
         void rdma_write_with_imm(string msg, int i);
         void rdma_send_recv(int i);
+        void rdma_send_rcv(int i, int* nn, int num_of_node, vector<double> *send, vector<double> *recv1);
         void rdma_write_recv(int i);
         void rdma_send_msg(string opcode, string msg);
         void rdma_recv_msg(string opcode, int i=0);
         void recv_t(string opcode);
+        void t_recv(string opcode,int* nn, int num_of_node, vector<double> *send, vector<double> *recv1);
         void send_t(string opcode);
         void rdma_one_to_many_send_msg(string opcode, string msg);
         void rdma_one_to_many_recv_msg(string opcode);

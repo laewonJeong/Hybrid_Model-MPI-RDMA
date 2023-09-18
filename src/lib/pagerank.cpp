@@ -89,7 +89,7 @@ bool Pagerank::add_arc1(size_t from, size_t to,vector<int>& num_outgoing) {
 void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
     istream *infile;
     infile = new ifstream(path.c_str());
-    size_t line_num = 0;
+    //size_t line_num = 0;
     string line;
     int temp;
 	sliced_graph.resize(end-start);
@@ -113,7 +113,7 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
             if(y >= start && y < end)
                 ret = insert_into_vector(sliced_graph[y-start], x);
             
-            line_num++;
+            //line_num++;
 		}
 	} 
     //num_of_vertex = num_vertex;

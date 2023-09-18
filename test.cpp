@@ -66,10 +66,7 @@ int main(int argc, char** argv){
     
 
     string my_ip= tcp.check_my_ip();
-    for(int i=1;i<num_of_node;i++){
-        if(my_ip == node[i])
-            my_idx = i-1;
-    }
+    
     //MPI Init=====================================================================
     
     MPI_Init(&argc, &argv);
@@ -93,7 +90,8 @@ int main(int argc, char** argv){
                                 rank, displs, recvcounts, send, recv1);
     
     num_of_vertex = num_outgoing.size();
-
+    
+    cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
     //slice_graph = sliced_graph.begin();

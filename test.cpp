@@ -346,6 +346,7 @@ int main(int argc, char** argv){
         //printf("%d: send 수행시간: %Lfs.\n", rank, time1); 
         //===============================================================================
         if(my_ip == node[0]){
+            cout << time1 << endl;
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
             //worker.reserve(num_of_node-2);

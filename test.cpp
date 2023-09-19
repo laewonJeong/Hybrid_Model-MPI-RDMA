@@ -135,9 +135,9 @@ int main(int argc, char** argv){
     //graph partitioning=============================================================
     
 
-    pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
+    /*pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
                             start, end, nn, num_of_node, size, node, my_ip, rank, 
-                            displs, recvcounts, send, recv1);
+                            displs, recvcounts, send, recv1);*/
 
     //Delete Graph===================================================================
     

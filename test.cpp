@@ -158,14 +158,14 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
    
-   // int num_vertex = end-start;
-   // int num_edge =0;
+    int num_vertex = end-start;
+    int num_edge =0;
     //cout << start << ", " << end <<endl;
-    //for(int i=start; i<end;i++){
-    //    num_edge += num_outgoing[i];
-    //}
-    //cout << "\nVertex: " << num_vertex << endl;
-    //cout << "Edge: " << num_edge << endl << endl;
+    for(int i=start; i<end;i++){
+        num_edge += num_outgoing[i];
+    }
+    cout << "\nVertex: " << num_vertex << endl;
+    cout << "Edge: " << num_edge << endl << endl;
   // cout << "end" << endl;*/
     int check;
     int check1[size];

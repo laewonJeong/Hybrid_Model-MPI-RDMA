@@ -309,7 +309,11 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == node[0]){
             send[0].clear();
+            clock_gettime(CLOCK_MONOTONIC, &begin3);
             myrdma.recv_t("send");
+            clock_gettime(CLOCK_MONOTONIC, &end3);
+            long double time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+            cout << time3 << endl;
             //myrdma.t_recv("send", nn, num_of_node, send, recv1);
             cout << "[INFO]START RECEIVE - SUCCESS" << endl;
             
@@ -321,7 +325,7 @@ int main(int argc, char** argv){
                 send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
             }   
             clock_gettime(CLOCK_MONOTONIC, &end3);
-            long double time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+            time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
             cout << time3 << endl;
 
             if(diff < 0.00001)

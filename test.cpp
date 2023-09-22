@@ -95,15 +95,6 @@ int main(int argc, char** argv){
     num_of_vertex = num_outgoing.size();
     
     cout << "[INFO]START: "<< start << ", END: "<< end << endl;
-    
-    num_vertex = end-start;
-    num_edge =0;
-
-    for(int i=start; i<end;i++){
-        num_edge += num_outgoing[i];
-    }
-    cout << "\n[INFO]Vertex: " << num_vertex << endl;
-    cout << "[INFO]Edge: " << num_edge << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
@@ -132,6 +123,14 @@ int main(int argc, char** argv){
     
     if(rank == 0){
         cout << "[INFO]FINISH CREATE GRAPH " <<endl;//<<  create_graph_time << "s. " << endl;
+        num_vertex = end-start;
+        num_edge =0;
+
+        for(int i=start; i<end;i++){
+            num_edge += num_outgoing[i];
+        }
+        cout << "[INFO]Vertex: " << num_vertex << endl;
+        cout << "[INFO]Edge: " << num_edge << endl;
         //cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize + outgoing_size << " byte." << endl;
         //cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
         //cout << totalSize + outgoing_size << " byte."<<endl;
@@ -260,7 +259,7 @@ int main(int argc, char** argv){
         if(my_ip != node[0]){
             //const size_t sg_size = sliced_graph.size();
             if(rank == 0)
-                cout << "[INFO]COMPUTE PAGERANK" <<endl;
+                cout << "[INFO]COMPUTE PAGERANK ";
             clock_gettime(CLOCK_MONOTONIC, &begin1);
             int idx;
             for(size_t i=start-start;i<end-start;i++){
@@ -281,8 +280,8 @@ int main(int argc, char** argv){
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             compute_time += time3;
             //cout << rank << ", " << time3 << endl;
-            /*if(rank == 0)
-                printf("%Lfs.\n", time3);*/
+            if(rank == 0)
+                cout << "- FINISH" << endl;
             //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             //---------------------------------------------------------------------------------------------------------------------
@@ -422,8 +421,9 @@ int main(int argc, char** argv){
                 //cout << time1 << "s.\n" << endl;
                 network_time += time1;
                 mpi_time += time1;
-                printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);
-                printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);
+                printf("\nCOMPUTE PAGERANK:  %LFs.\n", compute_time);
+                //printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);
+                printf("NETWORK(RDMA): %Lfs.\n", network_time);
                 printf("STEP %ld EXECUTION TIME: %Lfs.\n", step+1, compute_time + network_time);
                 network_time = 0;
                 compute_time = 0;
@@ -475,7 +475,7 @@ int main(int argc, char** argv){
     }
     if(rank == 0|| my_ip == node[0]){
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs\n", time2);
-        printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
+        //printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
         printf("[INFO]AVG RDMA_TIME: %Lfs.\n", rdma_time/62);
         
         cout << "=====================================================" << endl;

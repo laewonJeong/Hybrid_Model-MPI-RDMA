@@ -67,6 +67,7 @@ int main(int argc, char** argv){
     int num_vertex;
     int num_edge = 0;
     size_t buff_size;
+    size_t div_buff_size;
 
     string my_ip= tcp.check_my_ip();
     
@@ -102,6 +103,7 @@ int main(int argc, char** argv){
     //cout << rank << " weight finish" << endl;
     num_of_vertex = num_outgoing.size();
     buff_size = sizeof(double) * num_of_vertex;
+    div_buff_size = sizeof(double) * (end-start);
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
@@ -358,7 +360,7 @@ int main(int argc, char** argv){
         else{
             if(rank == 0){
                 cout << "[INFO]START SEND_RDMA - SUCCESS "<< endl;
-                myrdma.rdma_write_vector(send[0],0);
+                myrdma.rdma_write_vector(0,div_buff_size);
                 //myrdma.rdma_recv_pagerank(0);
             }
             

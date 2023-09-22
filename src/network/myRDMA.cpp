@@ -76,10 +76,10 @@ void myRDMA::rdma_send_vector(vector<double> msg, int i){
         //cerr << "send failed" << endl;
     
 }
-void myRDMA::rdma_write_vector(vector<double> msg, int i){
+void myRDMA::rdma_write_vector(int i, size_t size){
     //myrdma.send[i] = msg;
-    struct ibv_wc wc;
-    size_t size = sizeof(double)*(msg.size());
+    //struct ibv_wc wc;
+    //size_t size = sizeof(double)*(msg.size());
     rdma.post_rdma_write_with_imm(rdma_info1[0][i].qp, rdma_info1[0][i].mr, send_adrs[i], 
                                 size, myrdma.qp_key[i].first, myrdma.qp_key[i].second);
     rdma.pollCompletion(rdma_info1[0][i].cq);
@@ -223,7 +223,7 @@ void myRDMA::rdma_send_msg(string opcode, string msg){
         vector<double> a;
         //cerr << "write_with_imm_rdma run" <<endl;
         for(int i=0;i<myrdma.connect_num;i++){
-            myRDMA::rdma_write_vector(a, i);
+            int a = 0;//myRDMA::rdma_write_vector(a, i);
         }
     }
     else if(opcode == "send"){
@@ -321,8 +321,8 @@ void myRDMA::rdma_many_to_one_send_msg(string opcode, string msg, vector<double>
         myRDMA::rdma_send_with_imm(msg, 0);
     }
     else if(opcode == "write"){
-        //cerr << "rdma_write run" << endl;
-        myRDMA::rdma_write_vector(msg1, 0);
+        cerr << "rdma_write run" << endl;
+        //myRDMA::rdma_write_vector(msg1, 0);
 
     }
     else if(opcode == "write_with_imm"){

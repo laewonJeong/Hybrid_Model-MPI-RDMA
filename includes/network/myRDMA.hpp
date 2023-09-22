@@ -9,7 +9,7 @@ using namespace std;
 class myRDMA{
     public:
         void rdma_send_vector(vector<double> msg, int i);
-        void rdma_write_vector(vector<double>msg, int i);
+        void rdma_write_vector(int i, size_t size);
         void rdma_send_pagerank(vector<double> msg, int i);
         void rdma_write_pagerank(int i);
         void rdma_recv_pagerank(int i, size_t size);

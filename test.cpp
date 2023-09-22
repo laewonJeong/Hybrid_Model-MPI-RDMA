@@ -94,7 +94,7 @@ int main(int argc, char** argv){
     
     num_of_vertex = num_outgoing.size();
     
-    cout << "[INFO] START: "<< start << ", END: "<< end << endl;
+    cout << "[INFO]START: "<< start << ", END: "<< end << endl;
     
     num_vertex = end-start;
     num_edge =0;
@@ -103,7 +103,7 @@ int main(int argc, char** argv){
         num_edge += num_outgoing[i];
     }
     cout << "\n[INFO]Vertex: " << num_vertex << endl;
-    cout << "[INFO]Edge: " << num_edge << endl << endl;
+    cout << "[INFO]Edge: " << num_edge << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
@@ -347,7 +347,7 @@ int main(int argc, char** argv){
         }
         else{
             if(rank == 0){
-                cout << "[INFO]START SEND_RDMA - SUCCESS ";
+                cout << "[INFO]START SEND_RDMA - SUCCESS "<< endl;
                 myrdma.rdma_write_vector(send[0],0);
                 //myrdma.rdma_recv_pagerank(0);
             }
@@ -386,7 +386,7 @@ int main(int argc, char** argv){
                 //cout << time1 << "s." <<endl;
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
                 myrdma.rdma_recv_pagerank(0);
-                cout << "[INFO]START RECEIVE_RDMA - SUCCESS ";
+                cout << "[INFO]START RECEIVE_RDMA - SUCCESS "<<endl;
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -399,18 +399,20 @@ int main(int argc, char** argv){
             //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             
             clock_gettime(CLOCK_MONOTONIC, &begin1);
-            if(rank == 0){
-                cout << "[INFO]START MPI_BCAST - SUCCESS "; 
-                for(size_t dest=1; dest<size; dest++){
-                    MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
+            if(size > 1){
+                if(rank == 0){
+                //cout << "[INFO]START MPI_BCAST - SUCCESS "; 
+                    for(size_t dest=1; dest<size; dest++){
+                        MPI_Isend(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, dest, 32548, MPI_COMM_WORLD, &request);
+                    }
                 }
-            }
-            else{
-                MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
-                MPI_Wait(&request, MPI_STATUS_IGNORE);
-            }
+                else{
+                    MPI_Irecv(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, 32548, MPI_COMM_WORLD, &request);
+                    MPI_Wait(&request, MPI_STATUS_IGNORE);
+                }
             
             MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
+            }
             //MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
             clock_gettime(CLOCK_MONOTONIC, &end1);
            // MPI_Bcast(recv_buffer_ptr, num_of_vertex, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -426,17 +428,6 @@ int main(int argc, char** argv){
                 network_time = 0;
                 compute_time = 0;
             }
-            //printf("%d - COMPUTE PAGERANK:  %LFs.\n", rank,compute_time);
-            //printf("%d: mpi_broadcast 수행시간: %Lfs.\n", rank, time1);
-            /*if(rank == 0){
-                myrdma.rdma_recv_pagerank(0);
-            }*/
-            //double* recv_buffer_ptr = recv1[0].data();
-            //cout << recv1[0].size() << endl;
-            //cout << recv1[0].data() << endl;
-            
-            
-            
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);
         //time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
@@ -455,25 +446,30 @@ int main(int argc, char** argv){
     //===============================================================================
     
     if(my_ip != node[0] && rank == 0){
-        cout << "=====================================================" << endl;
-        double sum1 = accumulate(recv1[0].begin(), recv1[0].end(), -1.0);
+         cout << "=====================================================" << endl;
+        
+        recv1[0][0] = recv1[0][0] - 1;
+        cout << "[INFO]SORTING PAGERANK VALUE." << endl;
+
+        vector<pair<double,int>> result;
+        for (int i = 0; i < num_of_vertex; ++i) {
+            result.push_back(make_pair(recv1[0][i],i));
+        }
+        
+        int topN = 5;
+        partial_sort(result.begin(), result.begin() + topN, result.end(), greater<>());
+        int important_idx = result[0].second;
+        double important_value = result[0].first;
+
         cout.precision(numeric_limits<double>::digits10);
-        for(size_t i=num_of_vertex-200;i<num_of_vertex;i++){
-            cout << "pr[" <<i<<"]: " << recv1[0][i] <<endl;
+        
+        for(int i=0;i<topN;i++){
+            cout << "pr[" <<result[i].second<<"]: " << result[i].first <<endl;
         }
+        
         cout << "=====================================================" << endl;
-        int important = 0;
-        string result = "";
-        double important_pr = recv1[0][0]-1;
-        double tmp1 = important_pr;
-        for (int i=1;i< num_of_vertex;i++){
-            important_pr = max(important_pr, recv1[0][i]);
-            if(tmp1 != important_pr){
-                important = i;
-                tmp1 = important_pr;
-            }
-        }
-        cout << "[INFO]IMPORTANT VERTEX: " << important << "\n[INFO]" << important << "'S VALUE: "<<tmp1 << endl;
+       
+        cout << "[INFO]IMPORTANT VERTEX: " << important_idx << "\n[INFO]" << important_idx << "'S VALUE: "<<important_value << endl;
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
     }

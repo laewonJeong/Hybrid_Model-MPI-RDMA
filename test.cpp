@@ -94,7 +94,7 @@ int main(int argc, char** argv){
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
-
+    cout << rank << " create vertex weight" << endl;
     pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
                                 start, end, nn, num_of_node, size, node, my_ip, 
                                 rank, displs, recvcounts, send, recv1);
@@ -104,6 +104,7 @@ int main(int argc, char** argv){
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
+    cout << rank << " create sliced graph" << endl;
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
     
     //slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
@@ -118,6 +119,7 @@ int main(int argc, char** argv){
     //    slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
     //    delete sliced_graph;
     //}
+    cout << rank << "finish" << endl;
     //Check Graph size==============================================================
     
     size_t innerVectorsSize = 0;

@@ -95,16 +95,16 @@ int main(int argc, char** argv){
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
 
-    pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
-                                start, end, nn, num_of_node, size, node, my_ip, 
-                                rank, displs, recvcounts, send, recv1);
+    //pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
+    //                           start, end, nn, num_of_node, size, node, my_ip, 
+    //                            rank, displs, recvcounts, send, recv1);
     
-    num_of_vertex = num_outgoing.size();
+    //num_of_vertex = num_outgoing.size();
     
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;
-    //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
-    //num_of_vertex = (*graph).size();
-    pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
+    pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
+    num_of_vertex = (*graph).size();
+    //pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
     
     //slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
     //delete sliced_graph;
@@ -152,13 +152,13 @@ int main(int argc, char** argv){
     //graph partitioning=============================================================
     
 
-    /*pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
+    pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
                             start, end, nn, num_of_node, size, node, my_ip, rank, 
-                            displs, recvcounts, send, recv1);*/
+                            displs, recvcounts, send, recv1);
 
     //Delete Graph===================================================================
     
-    //delete graph;
+    delete graph;
     if(my_ip == server_ip){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();
@@ -275,8 +275,8 @@ int main(int argc, char** argv){
                 //
                 idx = i;
                 double tmp = 0.0;
-                const size_t graph_size = (*sliced_graph)[i].size();
-                const size_t* graph_ptr = (*sliced_graph)[i].data();
+                const size_t graph_size = slice_graph[i].size();
+                const size_t* graph_ptr = slice_graph[i].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

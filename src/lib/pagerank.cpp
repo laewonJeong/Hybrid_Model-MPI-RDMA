@@ -237,8 +237,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             double div_weight = 1.0/size;
 
             for(int i =start; i<end;i++){
-                double weight = 1;//sqrt(num_outgoing[i]);//sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
-                vertex_weight.push_back(weight);
+                double weight = sqrt(num_outgoing[i]);//sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.                vertex_weight.push_back(weight);
                 sum_weight += weight;
             }
     
@@ -345,7 +344,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
         double sum_weight = 0;
         double sum = 0;
         for(int i =0; i<num_of_vertex;i++){
-            double weight = sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);//1;//sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+            double weight = sqrt(num_outgoing[i]);//1;//sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             vertex_weight.push_back(weight);
             sum_weight += weight;
         }
@@ -498,7 +497,7 @@ void Pagerank::graph_partition(std::vector<std::vector<size_t>>* graph,std::vect
             double div_weight = 1.0/size;
 
             for(int i =start; i<end;i++){
-                double weight = sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);//1;//sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+                double weight = sqrt(num_outgoing[i]);//1;//sqrt(num_outgoing[i]+1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
                 vertex_weight.push_back(weight);
                 sum_weight += weight;
             }

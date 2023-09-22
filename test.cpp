@@ -477,12 +477,13 @@ int main(int argc, char** argv){
         //printf("총 수행시간: %Lfs.\n", time2);
     }
     if(rank == 0|| my_ip == node[0]){
-        printf("\n[INFO]TOTAL EXECUTION TIME: %Lfs\n", time2);
+        
         printf("[INFO]AVG EXECUTION TIME:   %LFs\n", avg_compute_time/62);
         //printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
         printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
-        
+        printf("\n[INFO]TOTAL EXECUTION TIME: %Lfs\n", time2);
         cout << "=====================================================" << endl;
     }
     MPI_Finalize();
+    myrdma.exit_rdma();
 }

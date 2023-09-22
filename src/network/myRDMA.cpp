@@ -39,11 +39,11 @@ void myRDMA::rdma_send_pagerank(vector<double> msg, int i){
 }
 void myRDMA::rdma_recv_pagerank(int i){
     size_t size = sizeof(double)*(myrdma.num_of_vertex);
-    struct ibv_wc wc;
+    //struct ibv_wc wc;
     rdma.post_rdma_recv(rdma_info1[1][i].qp, rdma_info1[1][i].mr, 
                         rdma_info1[1][i].cq,recv_adrs[i], size);//sizeof(myrdma.recv[i].data()));
-    //rdma.pollCompletion(rdma_info1[1][i].cq);
-    while(ibv_poll_cq(rdma_info1[1][i].cq,1,&wc)==0){}
+    rdma.pollCompletion(rdma_info1[1][i].cq);
+    //while(ibv_poll_cq(rdma_info1[1][i].cq,1,&wc)==0){}
     
 }
 void myRDMA::rdma_write_pagerank(vector<double> msg, int i){

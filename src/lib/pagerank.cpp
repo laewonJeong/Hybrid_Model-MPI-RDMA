@@ -1090,7 +1090,7 @@ void Pagerank::scatter_pagerank(){
             cout << "send success" << endl;
         }
         else{
-            myrdma1.rdma_recv_pagerank(0);
+            myrdma1.rdma_recv_pagerank(0, 1);
             cout << "recv success" << endl;
         }
     

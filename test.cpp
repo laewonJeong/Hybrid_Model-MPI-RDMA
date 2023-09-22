@@ -66,6 +66,7 @@ int main(int argc, char** argv){
     int my_idx;
     int num_vertex;
     int num_edge = 0;
+    size_t buff_size;
 
     string my_ip= tcp.check_my_ip();
     
@@ -100,7 +101,7 @@ int main(int argc, char** argv){
                                 rank, displs, recvcounts, send, recv1);
     //cout << rank << " weight finish" << endl;
     num_of_vertex = num_outgoing.size();
-    
+    buff_size = sizeof(double) * num_of_vertex;
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
@@ -394,7 +395,7 @@ int main(int argc, char** argv){
             if(rank == 0){
                 //cout << time1 << "s." <<endl;
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
-                myrdma.rdma_recv_pagerank(0);
+                myrdma.rdma_recv_pagerank(0,buff_size);
                 cout << "[INFO]START RECEIVE_RDMA - SUCCESS "<<endl;
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);

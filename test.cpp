@@ -49,7 +49,7 @@ int main(int argc, char** argv){
     int rank, size, i ,j;
     int start, end;
     int a,b;
-    int argvv = stoi(argv[3]);
+    //int argvv = stoi(argv[3]);
     long double network_time = 0;
     long double compute_time = 0;
     long double avg_compute_time = 0;

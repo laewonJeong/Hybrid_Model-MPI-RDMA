@@ -157,7 +157,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     delete infile;
     
 
-    cout << rank << " finish delete infile" << endl;
+    //cout << rank << " finish delete infile" << endl;
     int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];

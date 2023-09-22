@@ -119,7 +119,7 @@ int main(int argc, char** argv){
     //    slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
     //    delete sliced_graph;
     //}
-    cout << rank << "finish" << endl;
+    //cout << rank << "finish" << endl;
     //Check Graph size==============================================================
     
     size_t innerVectorsSize = 0;

@@ -204,7 +204,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         }
         end_arr[num_of_node-2] = num_vertex;
     }
-    cout << rank << " finish vertex weight" << endl;
+    //cout << rank << " finish vertex weight" << endl;
     int div_num_of_vertex;
     if(my_ip != node[0]){
        for(int i=1;i<num_of_node;i++){
@@ -214,7 +214,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 end = end_arr[i-1];
             }
         }
-        cout << rank << " start process vertex weight" << endl;
+        //cout << rank << " start process vertex weight" << endl;
         //if(rank == 0){
             for(int i=0;i<num_of_node;i++){
                 if(i == 0){
@@ -228,8 +228,8 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                     recv1[i].shrink_to_fit();
                 }
             }
-        cout << rank << " start process vertex weight" << endl;
-        //if(size > 1){
+        //cout << rank << " start process vertex weight" << endl;
+        if(size > 1){
             vector<double> vertex_weight;
             double sum_weight = 0;
             double sum = 0;
@@ -273,7 +273,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 displs[i] = start_arr1[i]-start_arr1[0];
                 recvcounts[i] = end_arr1[i] - start_arr1[i];
             }
-        //}
+        }
         
         //p_sliced_graph.resize(end-start);
         //p_sliced_graph = std::vector<std::vector<size_t>>(sliced_graph.begin() + start,sliced_graph.begin() + end + 1);

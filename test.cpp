@@ -82,8 +82,10 @@ int main(int argc, char** argv){
     if(rank == 0){
         
         cout << "[INFO]IP: " << my_ip << endl;
-        cout << "=====================================================" << endl;
-        cout << "[INFO]CREATE GRAPH" << endl;
+        if(my_ip != server_ip){
+            cout << "=====================================================" << endl;
+            cout << "[INFO]CREATE GRAPH" << endl;
+        }
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
@@ -94,7 +96,7 @@ int main(int argc, char** argv){
     
     num_of_vertex = num_outgoing.size();
     
-    cout << "[INFO]START: "<< start << ", END: "<< end << endl;
+    //cout << "[INFO]START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
@@ -121,7 +123,7 @@ int main(int argc, char** argv){
     
     size_t outgoing_size = sizeof(size_t) * num_outgoing.size();
     
-    if(rank == 0){
+    if(rank == 0 && my_ip != server_ip){
         cout << "[INFO]FINISH CREATE GRAPH " <<endl;//<<  create_graph_time << "s. " << endl;
         num_vertex = end-start;
         num_edge =0;
@@ -129,15 +131,14 @@ int main(int argc, char** argv){
         for(int i=start; i<end;i++){
             num_edge += num_outgoing[i];
         }
-        cout << "[INFO]Vertex: " << num_vertex << endl;
-        cout << "[INFO]Edge: " << num_edge << endl;
+        cout << "[INFO]Vertex: " << num_vertex << ", Edge: " << num_edge << endl;
         //cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize + outgoing_size << " byte." << endl;
         //cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
         //cout << totalSize + outgoing_size << " byte."<<endl;
         //cout << "=====================================================" << endl;
         //cout << "[INFO]GRAPH PARTITIONING" << endl;
-        if(my_ip != server_ip)
-            cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize+outgoing_size << " byte." << endl;
+        
+        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize+outgoing_size << " byte." << endl;
     }
     
     //while(1){

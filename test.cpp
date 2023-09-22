@@ -87,6 +87,10 @@ int main(int argc, char** argv){
             cout << "=====================================================" << endl;
             cout << "[INFO]CREATE GRAPH" << endl;
         }
+        else{
+            cout << "=====================================================" << endl;
+            cout << "[INFO]NETWORK CONFIGURATION" << endl;
+        }
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
@@ -163,8 +167,10 @@ int main(int argc, char** argv){
     //D-RDMALib Init===================================================================
     
     if(rank == 0){
-        cout << "=====================================================" << endl;
-        cout << "[INFO]NETWORK CONFIGURATION" << endl;
+        if(my_ip != server_ip){
+            cout << "=====================================================" << endl;
+            cout << "[INFO]NETWORK CONFIGURATION" << endl;
+        }
         myrdma.initialize_rdma_connection_vector(my_ip.c_str(),node,num_of_node,port,send,recv1,num_of_vertex);
         myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
@@ -478,7 +484,7 @@ int main(int argc, char** argv){
     }
     if(rank == 0|| my_ip == node[0]){
         
-        printf("\n[INFO]AVG EXECUTION TIME:   %LFs\n", avg_compute_time/62);
+        printf("[INFO]AVG EXECUTION TIME:   %LFs\n", avg_compute_time/62);
         //printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
         printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs\n", time2);

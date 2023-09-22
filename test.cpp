@@ -58,13 +58,13 @@ int main(int argc, char** argv){
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> *sliced_graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> slice_graph;
-
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
     vector<double>* send_first = &send[1];
     vector<double>* send_end = &send[num_of_node-1];
     int my_idx;
-    
+    int num_vertex;
+    int num_edge = 0;
 
     string my_ip= tcp.check_my_ip();
     
@@ -94,7 +94,16 @@ int main(int argc, char** argv){
     
     num_of_vertex = num_outgoing.size();
     
-    cout << "[INFO]" <<rank <<"=> START: "<< start << ", END: "<< end << endl;
+    cout << "[INFO] START: "<< start << ", END: "<< end << endl;
+    
+    num_vertex = end-start;
+    num_edge =0;
+
+    for(int i=start; i<end;i++){
+        num_edge += num_outgoing[i];
+    }
+    cout << "\n[INFO]Vertex: " << num_vertex << endl;
+    cout << "[INFO]Edge: " << num_edge << endl << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
@@ -122,14 +131,16 @@ int main(int argc, char** argv){
     size_t outgoing_size = sizeof(size_t) * num_outgoing.size();
     
     if(rank == 0){
-        cout << "[INFO]FINISH CREATE GRAPH " <<  create_graph_time << "s. " << endl;
+        cout << "[INFO]FINISH CREATE GRAPH " <<endl;//<<  create_graph_time << "s. " << endl;
         //cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize + outgoing_size << " byte." << endl;
         //cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
         //cout << totalSize + outgoing_size << " byte."<<endl;
         //cout << "=====================================================" << endl;
         //cout << "[INFO]GRAPH PARTITIONING" << endl;
+        if(my_ip != server_ip)
+            cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize+outgoing_size << " byte." << endl;
     }
-    cout << "[INFO]"<<rank<<": GRAPH MEMORY USAGE: " << totalSize+outgoing_size << " byte." << endl;
+    
     //while(1){
 //
     //}
@@ -143,7 +154,7 @@ int main(int argc, char** argv){
     //Delete Graph===================================================================
     
     //delete graph;
-    if(my_ip == node[0]){
+    if(my_ip == server_ip){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();
     }
@@ -158,14 +169,7 @@ int main(int argc, char** argv){
         myrdma.send_info_change_qp();
     }
    
-    int num_vertex = end-start;
-    int num_edge =0;
-    //cout << start << ", " << end <<endl;
-    for(int i=start; i<end;i++){
-        num_edge += num_outgoing[i];
-    }
-    cout << "\nVertex: " << num_vertex << endl;
-    cout << "Edge: " << num_edge << endl << endl;
+   
   // cout << "end" << endl;*/
     int check;
     int check1[size];
@@ -276,7 +280,7 @@ int main(int argc, char** argv){
             clock_gettime(CLOCK_MONOTONIC, &end1);
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             compute_time += time3;
-            cout << rank << ", " << time3 << endl;
+            //cout << rank << ", " << time3 << endl;
             /*if(rank == 0)
                 printf("%Lfs.\n", time3);*/
             //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
@@ -291,8 +295,8 @@ int main(int argc, char** argv){
             time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             
             if(rank ==0){
-                cout << "[INFO]START MPI_ALLGATHERV - SUCCESS ";
-                cout << time3 << "s." <<endl;
+                //cout << "[INFO]START MPI_ALLGATHERV - SUCCESS ";
+                //cout << time3 << "s." <<endl;
                 //printf("%Lfs\n", time3);
                 network_time += time3;
                 mpi_time += time3;
@@ -309,36 +313,36 @@ int main(int argc, char** argv){
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         if(my_ip == node[0]){
             send[0].clear();
-            clock_gettime(CLOCK_MONOTONIC, &begin3);
+            //clock_gettime(CLOCK_MONOTONIC, &begin3);
             myrdma.recv_t("send");
-            clock_gettime(CLOCK_MONOTONIC, &end3);
+            //clock_gettime(CLOCK_MONOTONIC, &end3);
             long double time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
-            cout << time3 << endl;
+            //cout << time3 << endl;
             //myrdma.t_recv("send", nn, num_of_node, send, recv1);
             cout << "[INFO]START RECEIVE - SUCCESS" << endl;
             
-            clock_gettime(CLOCK_MONOTONIC, &begin3);
+            //clock_gettime(CLOCK_MONOTONIC, &begin3);
             
             for(size_t i=0;i<num_of_node-1;i++){
                 size = nn[i];
                 //std::vector<double>::iterator iterator = recv1[i].begin();
                 send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
             }   
-            clock_gettime(CLOCK_MONOTONIC, &end3);
-            time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
-            cout << time3 << endl;
+            //clock_gettime(CLOCK_MONOTONIC, &end3);
+            //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+            //cout << time3 << endl;
 
             if(diff < 0.00001)
                 send_buf_ptr[0] += 1; 
             
             
             myrdma.rdma_write_pagerank(send[0], 0);
-            clock_gettime(CLOCK_MONOTONIC, &begin3);
+            //clock_gettime(CLOCK_MONOTONIC, &begin3);
             
             fill(send_first, send_end, send[0]);
-            clock_gettime(CLOCK_MONOTONIC, &end3);
-            time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
-            cout << time3 << endl;
+            //clock_gettime(CLOCK_MONOTONIC, &end3);
+            //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+            //cout << time3 << endl;
             cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
         }
         else{
@@ -360,7 +364,7 @@ int main(int argc, char** argv){
         //===============================================================================
         if(my_ip == node[0]){
             //cout << time1 << endl;
-            clock_gettime(CLOCK_MONOTONIC, &begin1);
+            //clock_gettime(CLOCK_MONOTONIC, &begin1);
             std::vector<std::thread> worker;
             //worker.reserve(num_of_node-2);
             size_t i;
@@ -370,23 +374,23 @@ int main(int argc, char** argv){
             for(i=0;i<num_of_node-2;i++)
                 worker[i].join();
             cout << "[INFO]START SEND - SUCCESS" << endl;
-            clock_gettime(CLOCK_MONOTONIC, &end1);
+            //clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-            printf("%d: send 수행시간: %Lfs.\n", rank, time1);
+            //printf("%d: send 수행시간: %Lfs.\n", rank, time1);
         }
         else{
             MPI_Request request;
             //std::vector<MPI_Request> requests;
             //MPI_Bcast(recv1[0].data(), recv1[0].size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
             if(rank == 0){
-                cout << time1 << "s." <<endl;
+                //cout << time1 << "s." <<endl;
                 clock_gettime(CLOCK_MONOTONIC, &begin1);
                 myrdma.rdma_recv_pagerank(0);
                 cout << "[INFO]START RECEIVE_RDMA - SUCCESS ";
                 //est_buf[0] = recv1[0];
                 clock_gettime(CLOCK_MONOTONIC, &end1);
                 time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-                cout << time1 << "s." << endl;
+                //cout << time1 << "s." << endl;
                 rdma_time += time1;
                 network_time += time1;
                 //printf("%d: rdma_recv 수행시간: %Lfs.\n", rank, time1);
@@ -413,7 +417,7 @@ int main(int argc, char** argv){
             //clock_gettime(CLOCK_MONOTONIC, &end1);
             time1 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
             if(rank == 0){
-                cout << time1 << "s.\n" << endl;
+                //cout << time1 << "s.\n" << endl;
                 network_time += time1;
                 mpi_time += time1;
                 printf("COMPUTE PAGERANK:  %LFs.\n", compute_time);

@@ -220,10 +220,10 @@ void myRDMA::rdma_send_msg(string opcode, string msg){
         }
     }
     else if(opcode == "write_with_imm"){
-        vector<double> a;
+        //vector<double> a;
         //cerr << "write_with_imm_rdma run" <<endl;
         for(int i=0;i<myrdma.connect_num;i++){
-            int a = 0;//myRDMA::rdma_write_vector(a, i);
+            myRDMA::rdma_write_vector(i, sizeof(double) * 1);
         }
     }
     else if(opcode == "send"){

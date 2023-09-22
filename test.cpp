@@ -52,6 +52,7 @@ int main(int argc, char** argv){
     int argvv = stoi(argv[3]);
     long double network_time = 0;
     long double compute_time = 0;
+    long double avg_compute_time = 0;
     struct timespec begin1, end1 ;
     struct timespec begin2, end2 ;
     struct timespec begin3, end3 ;
@@ -282,7 +283,7 @@ int main(int argc, char** argv){
             compute_time += time3;
             //cout << rank << ", " << time3 << endl;
             if(rank == 0)
-                cout << "- FINISH" << endl;
+                cout << "- SUCCESS" << endl;
             //printf("%d: calc 수행시간: %Lfs.\n", rank, time3);
             //MPI_Allgather(&check, 1, MPI_INT, check1, 1, MPI_INT, MPI_COMM_WORLD);
             //---------------------------------------------------------------------------------------------------------------------
@@ -422,6 +423,7 @@ int main(int argc, char** argv){
                 //cout << time1 << "s.\n" << endl;
                 network_time += time1;
                 mpi_time += time1;
+                avg_compute_time += compute_time;
                 printf("\nCOMPUTE PAGERANK:  %LFs.\n", compute_time);
                 //printf("NETWORK(MPI+RDMA): %Lfs.\n", network_time);
                 printf("NETWORK(RDMA): %Lfs.\n", network_time);
@@ -476,8 +478,9 @@ int main(int argc, char** argv){
     }
     if(rank == 0|| my_ip == node[0]){
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs\n", time2);
+        printf("[INFO]AVG EXECUTION TIME: %LFs\n", avg_compute_time/62);
         //printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
-        printf("[INFO]AVG RDMA_TIME: %Lfs.\n", rdma_time/62);
+        printf("[INFO]AVG RDMA_TIME:      %Lfs.\n", rdma_time/62);
         
         cout << "=====================================================" << endl;
     }

@@ -103,7 +103,7 @@ int main(int argc, char** argv){
     //cout << rank << " weight finish" << endl;
     num_of_vertex = num_outgoing.size();
     buff_size = sizeof(double) * num_of_vertex;
-    div_buff_size = sizeof(double) * (end-start);
+    
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;
     //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
     //num_of_vertex = (*graph).size();
@@ -180,7 +180,7 @@ int main(int argc, char** argv){
         myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
     }
-   
+   div_buff_size = sizeof(double) * send[0].size();
    
   // cout << "end" << endl;*/
     int check;

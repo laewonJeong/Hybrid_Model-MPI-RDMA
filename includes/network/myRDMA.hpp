@@ -11,7 +11,7 @@ class myRDMA{
         void rdma_send_vector(vector<double> msg, int i);
         void rdma_write_vector(vector<double>msg, int i);
         void rdma_send_pagerank(vector<double> msg, int i);
-        void rdma_write_pagerank(vector<double> msg, int i);
+        void rdma_write_pagerank(int i);
         void rdma_recv_pagerank(int i, size_t size);
         void rdma_wrecv_pagerank(int i);
         void rdma_send(string msg, int i);

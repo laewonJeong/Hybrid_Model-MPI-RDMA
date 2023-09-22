@@ -47,7 +47,7 @@ void myRDMA::rdma_recv_pagerank(int i, size_t size){
     //while(ibv_poll_cq(rdma_info1[1][i].cq,1,&wc)==0){}
     
 }
-void myRDMA::rdma_write_pagerank(vector<double> msg, int i){
+void myRDMA::rdma_write_pagerank(int i){
     //TCP tcp;
     size_t size = sizeof(double)*(myrdma.num_of_vertex);
     //struct ibv_wc wc;

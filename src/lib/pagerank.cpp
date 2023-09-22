@@ -1061,7 +1061,8 @@ void fill_send_buffer(int num_of_server, int index){
 }
 void send_pagerank(int num_of_server){
     for(size_t i = 0; i<num_of_server-1;i++)
-        myrdma1.rdma_write_pagerank(send_buffer[0],i);
+        int a= 1;
+        //myrdma1.rdma_write_pagerank(i);
 }
 void Pagerank::gather_pagerank(string opcode){
     if(pagerank.my_ip == pagerank.server_ip){

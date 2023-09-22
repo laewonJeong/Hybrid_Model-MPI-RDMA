@@ -155,7 +155,9 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     //num_of_vertex = num_vertex;
     
     delete infile;
+    
 
+    cout << rank << " finish delete infile" << endl;
     int start_arr[num_of_node-1];
     start_arr[0] = 0;
     int end_arr[num_of_node-1];
@@ -202,7 +204,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         }
         end_arr[num_of_node-2] = num_vertex;
     }
-
+    cout << rank << " finish vertex weight" << endl;
     int div_num_of_vertex;
     if(my_ip != node[0]){
        for(int i=1;i<num_of_node;i++){

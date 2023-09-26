@@ -149,7 +149,7 @@ void myRDMA::rdma_write_with_imm(string msg, int i){
     
 }
 void myRDMA::rdma_send_recv(int i){
-    RDMA rdma;
+    //RDMA rdma;
     //vector<long double> x1;
     size_t size = sizeof(double)*(myrdma.num_of_vertex);
    

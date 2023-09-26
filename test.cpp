@@ -96,11 +96,11 @@ int main(int argc, char** argv){
     }
     
     clock_gettime(CLOCK_MONOTONIC, &begin1);
-    //cout << rank << " create vertex weight" << endl;
+    
     pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
                                 start, end, nn, num_of_node, size, node, my_ip, 
                                 rank, displs, recvcounts, send, recv1);
-    //cout << rank << " weight finish" << endl;
+    
     num_of_vertex = num_outgoing.size();
     buff_size = sizeof(double) * num_of_vertex;
     

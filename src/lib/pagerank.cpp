@@ -168,7 +168,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     //int temp = 0;
     size_t index = 0;
     int a,b;
-    double xxxxx = 1.0/num_of_node;
+    double xxxxx = 1.0/(num_of_node-1);
     //int edge_part = ceil((edge/(num_of_node-1)));
     //int vertex_part = ceil((num_of_vertex/(num_of_node-1))*argvv);
     //int part = ceil((edge+num_of_vertex)/(num_of_node-1));
@@ -183,7 +183,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         double sum = 0;
         int c = 0;
         for(int i =0; i<num_vertex;i++){
-            double weight = log(num_outgoing[i]+2.0);//log(log(num_outgoing[i] + 2.0)+1.0);//log(log(num_outgoing[i]+1.0)+1.0);//sqrt(sqrt(pow(num_outgoing[i],2.8))) + 1.0;//sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+            double weight = sqrt(num_outgoing[i]);//log(num_outgoing[i]+2.0);//log(log(num_outgoing[i] + 2.0)+1.0);//log(log(num_outgoing[i]+1.0)+1.0);//sqrt(sqrt(pow(num_outgoing[i],2.8))) + 1.0;//sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             vertex_weight.push_back(weight);
             sum_weight += weight;
             //if(num_outgoing[i] == 0)

@@ -54,6 +54,16 @@ string TCP::check_my_ip(){
             if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
             return str;
          }
+         else if(strcmp(ifa->ifa_name, "ibs6") == 0){
+            string str(addressBuffer);
+            if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+            return str;
+         }
+         else if(strcmp(ifa->ifa_name, "ibs1") == 0){
+            string str(addressBuffer);
+            if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
+            return str;
+         }
          //printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer); 
       }
    }

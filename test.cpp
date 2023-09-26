@@ -101,7 +101,7 @@ int main(int argc, char** argv){
                                 start, end, nn, num_of_node, size, node, my_ip, 
                                 rank, displs, recvcounts, send, recv1);
     
-    //num_of_vertex = num_outgoing.size();
+    num_of_vertex = num_outgoing.size();
     //buff_size = sizeof(double) * num_of_vertex;
     
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;

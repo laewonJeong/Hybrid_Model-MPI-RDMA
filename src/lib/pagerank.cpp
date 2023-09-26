@@ -168,6 +168,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     //int temp = 0;
     size_t index = 0;
     int a,b;
+    double xxxxx = 1.0/num_of_node;
     //int edge_part = ceil((edge/(num_of_node-1)));
     //int vertex_part = ceil((num_of_vertex/(num_of_node-1))*argvv);
     //int part = ceil((edge+num_of_vertex)/(num_of_node-1));
@@ -195,7 +196,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     
         for(int i =0; i<num_vertex;i++){
             sum += vertex_weight[i];
-            if(sum >= 0.25){
+            if(sum >= xxxxx){
                 //cout <<index << ": " <<sum << endl;
                 end_arr[index] = i-1;
                 sum = 0;

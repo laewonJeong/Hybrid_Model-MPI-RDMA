@@ -91,6 +91,7 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
     infile = new ifstream(path.c_str());
     string line;
     int temp;
+    size_t line_num = 0;
     //std::vector<std::vector<size_t>>* slice_graph = new std::vector<std::vector<size_t>>();
 	(*sliced_graph).resize(end-start);
     bool ret =false;
@@ -112,6 +113,10 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
             y = strtol(to.c_str(), NULL, 10);
             if(y >= start && y < end)
                 ret = insert_into_vector((*sliced_graph)[y-start], x);
+             line_num++;
+            if(line_num % 50000000 == 0){
+                cout << "[INFO]READ "<< line_num<< " LINES." << endl;
+            }
             
 		}
 	} 
@@ -152,7 +157,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             
             line_num++;
             if(line_num % 50000000 == 0){
-                cout << "Read "<< line_num<< " line." << endl;
+                cout << "[INFO]READ "<< line_num<< " LINES." << endl;
             }
 		}
 	} 

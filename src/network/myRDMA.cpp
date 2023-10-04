@@ -478,8 +478,8 @@ void myRDMA::initialize_rdma_connection_vector(const char* ip, string server[], 
         send_adrs.push_back(myrdma.send[i].data());
         recv_adrs.push_back(myrdma.recv[i].data());
     }
-    rdma_info1[0].reserve(10000);
-    rdma_info1[1].reserve(10000);
+    rdma_info1[0].reserve(10000000);
+    rdma_info1[1].reserve(10000000);
     
     myrdma.connect_num = number_of_server - 1;
 }

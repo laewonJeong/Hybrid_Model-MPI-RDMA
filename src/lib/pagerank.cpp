@@ -152,7 +152,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             
             line_num++;
             if(line_num % 50000000 == 0){
-                cout << "Read "<< line_num<< "line" << endl;
+                cout << "Read "<< line_num<< " line." << endl;
             }
 		}
 	} 

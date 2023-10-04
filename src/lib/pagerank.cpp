@@ -151,6 +151,9 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             add_arc1(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),num_outgoing);
             
             line_num++;
+            if(line_num % 500000 == 0){
+                cout << "Read "<< line_num<< "line" << endl;
+            }
 		}
 	} 
     //num_of_vertex = num_vertex;

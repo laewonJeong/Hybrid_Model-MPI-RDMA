@@ -102,6 +102,7 @@ int main(int argc, char** argv){
                                 rank, displs, recvcounts, send, recv1);
     
     num_of_vertex = num_outgoing.size();
+    cout << num_of_vertex << endl;
     //buff_size = sizeof(double) * num_of_vertex;
     
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;

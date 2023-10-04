@@ -417,7 +417,7 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
                 struct ibv_cq* completion_queue = ibv_create_cq(context, cq_size, nullptr, nullptr, 0);
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
-                                                        recv[i].data(), sizeof(double)*(recv[i].size()));//sizeof(myrdma.recv[i].data()));
+                                                        recv[i].data(), sizeof(double)*(myrdma.num_of_vertex));//recv[i].size()));//sizeof(myrdma.recv[i].data()));
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});
@@ -433,7 +433,7 @@ void myRDMA::create_rdma_info(vector<double> *send, vector<double> *recv){
                 struct ibv_pd* protection_domain = ibv_alloc_pd(context);
                 struct ibv_qp* qp = rdma.createQueuePair(protection_domain, completion_queue);
                 struct ibv_mr *mr = rdma.registerMemoryRegion(protection_domain, 
-                                                        send[i].data(), sizeof(double)*(send[i].size()));//sizeof(myrdma.send[i].data()));
+                                                        send[i].data(), sizeof(double)*(myrdma.num_of_vertex));//send[i].size()));//sizeof(myrdma.send[i].data()));
                 uint16_t lid = rdma.getLocalId(context, PORT);
                 uint32_t qp_num = rdma.getQueuePairNumber(qp);
                 rdma_info1[j].emplace_back(RdmaInfo{context,protection_domain,cq_size,completion_queue,qp,mr,lid,qp_num});
@@ -478,8 +478,8 @@ void myRDMA::initialize_rdma_connection_vector(const char* ip, string server[], 
         send_adrs.push_back(myrdma.send[i].data());
         recv_adrs.push_back(myrdma.recv[i].data());
     }
-    rdma_info1[0].reserve(10000000);
-    rdma_info1[1].reserve(10000000);
+    rdma_info1[0].reserve(1000000000000000);
+    rdma_info1[1].reserve(1000000000000000);
     
     myrdma.connect_num = number_of_server - 1;
 }

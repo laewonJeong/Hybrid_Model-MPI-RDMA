@@ -99,7 +99,7 @@ int main(int argc, char** argv){
     
     pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
                                 start, end, nn, num_of_node, size, node, my_ip, 
-                                rank, displs, recvcounts, send, recv1);
+                                rank, displs, recvcounts, send, recv1,argv[3]);
     
     num_of_vertex = num_outgoing.size();
     cout << "[INFO]TOTAL VERTEX: "<<num_of_vertex << endl;

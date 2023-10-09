@@ -215,7 +215,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "3")
                 weight = log(num_outgoing[i]+1.0);
             else if(cmd == "4")
-                weight = pow(num_outgoing[i]+1.0,1/2.3);//sqrt(num_outgoing[i]+6.0);
+                weight = pow(num_outgoing[i]+4.0,1/2);//sqrt(num_outgoing[i]+6.0);
             else if(cmd == "5")
                 weight = log(num_outgoing[i]+(2.71828)+2.0);
           

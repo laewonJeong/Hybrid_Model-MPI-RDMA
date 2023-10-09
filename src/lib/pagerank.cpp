@@ -131,6 +131,21 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                                 int size,string* node, string my_ip, int rank, int* displs, 
                                 int* recvcounts,vector<double> *send, vector<double> *recv1,string cmd)
 {
+    
+    if(cmd == "1")
+                cout << "[INFO]WEIGHT = EQUI-VERTEX" << endl;
+    else if(cmd == "2")
+                cout << "[INFO]WEIGHT = SQUARE ROOT" << endl;
+    else if(cmd == "3")
+                cout << "[INFO]WEIGHT = LOG" << endl;
+    else if(cmd == "4")
+                cout << "[INFO]WEIGHT = SQARE ROOT + 1.0" << endl;
+    else if(cmd == "5")
+                cout << "[INFO]WEIGHT = LOG + E" << endl;
+    else{
+        cout << "[INFO]WEIGHT ERROR(1 ~ 5)" << endl;
+        exit(0);
+    }
     istream *infile;
     infile = new ifstream(path.c_str());
     size_t line_num = 0;
@@ -203,10 +218,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 weight = sqrt(num_outgoing[i]+1.0);
             else if(cmd == "5")
                 weight = log(num_outgoing[i]+2.71828);
-            else{
-                cout << "[INFO]WEIGHT ERROR(1 ~ 5)" << endl;
-                exit(0);
-            }
+          
             vertex_weight.push_back(weight);
             sum_weight += weight;
             //if(num_outgoing[i] == 0)

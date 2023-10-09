@@ -49,7 +49,7 @@ void myRDMA::rdma_recv_pagerank(int i, size_t size){
 }
 void myRDMA::rdma_write_pagerank(int i){
     //TCP tcp;
-    size_t size = sizeof(double)*(myrdma.num_of_vertex);
+    size_t size = sizeof(double)*(myrdma.send[i].size());
     //struct ibv_wc wc;
     rdma.post_rdma_write_with_imm(rdma_info1[0][i].qp, rdma_info1[0][i].mr, send_adrs[i], 
                         size, myrdma.qp_key[i].first, myrdma.qp_key[i].second);

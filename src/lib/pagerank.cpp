@@ -266,7 +266,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 else{
                     alpha = num_outgoing[i] - std -avg;
                     alpha = (alpha/(std));
-                    weight = sqrt(num_outgoing[i]*alpha);
+                    weight = sqrt(num_outgoing[i]*ceil(alpha));
                 }
                 
             }

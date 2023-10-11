@@ -256,7 +256,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "5")
                 weight = pow(num_outgoing[i]+2.0,1/1.33);
             else{
-                avg = 14.2326;
+                avg = 14.2326+36.0803;
                 
                 if(num_outgoing[i] < round(avg))
                     if(num_outgoing[i] == 0)
@@ -265,8 +265,8 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                         weight = sqrt(num_outgoing[i]);
                 else{
                     alpha = num_outgoing[i];
-                    alpha = floor(alpha/avg);
-                    weight = sqrt(num_outgoing[i]*floor(alpha));
+                    alpha = alpha/avg;
+                    weight = sqrt(num_outgoing[i]*alpha);
                 }
                 
             }

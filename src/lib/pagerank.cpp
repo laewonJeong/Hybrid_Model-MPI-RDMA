@@ -32,11 +32,19 @@ vector<string> split(string str, char Delimiter) {
 double calculateStandardDeviation(vector<int>& num_outgoing, int n) {
     // 1. 평균 계산
     double sum = 0.0;
+    double cnt = 0.0;
+    double max = 0.0;
     for (int i = 0; i < n; i++) {
         sum += num_outgoing[i];
+        if(num_outgoing[i] > max)
+            max = num_outgoing[i];
+        if(num_outgoing[i] == 0)
+            cnt++;
     }
     double mean = sum / n;
     cout << "[INFO]AVG: "<< mean << endl;
+    cout << "[INFO]MAX: "<< max << endl;
+    cout << "[INFO]ZRO: "<< cnt << endl;
     // 2. 각 데이터 포인트에서 평균을 뺀 값의 제곱 계산
     double squaredDifferences = 0.0;
     for (int i = 0; i < n; i++) {

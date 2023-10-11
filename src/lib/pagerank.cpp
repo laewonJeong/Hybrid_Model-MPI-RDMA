@@ -172,7 +172,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 cout << "[INFO]WEIGHT = LOG" << endl;
     else if(cmd == "4")
                 cout << "[INFO]WEIGHT = SQARE ROOT + 1.0" << endl;
-    else if(cmd == "5")
+    else if(cmd == "6")
                 cout << "[INFO]WEIGHT = LOG + E" << endl;
     else{
         cout << "[INFO]WEIGHT ERROR(1 ~ 5)" << endl;

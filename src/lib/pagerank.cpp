@@ -268,7 +268,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                     if(z_score > 1)
                         weight = round(sqrt(num_outgoing[i]*round(z_score)));
                     else
-                        weight = sqrt(num_outgoing[i]);
+                        weight = sqrt(num_outgoing[i]+1.0);
                 }
                 
             }

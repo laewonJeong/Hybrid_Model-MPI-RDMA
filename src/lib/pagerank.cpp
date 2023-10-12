@@ -34,6 +34,12 @@ double calculateStandardDeviation(vector<int>& num_outgoing, int n) {
     double sum = 0.0;
     double cnt = 0.0;
     double max = 0.0;
+    vector<int> temp = num_outgoing;
+    nth_element(temp.begin(), temp.begin() + n/2, temp.end());
+
+    // 중앙값
+    double median_value = temp[n/2];
+
     for (int i = 0; i < n; i++) {
         sum += num_outgoing[i];
         if(num_outgoing[i] > max)
@@ -45,6 +51,7 @@ double calculateStandardDeviation(vector<int>& num_outgoing, int n) {
     cout << "[INFO]AVG: "<< mean << endl;
     cout << "[INFO]MAX: "<< max << endl;
     cout << "[INFO]ZRO: "<< cnt << endl;
+    cout << "[INFO]MDV: " << median_value << endl;
     // 2. 각 데이터 포인트에서 평균을 뺀 값의 제곱 계산
     double squaredDifferences = 0.0;
     for (int i = 0; i < n; i++) {
@@ -242,6 +249,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         double z_score;
         double avg;
         double std;
+        double median;
         int c = 0;
         for(int i =0; i<num_vertex;i++){
 
@@ -258,6 +266,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else{
                 avg = 35.253;//14.2362;//35.253;//+36;
                 std = 2419.74;//36.0803;//2419.74;
+                median = 2;
                 if(num_outgoing[i] < round(avg+std))//pow(std,2))
                     //if(num_outgoing[i] == 0)
                     weight = sqrt(num_outgoing[i]+1);

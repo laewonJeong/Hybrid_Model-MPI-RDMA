@@ -133,14 +133,14 @@ bool Pagerank::add_arc1(size_t from, size_t to,vector<int>& num_outgoing) {
 
     return ret;
 }
-void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>* sliced_graph){
+void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
     istream *infile;
     infile = new ifstream(path.c_str());
     string line;
     int temp;
     size_t line_num = 0;
     //std::vector<std::vector<size_t>>* slice_graph = new std::vector<std::vector<size_t>>();
-	(*sliced_graph).resize(end-start);
+	sliced_graph.resize(end-start);
     bool ret =false;
     size_t x;
     size_t y;
@@ -159,7 +159,7 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
             x = strtol(from.c_str(), NULL, 10);
             y = strtol(to.c_str(), NULL, 10);
             if(y >= start && y < end)
-                ret = insert_into_vector((*sliced_graph)[y-start], x);
+                ret = insert_into_vector(sliced_graph[y-start], x);
              line_num++;
             if(line_num % 50000000 == 0){
                 cout << "[INFO]READ "<< line_num<< " LINES." << endl;
@@ -279,11 +279,11 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                     if(num_outgoing[i] == 0)
                         weight = sqrt(1);//num_outgoing[i]+1);
                     else
-                        weight = sqrt(sizeof(size_t(num_outgoing[i])));// - (median - num_outgoing[i]) * (std / 2));
+                        weight = sqrt(num_outgoing[i]);// - (median - num_outgoing[i]) * (std / 2));
                 else{
                     z_score = (num_outgoing[i]-median);//avg)/std;
                     //if(z_score > 1)
-                    weight = sqrt(sizeof(size_t(num_outgoing[i] + z_score)));//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
+                    weight = sqrt(num_outgoing[i] + z_score);//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
                     //else
                         //weight = sqrt(num_outgoing[i]);
                 }

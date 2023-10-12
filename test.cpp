@@ -57,7 +57,7 @@ int main(int argc, char** argv){
     struct timespec begin2, end2 ;
     struct timespec begin3, end3 ;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
-    std::vector<std::vector<size_t>> *sliced_graph = new std::vector<std::vector<size_t>>();
+    std::vector<std::vector<size_t>> sliced_graph; //= new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> slice_graph;
     vector<double> send[num_of_node];
     vector<double> recv1[num_of_node];
@@ -127,7 +127,7 @@ int main(int argc, char** argv){
     //Check Graph size==============================================================
     
     size_t innerVectorsSize = 0;
-    for (const auto& innerVector : (*sliced_graph)) {
+    for (const auto& innerVector : sliced_graph) {
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
     size_t totalSize = innerVectorsSize;
@@ -281,8 +281,8 @@ int main(int argc, char** argv){
                 //
                 idx = i;
                 double tmp = 0.0;
-                const size_t graph_size = (*sliced_graph)[i].size();
-                const size_t* graph_ptr = (*sliced_graph)[i].data();
+                const size_t graph_size = sliced_graph[i].size();
+                const size_t* graph_ptr = sliced_graph[i].data();
                 for(size_t j=0; j<graph_size; j++){
                     const size_t from_page = graph_ptr[j];
                     const double inv_num_outgoing = 1.0 / num_outgoing[from_page];

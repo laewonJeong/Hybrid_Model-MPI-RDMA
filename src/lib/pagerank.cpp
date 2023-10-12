@@ -287,10 +287,10 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             sum += vertex_weight[i];
             if(sum >= xxxxx){
                 //cout <<index << ": " <<sum << endl;
-                end_arr[index] = i-1;
+                end_arr[index] = i;
                 sum = 0;
                 if(index<num_of_node-1)
-                    start_arr[index+1] = i-1;
+                    start_arr[index+1] = i;
                 index++;
             }
             if(index == num_of_node-2)

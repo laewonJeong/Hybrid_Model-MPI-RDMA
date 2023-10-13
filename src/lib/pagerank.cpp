@@ -275,13 +275,13 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 avg = 14.2362;//2;//14.2362;//14.2362;//35.253;//+36;
                 std = 36.0803;//99.915;//36.0803;//36.0803;//2419.74;
                 median = 12;//3;//12;//3;//12;//0;
-                if(num_outgoing[i] <= median)//pow(std,2))
+                if(num_outgoing[i] <= avg)//pow(std,2))
                     if(num_outgoing[i] == 0)
                         weight = sqrt(1);//num_outgoing[i]+1);
                     else
                         weight = sqrt(num_outgoing[i]);// - (median - num_outgoing[i]) * (std / 2));
                 else{
-                    z_score = (num_outgoing[i]-median);//avg)/std;
+                    z_score = (num_outgoing[i]-avg);//avg)/std;
                     //if(z_score > 1)
                     weight = sqrt(num_outgoing[i] + z_score);//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
                     //else

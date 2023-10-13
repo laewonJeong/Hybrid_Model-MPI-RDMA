@@ -149,7 +149,7 @@ int main(int argc, char** argv){
         //cout << "=====================================================" << endl;
         //cout << "[INFO]GRAPH PARTITIONING" << endl;
         
-        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize+outgoing_size << " byte." << endl;
+        cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " + " <<outgoing_size << "= " << totalSize+outgoing_size << " byte." << endl;
     }
     
     //while(1){

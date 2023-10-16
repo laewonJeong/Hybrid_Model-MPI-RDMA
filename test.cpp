@@ -349,7 +349,7 @@ int main(int argc, char** argv){
                 send_buf_ptr[0] += 1; 
             
             
-            myrdma.rdma_write_pagerank(0);
+            //myrdma.rdma_write_pagerank(0);
             //clock_gettime(CLOCK_MONOTONIC, &begin3);
             
             fill(send_first, send_end, send[0]);
@@ -381,7 +381,7 @@ int main(int argc, char** argv){
             std::vector<std::thread> worker;
             //worker.reserve(num_of_node-2);
             size_t i;
-            for(i = 1; i<num_of_node-1;i++){
+            for(i = 0; i<num_of_node-1;i++){
                 worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,i));
             }
             for(i=0;i<num_of_node-2;i++)

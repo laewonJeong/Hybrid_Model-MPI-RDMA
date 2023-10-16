@@ -295,10 +295,18 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             //    c++;
         }
         //cout << c << endl;
+        vector<double> weighht;
+        int max_dimm = 0;
         for(int i =0; i<num_vertex;i++){
             vertex_weight[i] /= sum_weight;
+            max_dimm = num_outgoing[i];
+            if(weighht.size() < max_dimm)
+                weighht.resize(max_dimm);
+            weighht[num_outgoing[i]] = vertex_weight[i];
         }
-    
+        for(int i =0; i<weighht.size();i++){
+            cout << i << " " << weighht[i] << endl;
+        }
         for(int i =0; i<num_vertex;i++){
             sum += vertex_weight[i];
             if(sum >= xxxxx){

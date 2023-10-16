@@ -384,7 +384,7 @@ int main(int argc, char** argv){
             for(i = 0; i<num_of_node-1;i++){
                 worker.push_back(std::thread(&myRDMA::rdma_write_pagerank, &myrdma,i));
             }
-            for(i=0;i<num_of_node-2;i++)
+            for(i=0;i<num_of_node-1;i++)
                 worker[i].join();
             cout << "[INFO]START SEND - SUCCESS" << endl;
             //clock_gettime(CLOCK_MONOTONIC, &end1);

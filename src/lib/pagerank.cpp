@@ -273,8 +273,8 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "5")
                 weight = pow(num_outgoing[i]+2.0,1/1.33);
             else{
-                avg = 35.253;//14.2362;//15.9151;//2;//15.9151;//6.54044;//5.57058;//11.092;//35.253;//14.2362;//35.253;//35.253;//2;//35.253;//14.2362;//14.2362;//2;//14.2362;//14.2362;//35.253;//+36;
-                std = 2419.74;//30.4273;//99.915;//30.4273;//6.55653;//16.356;//2419.74;//36.0803;//2419.74;//2419.74;//99.915;//36.0803;//36.0803;//2419.74;
+                avg = 14.2362;//35.253;//14.2362;//15.9151;//2;//15.9151;//6.54044;//5.57058;//11.092;//35.253;//14.2362;//35.253;//35.253;//2;//35.253;//14.2362;//14.2362;//2;//14.2362;//14.2362;//35.253;//+36;
+                std = 36.0803;//2419.74;//30.4273;//99.915;//30.4273;//6.55653;//16.356;//2419.74;//36.0803;//2419.74;//2419.74;//99.915;//36.0803;//36.0803;//2419.74;
                 max = 20293;
                 median = 12;//3;//12;//3;//12;//0;
                 if(num_outgoing[i] <= round(avg))//pow(std,2))
@@ -304,9 +304,19 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 weighht.resize(max_dimm);
             weighht[num_outgoing[i]] = vertex_weight[i];
         }
-        for(int i =0; i<weighht.size();i++){
+        std::ofstream outputFile("output.txt");
+        if (outputFile.is_open()) {
+            for (int i = 0; i < weighht.size(); i++) {
+                outputFile << i << " " << weighht[i] << std::endl;
+            }
+            outputFile.close(); // 파일 닫기
+            std::cout << "데이터가 파일에 저장되었습니다." << std::endl;
+        } else {
+            std::cerr << "파일을 열 수 없습니다." << std::endl;
+        }   
+        /*for(int i =0; i<weighht.size();i++){
             cout << i << " " << weighht[i] << endl;
-        }
+        }*/
         for(int i =0; i<num_vertex;i++){
             sum += vertex_weight[i];
             if(sum >= xxxxx){

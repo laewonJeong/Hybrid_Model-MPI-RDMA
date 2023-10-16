@@ -278,14 +278,11 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 max = 20293;
                 median = 12;//3;//12;//3;//12;//0;
                 if(num_outgoing[i] <= round(avg))//pow(std,2))
-                    if(num_outgoing[i] == 0)
-                        weight = 1;//num_outgoing[i]+1);
-                    else
-                        weight = 1;//sqrt(num_outgoing[i]);// - (median - num_outgoing[i]) * (std / 2));
+                    weight = 1;//sqrt(num_outgoing[i]);// - (median - num_outgoing[i]) * (std / 2));
                 else{
-                    z_score = 0;//num_outgoing[i]/max;//((num_outgoing[i]-round(avg))*(1.0/floor(std)));//avg)/std;
+                    //z_score = 0;//num_outgoing[i]/max;//((num_outgoing[i]-round(avg))*(1.0/floor(std)));//avg)/std;
                     //if(z_score > 1)
-                    weight = sqrt(num_outgoing[i] + z_score);//num_outgoing[i]);//((num_outgoing[i] * sqrt(z_score)) * sizeof(size_t)));//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
+                    weight = sqrt(num_outgoing[i]);//num_outgoing[i]);//((num_outgoing[i] * sqrt(z_score)) * sizeof(size_t)));//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
                     //else
                         //weight = sqrt(num_outgoing[i]);
                 }

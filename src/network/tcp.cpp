@@ -59,7 +59,7 @@ string TCP::check_my_ip(){
             if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
             return str;
          }
-         else if(strcmp(ifa->ifa_name, "ibs1") == 0){
+         else if(strcmp(ifa->ifa_name, "enp5s0") == 0){
             string str(addressBuffer);
             if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
             return str;

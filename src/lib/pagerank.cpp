@@ -295,7 +295,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             //    c++;
         }
         //cout << c << endl;
-        vector<double> weighht;
+        /*vector<double> weighht;
         int max_dimm = 0;
         for(int i =0; i<num_vertex;i++){
             vertex_weight[i] /= sum_weight;
@@ -313,7 +313,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             std::cout << "데이터가 파일에 저장되었습니다." << std::endl;
         } else {
             std::cerr << "파일을 열 수 없습니다." << std::endl;
-        }   
+        } */  
         /*for(int i =0; i<weighht.size();i++){
             cout << i << " " << weighht[i] << endl;
         }*/

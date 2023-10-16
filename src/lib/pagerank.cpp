@@ -35,9 +35,9 @@ double calculateStandardDeviation(vector<int>& num_outgoing, int n) {
     double cnt = 0.0;
     double max = 0.0;
     double median_value;
-    vector<int> temp = num_outgoing;
-    sort(temp.begin(), temp.end());
-    if (n % 2 == 0) {
+    //vector<int> temp = num_outgoing;
+    //sort(temp.begin(), temp.end());
+    /*if (n % 2 == 0) {
         // 데이터 포인트의 개수가 짝수인 경우
         int middle1 = n / 2 - 1;
         int middle2 = n / 2;
@@ -46,7 +46,7 @@ double calculateStandardDeviation(vector<int>& num_outgoing, int n) {
         // 데이터 포인트의 개수가 홀수인 경우
         int middle = n / 2;
         median_value = num_outgoing[middle];
-    }
+    }*/
 
     for (int i = 0; i < n; i++) {
         sum += num_outgoing[i];

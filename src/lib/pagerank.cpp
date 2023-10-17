@@ -273,8 +273,8 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "5")
                 weight = pow(num_outgoing[i]+2.0,1/1.33);
             else{
-                avg = 35.253;//14.2362;//35.253;//14.2362;//15.9151;//2;//15.9151;//6.54044;//5.57058;//11.092;//35.253;//14.2362;//35.253;//35.253;//2;//35.253;//14.2362;//14.2362;//2;//14.2362;//14.2362;//35.253;//+36;
-                std = 2419.74;//36.0803;//2419.74;//30.4273;//99.915;//30.4273;//6.55653;//16.356;//2419.74;//36.0803;//2419.74;//2419.74;//99.915;//36.0803;//36.0803;//2419.74;
+                avg = 14.2362;//35.253;//14.2362;//35.253;//14.2362;//15.9151;//2;//15.9151;//6.54044;//5.57058;//11.092;//35.253;//14.2362;//35.253;//35.253;//2;//35.253;//14.2362;//14.2362;//2;//14.2362;//14.2362;//35.253;//+36;
+                std = 36.0803;//2419.74;//36.0803;//2419.74;//30.4273;//99.915;//30.4273;//6.55653;//16.356;//2419.74;//36.0803;//2419.74;//2419.74;//99.915;//36.0803;//36.0803;//2419.74;
                 max = 20293;
                 median = 12;//3;//12;//3;//12;//0;
                 if(num_outgoing[i] <= round(avg))//pow(std,2))
@@ -282,7 +282,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 else{
                     z_score = ((num_outgoing[i]-round(avg))*(1.0/floor(std)));//avg)/std;
                     //if(z_score > 1)
-                    weight = sqrt(num_outgoing[i] + 1.0 + z_score);//num_outgoing[i]);//((num_outgoing[i] * sqrt(z_score)) * sizeof(size_t)));//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
+                    weight = sqrt(num_outgoing[i] + 2.0 + z_score);//num_outgoing[i]);//((num_outgoing[i] * sqrt(z_score)) * sizeof(size_t)));//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
                     //else
                         //weight = sqrt(num_outgoing[i]);
                 }

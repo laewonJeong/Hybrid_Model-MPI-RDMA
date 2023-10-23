@@ -145,7 +145,7 @@ void Pagerank::check_power_law_degree(vector<int>& num_outgoing){
 
     std::ofstream outputFile("graph_deviation.txt");
     if (outputFile.is_open()) {
-        for (int i = 0; i <= graph_deviation.size(); i++) {
+        for (int i = 0; i < graph_deviation.size(); i++) {
             if(graph_deviation[i]!=0)
                 outputFile << i << " " << graph_deviation[i] << std::endl;
             cout << i << ": " <<graph_deviation[i] << endl;

@@ -276,7 +276,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     //long long buf_part = buffer_size/(num_of_node-1);
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
-    if (my_ip != "1235"){
+    if (my_ip != "192.168.0.102"){
         double weight;
         vector<double> vertex_weight;
         double sum_weight = 0;

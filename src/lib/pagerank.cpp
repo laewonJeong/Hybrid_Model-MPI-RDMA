@@ -133,6 +133,32 @@ bool Pagerank::add_arc1(size_t from, size_t to,vector<int>& num_outgoing) {
 
     return ret;
 }
+void Pagerank::check_power_law_degree(vector<int>& num_outgoing){
+    vector<double> graph_deviation;
+    int max_dimm = 0;
+    for(int i =0; i<num_outgoing.size();i++){
+        max_dimm = num_outgoing[i];
+        if(graph_deviation.size() < max_dimm)
+            graph_deviation.resize(max_dimm,0);
+        graph_deviation[max_dimm]++;
+    }
+
+    std::ofstream outputFile("graph_deviation.txt");
+    if (outputFile.is_open()) {
+        for (int i = 0; i <= graph_deviation.size(); i++) {
+            if(graph_deviation[i]!=0)
+                outputFile << i << " " << graph_deviation[i] << std::endl;
+            cout << i << ": " <<graph_deviation[i] << endl;
+        }
+        outputFile.close(); // 파일 닫기
+        std::cout << "데이터가 파일에 저장되었습니다." << std::endl;
+    } else {
+        std::cerr << "파일을 열 수 없습니다." << std::endl;
+    } 
+        /*for(int i =0; i<weighht.size();i++){
+            cout << i << " " << weighht[i] << endl;
+        }*/
+}
 void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
     istream *infile;
     infile = new ifstream(path.c_str());

@@ -18,6 +18,7 @@
 using namespace std;
 class Pagerank{
     public:
+       void check_power_law_degree(vector<int>& num_outgoing);
        void create_graph(string path, string del, std::vector<std::vector<size_t>>* graph, vector<int>& num_outgoing);
        void create_vertex_weight(string path, string del, vector<int>& num_outgoing, 
                                 int& num_of_vertex, int& start, int& end, int* nn,int num_of_node, 

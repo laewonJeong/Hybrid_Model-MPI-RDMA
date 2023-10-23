@@ -103,6 +103,8 @@ int main(int argc, char** argv){
     
     num_of_vertex = num_outgoing.size();
     cout << "[INFO]TOTAL VERTEX: "<<num_of_vertex << endl;
+
+    pagerank.check_power_law_degree(num_outgoing);
     //buff_size = sizeof(double) * num_of_vertex;
     
     //cout << "[INFO]START: "<< start << ", END: "<< end << endl;

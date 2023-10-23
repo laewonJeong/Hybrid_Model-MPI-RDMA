@@ -138,8 +138,8 @@ void Pagerank::check_power_law_degree(vector<int>& num_outgoing){
     int max_dimm = 0;
     for(int i =0; i<num_outgoing.size();i++){
         max_dimm = num_outgoing[i];
-        if(graph_deviation.size() < max_dimm)
-            graph_deviation.resize(max_dimm,0);
+        if(graph_deviation.size() < max_dimm+1)
+            graph_deviation.resize(max_dimm+1,0);
         graph_deviation[max_dimm]++;
     }
 

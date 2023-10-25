@@ -304,7 +304,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 std = 2.98611;//2419.74;//87.0887;//36.0803;//2419.74;//30.4273;//99.915;//30.4273;//6.55653;//16.356;//2419.74;//36.0803;//2419.74;//2419.74;//99.915;//36.0803;//36.0803;//2419.74;
                 max = 20293;
                 median = 12;//3;//12;//3;//12;//0;
-                double percent_80 = 20;//0;//20;//18;
+                double percent_80 = 37;//0;//20;//18;
                 if(num_outgoing[i] <= round(percent_80))//pow(std,2)
                     if(num_outgoing[i] <= round(avg))
                         weight = 1;
@@ -314,7 +314,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                     if(num_outgoing[i] <= round(avg))
                         weight = 1;
                     else{
-                        z_score = (num_outgoing[i]-round(avg));//avg)/std;
+                        z_score = (num_outgoing[i]-round(percent_80));//avg)/std;
                     //if(z_score > 1)
                         weight = sqrt(num_outgoing[i]+z_score);//num_outgoing[i]);//((num_outgoing[i] * sqrt(z_score)) * sizeof(size_t)));//num_outgoing[i] * sqrt((num_outgoing[i]-median)));//sqrt((num_outgoing[i]+1)+(num_outgoing[i] - median));//num_outgoing[i]-median));
                     //else

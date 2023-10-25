@@ -308,8 +308,8 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 if(num_outgoing[i] <= round(percent_80))//pow(std,2)
                     if(num_outgoing[i] <= round(avg))
                         weight = 1;
-                    //else
-                        //weight = sqrt(num_outgoing[i]);// - (median - num_outgoing[i]) * (std / 2));
+                    else
+                        weight = sqrt(num_outgoing[i]);// - (median - num_outgoing[i]) * (std / 2));
                 else{
                     //if(num_outgoing[i] <= round(avg))
                     //    weight = sqrt(num_outgoing[i]);

@@ -306,7 +306,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 median = 12;//3;//12;//3;//12;//0;
                 if(num_outgoing[i] <= round(20))//pow(std,2)
                     if(num_outgoing[i] == 0)
-                        weight = 0.5;
+                        weight = 0.2;
                     else
                         weight = sqrt(num_outgoing[i]);//sqrt(num_outgoing[i]);// - (median - num_outgoing[i]) * (std / 2));
                 else{

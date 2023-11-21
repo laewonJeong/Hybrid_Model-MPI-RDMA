@@ -290,13 +290,13 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         for(int i =0; i<num_vertex;i++){
 
             if(cmd == "1")
-                weight = num_outgoing[i];//log(num_outgoing[i]+1.0);//sqrt(num_outgoing[i]+1.0);//log(num_outgoing[i]+2.0);//log(log(num_outgoing[i] + 2.0)+1.0);//log(log(num_outgoing[i]+1.0)+1.0);//sqrt(sqrt(pow(num_outgoing[i],2.8))) + 1.0;//sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
+                weight =1;//log(num_outgoing[i]+1.0);//sqrt(num_outgoing[i]+1.0);//log(num_outgoing[i]+2.0);//log(log(num_outgoing[i] + 2.0)+1.0);//log(log(num_outgoing[i]+1.0)+1.0);//sqrt(sqrt(pow(num_outgoing[i],2.8))) + 1.0;//sqrt(sqrt(pow(num_outgoing[i],2.7)) + 1.0);// / max_edge;//log10(static_cast<long double>(max_edge));//1+log(static_cast<long double>(num_outgoing[i]+1.0)); // 로그에 1을 더하여 0으로 나누는 오류를 피합니다.
             else if(cmd == "2")
-                weight = sqrt(num_outgoing[i]+1.0);
+                weight = sqrt(num_outgoing[i]);
             else if(cmd == "3")
                 weight = log(num_outgoing[i]+1.0);//pow(num_outgoing[i],1/1.7);
             else if(cmd == "4")
-                weight = pow(num_outgoing[i]+3.0,1/1.3);//sqrt(num_outgoing[i]+6.0);
+                weight = num_outgoing[i];//sqrt(num_outgoing[i]+6.0);
             else if(cmd == "5")
                 weight = pow(num_outgoing[i]+2.0,1/1.33);
             else{

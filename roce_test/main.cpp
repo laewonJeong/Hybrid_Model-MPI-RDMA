@@ -1,9 +1,9 @@
 #include "D_RoCELib.hpp"
 #define port 40145
-#define num_of_node 4
+#define num_of_node 5
 #define server_ip "10.10.10.101"
 
-string node[num_of_node] = {server_ip,"10.10.10.102","10.10.10.103","10.10.10.104"};
+string node[num_of_node] = {server_ip,"10.10.10.102","10.10.10.103","10.10.10.104", "10.10.10.105"};
 
 char send_buffer[num_of_node][buf_size];
 char recv_buffer[num_of_node][buf_size];

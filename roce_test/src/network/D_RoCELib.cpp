@@ -187,7 +187,19 @@ void D_RoCELib::initialize_connection_vector(const char* ip, string server[], in
     myrdma.send = &send[0];
     myrdma.recv = &recv[0];
     myrdma.num_of_vertex = num_of_vertex;
+     int *clnt_socks = tcp.client_sock();
+ 
+    for(int idx=0; idx < myrdma.connect_num+1; idx++){
+        if(clnt_socks[idx]!=0)
+            myrdma.sock_idx.push_back(idx);
+    }
 
+    int *serv_socks = tcp.server_sock();
+ 
+    for(int idx=0; idx < myrdma.connect_num+1; idx++){
+        if(serv_socks[idx]!=0)
+            myrdma.sock_idx1.push_back(idx);
+    }
     //myRDMA::initialize_memory_pool();
     /*int n = num_of_vertex/(number_of_server-1); 
     partition=n;

@@ -8,6 +8,9 @@ string node[num_of_node] = {server_ip,"10.10.10.102","10.10.10.103","10.10.10.10
 char send_buffer[num_of_node][buf_size];
 char recv_buffer[num_of_node][buf_size];
 
+vector<double> send[num_of_node];
+vector<double> recv1[num_of_node];
+
 bool is_server(string ip){
   if(ip == server_ip)
     return true;
@@ -24,24 +27,50 @@ int main(int argc, char* argv[]){
     cerr << "node[0] is not server_ip" << endl;
     exit(1);
   }
-
+  for(int i = 0; i < num_of_node; i++){
+    send[i].resize(1000);
+    recv1[i].resize(1000);
+  }
   D_RoCELib d_rocelib;
 
-  d_rocelib.initialize_connection(argv[1], node, num_of_node, port,send_buffer,recv_buffer);
+  d_rocelib.initialize_connection_vector(argv[1], node, num_of_node, port,send,recv1,0);
 
   
   string ip = argv[1];
   string msg;
   
-  cerr << "========================== many_to_many_communication ==========================\n" << endl;
+  /*cerr << "========================== many_to_many_communication ==========================\n" << endl;
 
-  /* many to many communication*/
+   many to many communication
   msg = "[ " + ip + " ] Hi many-to-many communication!";
   
   d_rocelib.roce_comm(msg);
   for(int i=0;i<num_of_node-1;i++){
     printf("recv_buffer[%d]: %s\n", i, recv_buffer[i]); 
+  }*/
+
+  cerr << "\n========================== many_to_one_communication ==========================\n" << endl;
+
+  /* many to 1 communication */
+  if(is_server(ip)){
+    d_rocelib.roce_many_to_one_recv_msg();
+    for(int i=0;i<num_of_node-1;i++){
+      for(int j =0;j<10;j++)
+        printf("recv_buffer[%d]: %f, ", i, recv1[i][j]);
+      cout << endl;
+    }
   }
+  else{
+    //msg = "[ " + ip + " ] Hi many-to-one communication!";
+    for(int i = 0; i<10;i++){
+      send[0][i] = i;
+    }
+    
+    d_rocelib.roce_many_to_one_send_msg(msg);
+
+    cout << "MANY TO ONE SEND SUCCESS" << endl;
+  }
+
   cerr << "\n========================== one_to_many_communication ==========================\n" << endl;
 
   /* 1 to many communication */
@@ -53,22 +82,6 @@ int main(int argc, char* argv[]){
   else{
     d_rocelib.roce_one_to_many_recv_msg();
     printf("recv_buffer[0]: %s\n", recv_buffer[0]);
-  }
-
-  cerr << "\n========================== many_to_one_communication ==========================\n" << endl;
-
-  /* many to 1 communication */
-  if(is_server(ip)){
-    d_rocelib.roce_many_to_one_recv_msg();
-    for(int i=0;i<num_of_node-1;i++){
-      printf("recv_buffer[%d]: %s\n", i, recv_buffer[i]);
-    }
-  }
-  else{
-    msg = "[ " + ip + " ] Hi many-to-one communication!";
-    d_rocelib.roce_many_to_one_send_msg(msg);
-
-    cout << "MANY TO ONE SEND SUCCESS" << endl;
   }
 
   cerr << "================================================================================" << endl;

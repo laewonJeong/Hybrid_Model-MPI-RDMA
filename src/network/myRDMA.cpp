@@ -466,7 +466,7 @@ void myRDMA::initialize_rdma_connection_vector(const char* ip, string server[], 
     myrdma.num_of_vertex = num_of_vertex;
 
     //myRDMA::initialize_memory_pool();
-    int n = num_of_vertex/(number_of_server-1);
+    int n = num_of_vertex/(number_of_server-1); 
     partition=n;
     int n1 = num_of_vertex - n*(number_of_server-2);
     partition1=n1;

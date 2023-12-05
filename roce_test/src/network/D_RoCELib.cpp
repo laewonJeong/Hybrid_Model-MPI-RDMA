@@ -181,6 +181,32 @@ void D_RoCELib::initialize_connection(const char* ip, string server[],
             myrdma.sock_idx1.push_back(idx);
     }
 }
+void D_RoCELib::initialize_connection_vector(const char* ip, string server[], int number_of_server, int Port, vector<double> *send, vector<double> *recv, int num_of_vertex){
+    TCP tcp;
+    tcp.connect_tcp(ip, server, number_of_server, Port);
+    myrdma.send = &send[0];
+    myrdma.recv = &recv[0];
+    myrdma.num_of_vertex = num_of_vertex;
+
+    //myRDMA::initialize_memory_pool();
+    /*int n = num_of_vertex/(number_of_server-1); 
+    partition=n;
+    int n1 = num_of_vertex - n*(number_of_server-2);
+    partition1=n1;
+   
+    //cout << partition << " " << partition1 << endl;
+    for(int i=0;i<number_of_server-1;i++){
+        //myrdma.send[i].resize(num_of_vertex);
+        //myrdma.recv[i].resize(num_of_vertex);
+        send_adrs.push_back(myrdma.send[i].data());
+        recv_adrs.push_back(myrdma.recv[i].data());
+    }
+    rdma_info1[0].reserve(100000);
+    rdma_info1[1].reserve(100000);*/
+    
+    myrdma.connect_num = number_of_server - 1;
+}
+
 void D_RoCELib::create_rdma_info(){
     RDMA rdma;
     TCP tcp;
@@ -221,12 +247,14 @@ void D_RoCELib::create_rdma_info(){
 void D_RoCELib::roce_send_msg(string msg){
     TCP tcp;
     for(int i=0;i<myrdma.connect_num;i++){
-        tcp.send_msg(change(msg),myrdma.sock_idx[i]);
+        //tcp.send_msg(change(msg),myrdma.sock_idx[i]);
+        tcp.send_vector(myrdma.send[i], myrdma.sock_idx[i]);
     }
 }
 void D_RoCELib::roce_recv_msg(int sock_idx, int idx){
     TCP tcp;
-    int str_len = tcp.recv_msg(sock_idx,myrdma.recv_buffer[idx],buf_size);
+    //int str_len = tcp.recv_msg(sock_idx,myrdma.recv_buffer[idx],buf_size);
+    int str_len = tcp.recv_vector(sock_idx, myrdma.recv[idx],0);
 }
 void D_RoCELib::roce_recv_t(){
     std::vector<std::thread> worker;
@@ -253,7 +281,8 @@ void D_RoCELib::roce_one_to_many_recv_msg(){
 }
 void D_RoCELib::roce_many_to_one_send_msg(string msg){
     TCP tcp;
-    tcp.send_msg(change(msg),myrdma.sock_idx[0]);
+    //tcp.send_msg(change(msg),myrdma.sock_idx[0]);
+    tcp.send_vector(myrdma.send[0], myrdma.sock_idx[0]);
 }
 void D_RoCELib::roce_many_to_one_recv_msg(){
     D_RoCELib::roce_recv_t();

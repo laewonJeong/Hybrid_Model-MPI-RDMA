@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 #include "map"
-#define buf_size 1048576*64 +1
+#define buf_size 1048576*64 +1 
 
 using namespace std;
 class D_RoCELib{
@@ -32,6 +32,9 @@ class D_RoCELib{
         void initialize_connection(const char* ip, string server[], 
                                         int number_of_server, int Port,
                                         char send[][buf_size], char recv[][buf_size]);
+        void initialize_connection_vector(const char* ip, string server[], int number_of_server, 
+                                        int Port, vector<double> *send, vector<double> *recv, 
+                                        int num_of_vertex);
         void roce_comm(string msg);
         void roce_send_msg(string msg);
         void roce_recv_msg(int sock_idx, int idx);
@@ -45,7 +48,10 @@ class D_RoCELib{
         std::vector<pair<string,string>> qp_key;
         char (*send_buffer)[buf_size];
         char (*recv_buffer)[buf_size];
+        vector<double> *send;
+        vector<double> *recv;
         vector<int> sock_idx;
         vector<int> sock_idx1;
         int connect_num;
+        int num_of_vertex;
 };

@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
     //msg = "[ " + ip + " ] Hi many-to-one communication!";
     for(int i = 0; i<10;i++){
       send[0][i] = i;
-      printf("send_buffer[%d]: %f, ", i, recv1[0][i]);
+      printf("send_buffer[0][%d]: %f, ", i, send[0][i]);
     }
     
     d_rocelib.roce_many_to_one_send_msg(msg);

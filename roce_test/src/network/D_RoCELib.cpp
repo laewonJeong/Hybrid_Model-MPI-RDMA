@@ -266,6 +266,7 @@ void D_RoCELib::roce_send_msg(string msg){
 void D_RoCELib::roce_recv_msg(int sock_idx, int idx){
     TCP tcp;
     //int str_len = tcp.recv_msg(sock_idx,myrdma.recv_buffer[idx],buf_size);
+    //cout << "test" << endl;
     int str_len = tcp.recv_vector(sock_idx, myrdma.recv[idx],0);
 }
 void D_RoCELib::roce_recv_t(){

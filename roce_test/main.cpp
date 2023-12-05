@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
     d_rocelib.roce_one_to_many_recv_msg();
     for(int i=0;i<num_of_node-1;i++){
       for(int j =0;j<10;j++)
-        printf("recv_buffer[%d][%d]: %f, ", i,j recv1[i][j]);
+        printf("recv_buffer[%d][%d]: %f, ", i,j, recv1[i][j]);
       cout << endl;
     }
   }

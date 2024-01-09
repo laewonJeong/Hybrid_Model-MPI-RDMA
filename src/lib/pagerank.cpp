@@ -306,7 +306,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 median = 12;//3;//12;//3;//12;//0;
                 double percent_80 = 20;//20;//37;//0;//20;//18;
                 double percent_90 = 0;//33;//37;
-                double after_avg = 403;//146;//127;//68;//31;//9;
+                double after_avg = 188;//403;//146;//127;//68;//31;//9;  (403: twiter 0.9) (188: twitter 0.8)
                 if(num_outgoing[i] <= round(avg))//pow(std,2)
                     //if(num_outgoing[i] > percent_90)
                         //weight = sqrt(num_outgoing[i]);

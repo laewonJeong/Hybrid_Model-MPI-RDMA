@@ -250,11 +250,16 @@ int main(int argc, char** argv){
 
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     int idx;
+    int cnt = 0;
     clock_gettime(CLOCK_MONOTONIC, &begin1);
     for(size_t i=start-start;i<end-start;i++){
         idx = i;
         const double graph_size = sliced_graph[i].size();
-        send_buf_ptr[idx] = graph_size;
+        for(size_t j=0; j< graph_size; j++){
+            cnt+=1;
+        }
+        send_buf_ptr[idx] = cnt;
+        cnt = 0;
     }
     clock_gettime(CLOCK_MONOTONIC, &end1);
     time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;

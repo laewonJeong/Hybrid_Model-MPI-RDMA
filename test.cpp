@@ -249,8 +249,55 @@ int main(int argc, char** argv){
 
 
     clock_gettime(CLOCK_MONOTONIC, &begin2);
+    int idx;
+    for(size_t i=start-start;i<end-start;i++){
+        idx = i;
+        const double graph_size = sliced_graph[i].size();
+        send_buf_ptr[idx] = graph_size;
+    }
+    if(my_ip == node[0]){
+        send[0].clear();
+        //clock_gettime(CLOCK_MONOTONIC, &begin3);
+        myrdma.recv_t("send");
+        //clock_gettime(CLOCK_MONOTONIC, &end3);
+        //long double time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+        //cout << time3 << endl;
+        //myrdma.t_recv("send", nn, num_of_node, send, recv1);
+        cout << "[INFO]START RECEIVE - SUCCESS" << endl;
+            
+        //clock_gettime(CLOCK_MONOTONIC, &begin3);
+            
+        for(size_t i=0;i<num_of_node-1;i++){
+            size = nn[i];
+            //std::vector<double>::iterator iterator = recv1[i].begin();
+            send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
+        }   
+        //clock_gettime(CLOCK_MONOTONIC, &end3);
+        //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+        //cout << time3 << endl;
+
+        //if(diff < 0.00001)
+        //    send_buf_ptr[0] += 1; 
+            
+            
+        //myrdma.rdma_write_pagerank(0);
+         //clock_gettime(CLOCK_MONOTONIC, &begin3);
+            
+        fill(send_first, send_end, send[0]);
+        //clock_gettime(CLOCK_MONOTONIC, &end3);
+        //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+        //cout << time3 << endl;
+        cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
+    }
+    else{
+        if(rank == 0){
+            cout << "[INFO]START SEND_RDMA - SUCCESS "<< endl;
+            myrdma.rdma_write_vector(0,div_buff_size);
+            //myrdma.rdma_recv_pagerank(0);
+        }       
+    }
     //===============================================================================
-    for(step =0;step<10000000;step++){
+    /*for(step =0;step<10000000;step++){
         
         if(rank == 0 || my_ip == node[0]){
             cout <<"================STEP "<< step+1 << "================" <<endl;
@@ -460,12 +507,32 @@ int main(int argc, char** argv){
         if(diff < 0.00001 || recv1[0][0] > 1){
             break;
         }
-    }
+    }*/
     clock_gettime(CLOCK_MONOTONIC, &end2);
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
     //===============================================================================
-    
-    if(my_ip != node[0] && rank == 0){
+    if(my_ip == node[0] && rank == 0){
+        cout << "[INFO]SORTING DEGREE CENTRALITY." << endl;
+        send[0][0] = send[0][0] - 1000000;
+        cout << "[INFO]SORTING PAGERANK VALUE." << endl;
+
+        vector<pair<double,int>> result;
+        for (int i = 0; i < num_of_vertex; ++i) {
+            result.push_back(make_pair(send[0][i],i));
+        }
+        int topN = 5;
+        partial_sort(result.begin(), result.begin() + topN, result.end(), greater<>());
+        int important_idx = result[0].second;
+        double important_value = result[0].first;
+
+        for(int i=0;i<topN;i++){
+            cout << "dc[" <<result[i].second<<"]: " << result[i].first <<endl;
+        }
+        
+        cout << "=====================================================" << endl;
+    }
+    printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
+    /*if(my_ip != node[0] && rank == 0){
          cout << "=====================================================" << endl;
         
         recv1[0][0] = recv1[0][0] - 1;
@@ -492,15 +559,15 @@ int main(int argc, char** argv){
         //cout << "[INFO]IMPORTANT VERTEX: " << important_idx << "\n[INFO]" << important_idx << "'S VALUE: "<<important_value << endl;
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
-    }
-    if(rank == 0|| my_ip == node[0]){
+    }*/
+    /*if(rank == 0|| my_ip == node[0]){
         
         printf("[INFO]AVG EXECUTION TIME:   %LFs.\n", avg_compute_time/62);
         //printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
         printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
         cout << "=====================================================" << endl;
-    }
+    }*/
     MPI_Finalize();
     myrdma.exit_rdma();
 }

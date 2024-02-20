@@ -250,11 +250,15 @@ int main(int argc, char** argv){
 
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     int idx;
+    clock_gettime(CLOCK_MONOTONIC, &begin1);
     for(size_t i=start-start;i<end-start;i++){
         idx = i;
         const double graph_size = sliced_graph[i].size();
         send_buf_ptr[idx] = graph_size;
     }
+    clock_gettime(CLOCK_MONOTONIC, &end1);
+    time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+    cout << "[INFO]EXECUTION TIME: " << time3 << endl;
     if(my_ip == node[0]){
         send[0].clear();
         //clock_gettime(CLOCK_MONOTONIC, &begin3);
@@ -512,9 +516,10 @@ int main(int argc, char** argv){
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
     //===============================================================================
     if(my_ip == node[0] && rank == 0){
+        cout << "=====================================================" << endl;
         cout << "[INFO]SORTING DEGREE CENTRALITY." << endl;
         send[0][0] = send[0][0] - 1000000;
-        cout << "[INFO]SORTING PAGERANK VALUE." << endl;
+        //cout << "[INFO]SORTING PAGERANK VALUE." << endl;
 
         vector<pair<double,int>> result;
         for (int i = 0; i < num_of_vertex; ++i) {

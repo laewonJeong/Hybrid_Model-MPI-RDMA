@@ -247,7 +247,10 @@ int main(int argc, char** argv){
     }*/
     
 
-
+     if(rank == 0 || my_ip == node[0]){
+        cout <<"=====================================================" <<endl;
+            
+    }
     clock_gettime(CLOCK_MONOTONIC, &begin2);
     int idx;
     int cnt = 0;
@@ -540,6 +543,9 @@ int main(int argc, char** argv){
         }
         
         cout << "=====================================================" << endl;
+    }
+    else if(my_ip != node[0] && rank == 0){
+         cout << "=====================================================" << endl;
     }
     printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
     /*if(my_ip != node[0] && rank == 0){

@@ -256,7 +256,7 @@ int main(int argc, char** argv){
     for(int x=0;x<30;x++){
         
         int idx;
-        int cnt = 0;
+        long double cnt = 0;
         clock_gettime(CLOCK_MONOTONIC, &begin1);
         for(size_t i=start-start;i<end-start;i++){
             idx = i;

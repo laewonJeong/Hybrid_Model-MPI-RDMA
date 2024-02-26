@@ -261,10 +261,10 @@ int main(int argc, char** argv){
         for(size_t i=start-start;i<end-start;i++){
             idx = i;
             const double graph_size = sliced_graph[i].size();
-            /*for(size_t j=0; j< graph_size; j++){
+            for(size_t j=0; j< graph_size; j++){
                 cnt+=1;
-            }*/
-            send_buf_ptr[idx] = graph_size/(num_of_vertex-1);
+            }
+            send_buf_ptr[idx] =cnt/(num_of_vertex-1);
             cnt = 0;
         }
         clock_gettime(CLOCK_MONOTONIC, &end1);

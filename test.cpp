@@ -252,8 +252,9 @@ int main(int argc, char** argv){
         cout <<"=====================================================" <<endl;
             
     }
+    clock_gettime(CLOCK_MONOTONIC, &begin2);
     for(int x=0;x<30;x++){
-        clock_gettime(CLOCK_MONOTONIC, &begin2);
+        
         int idx;
         int cnt = 0;
         clock_gettime(CLOCK_MONOTONIC, &begin1);
@@ -553,7 +554,7 @@ int main(int argc, char** argv){
          cout << "=====================================================" << endl;
     }
     cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
-    printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
+    printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2/30);
     /*if(my_ip != node[0] && rank == 0){
          cout << "=====================================================" << endl;
         

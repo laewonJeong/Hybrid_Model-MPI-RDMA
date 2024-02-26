@@ -528,7 +528,7 @@ int main(int argc, char** argv){
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
     //===============================================================================
     if(my_ip == node[0] && rank == 0){
-        cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
+        
         cout << "=====================================================" << endl;
         cout << "[INFO]SORTING DEGREE CENTRALITY." << endl;
         send[0][0] = send[0][0] - 1000000;
@@ -552,6 +552,7 @@ int main(int argc, char** argv){
     else if(my_ip != node[0] && rank == 0){
          cout << "=====================================================" << endl;
     }
+    cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
     printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
     /*if(my_ip != node[0] && rank == 0){
          cout << "=====================================================" << endl;

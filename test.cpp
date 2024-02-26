@@ -202,6 +202,7 @@ int main(int argc, char** argv){
     //gather_pr.resize(num_of_vertex);
     
     long double time3;
+    long double sum_time3 = 0;
     long double mpi_time = 0;
     long double rdma_time = 0;
     //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
@@ -251,62 +252,65 @@ int main(int argc, char** argv){
         cout <<"=====================================================" <<endl;
             
     }
-    clock_gettime(CLOCK_MONOTONIC, &begin2);
-    int idx;
-    int cnt = 0;
-    clock_gettime(CLOCK_MONOTONIC, &begin1);
-    for(size_t i=start-start;i<end-start;i++){
-        idx = i;
-        const double graph_size = sliced_graph[i].size();
-        for(size_t j=0; j< graph_size; j++){
-            cnt+=1;
+    for(int x=0;x<30;x++){
+        clock_gettime(CLOCK_MONOTONIC, &begin2);
+        int idx;
+        int cnt = 0;
+        clock_gettime(CLOCK_MONOTONIC, &begin1);
+        for(size_t i=start-start;i<end-start;i++){
+            idx = i;
+            const double graph_size = sliced_graph[i].size();
+            for(size_t j=0; j< graph_size; j++){
+                cnt+=1;
+            }
+            send_buf_ptr[idx] = cnt;
+            cnt = 0;
         }
-        send_buf_ptr[idx] = cnt;
-        cnt = 0;
-    }
-    clock_gettime(CLOCK_MONOTONIC, &end1);
-    time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-    cout << "[INFO]EXECUTION TIME: " << time3 << endl;
-    if(my_ip == node[0]){
-        send[0].clear();
+        clock_gettime(CLOCK_MONOTONIC, &end1);
+        time3 = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
+        sum_time3 += time3;
+        cout << "[INFO]EXECUTION TIME: " << time3 << endl;
+        if(my_ip == node[0]){
+            send[0].clear();
         //clock_gettime(CLOCK_MONOTONIC, &begin3);
-        myrdma.recv_t("send");
+            myrdma.recv_t("send");
         //clock_gettime(CLOCK_MONOTONIC, &end3);
         //long double time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
         //cout << time3 << endl;
         //myrdma.t_recv("send", nn, num_of_node, send, recv1);
-        cout << "[INFO]START RECEIVE - SUCCESS" << endl;
+            cout << "[INFO]START RECEIVE - SUCCESS" << endl;
             
-        //clock_gettime(CLOCK_MONOTONIC, &begin3);
+            //clock_gettime(CLOCK_MONOTONIC, &begin3);
             
-        for(size_t i=0;i<num_of_node-1;i++){
-            size = nn[i];
-            //std::vector<double>::iterator iterator = recv1[i].begin();
-            send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
-        }   
-        //clock_gettime(CLOCK_MONOTONIC, &end3);
-        //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
-        //cout << time3 << endl;
+            for(size_t i=0;i<num_of_node-1;i++){
+                size = nn[i];
+                //std::vector<double>::iterator iterator = recv1[i].begin();
+                send[0].insert(send[0].end(),make_move_iterator(recv1[i].begin()),make_move_iterator(recv1[i].begin() + size));
+            }   
+            //clock_gettime(CLOCK_MONOTONIC, &end3);
+            //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+            //cout << time3 << endl;
 
-        //if(diff < 0.00001)
-        //    send_buf_ptr[0] += 1; 
+            //if(diff < 0.00001)
+            //    send_buf_ptr[0] += 1; 
             
             
-        //myrdma.rdma_write_pagerank(0);
-         //clock_gettime(CLOCK_MONOTONIC, &begin3);
+            //myrdma.rdma_write_pagerank(0);
+            //clock_gettime(CLOCK_MONOTONIC, &begin3);
             
-        fill(send_first, send_end, send[0]);
-        //clock_gettime(CLOCK_MONOTONIC, &end3);
-        //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
-        //cout << time3 << endl;
-        cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
-    }
-    else{
-        if(rank == 0){
-            cout << "[INFO]START SEND_RDMA - SUCCESS "<< endl;
-            myrdma.rdma_write_vector(0,div_buff_size);
-            //myrdma.rdma_recv_pagerank(0);
-        }       
+            fill(send_first, send_end, send[0]);
+            //clock_gettime(CLOCK_MONOTONIC, &end3);
+            //time3 = (end3.tv_sec - begin3.tv_sec) + (end3.tv_nsec - begin3.tv_nsec) / 1000000000.0;
+            //cout << time3 << endl;
+            cout << "[INFO]START AGGREGATE - SUCCESS" << endl;
+        }
+        else{
+            if(rank == 0){
+                cout << "[INFO]START SEND_RDMA - SUCCESS "<< endl;
+                myrdma.rdma_write_vector(0,div_buff_size);
+                //myrdma.rdma_recv_pagerank(0);
+            }       
+        }
     }
     //===============================================================================
     /*for(step =0;step<10000000;step++){
@@ -524,6 +528,7 @@ int main(int argc, char** argv){
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
     //===============================================================================
     if(my_ip == node[0] && rank == 0){
+        cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
         cout << "=====================================================" << endl;
         cout << "[INFO]SORTING DEGREE CENTRALITY." << endl;
         send[0][0] = send[0][0] - 1000000;

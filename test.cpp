@@ -253,7 +253,7 @@ int main(int argc, char** argv){
             
     }
     clock_gettime(CLOCK_MONOTONIC, &begin2);
-    for(int x=0;x<30;x++){
+    /*for(int x=0;x<30;x++){
         
         int idx;
         long double cnt = 0;
@@ -312,9 +312,9 @@ int main(int argc, char** argv){
                 //myrdma.rdma_recv_pagerank(0);
             }       
         }
-    }
+    }*/
     //===============================================================================
-    /*for(step =0;step<10000000;step++){
+    for(step =0;step<10000000;step++){
         
         if(rank == 0 || my_ip == node[0]){
             cout <<"================STEP "<< step+1 << "================" <<endl;
@@ -524,7 +524,7 @@ int main(int argc, char** argv){
         if(diff < 0.00001 || recv1[0][0] > 1){
             break;
         }
-    }*/
+    }
     clock_gettime(CLOCK_MONOTONIC, &end2);
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
     //===============================================================================
@@ -555,7 +555,7 @@ int main(int argc, char** argv){
     }
     cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
     printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2/30);
-    /*if(my_ip != node[0] && rank == 0){
+    if(my_ip != node[0] && rank == 0){
          cout << "=====================================================" << endl;
         
         recv1[0][0] = recv1[0][0] - 1;
@@ -582,15 +582,15 @@ int main(int argc, char** argv){
         //cout << "[INFO]IMPORTANT VERTEX: " << important_idx << "\n[INFO]" << important_idx << "'S VALUE: "<<important_value << endl;
        // cout << "s = " <<round(sum1) << endl;
         //printf("총 수행시간: %Lfs.\n", time2);
-    }*/
-    /*if(rank == 0|| my_ip == node[0]){
+    }
+    if(rank == 0|| my_ip == node[0]){
         
         printf("[INFO]AVG EXECUTION TIME:   %LFs.\n", avg_compute_time/62);
         //printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
         printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
         cout << "=====================================================" << endl;
-    }*/
+    }
     MPI_Finalize();
     myrdma.exit_rdma();
 }

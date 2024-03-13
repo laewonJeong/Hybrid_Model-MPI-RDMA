@@ -25,8 +25,8 @@
 #define num_of_node 5
 #define port 40145
 #define server_ip "192.168.4.5"//"pod-a.svc-k8s-rdma"
-//8,6,9,7,2,3,4,5
-string node[num_of_node] = {server_ip,"192.168.4.16","192.168.4.10","192.168.4.8","192.168.4.9"};//"192.168.4.14","192.168.4.13","192.168.4.12","192.168.4.11"};//,"192.168.1.106","192.168.1.107","192.168.1.108","192.168.1.109"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
+//7,6,9,8,2,3,4,5
+string node[num_of_node] = {server_ip,"192.168.4.9","192.168.4.10","192.168.4.8","192.168.4.16"};//"192.168.4.14","192.168.4.13","192.168.4.12","192.168.4.11"};//,"192.168.1.106","192.168.1.107","192.168.1.108","192.168.1.109"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 
 string node_domain[num_of_node];
 
@@ -492,7 +492,7 @@ int main(int argc, char** argv){
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
 
     //Sorting PageRank===============================================================================
-    if(my_ip == node[0] && rank == 0){
+    /*if(my_ip == node[0] && rank == 0){
         
         cout << "=====================================================" << endl;
         cout << "[INFO]SORTING PAGERANK." << endl;
@@ -513,7 +513,7 @@ int main(int argc, char** argv){
         }
         
         //cout << "=====================================================" << endl;
-    }
+    }*/
     //else if(my_ip != node[0] && rank == 0){
     //     cout << "=====================================================" << endl;
     //}
@@ -538,7 +538,7 @@ int main(int argc, char** argv){
         cout.precision(numeric_limits<double>::digits10);
         
         for(int i=0;i<topN;i++){
-            cout << "pr[" <<result[i].second<<"]: " << result[i].first <<endl;
+            cout << "PR[" <<result[i].second<<"]: " << result[i].first <<endl;
         }
         
         cout << "=====================================================" << endl;

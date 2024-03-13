@@ -96,38 +96,21 @@ int main(int argc, char** argv){
         }
     }
     
-    clock_gettime(CLOCK_MONOTONIC, &begin1);
     
+
+    //Graph Partitioning=============================================================
     pagerank.create_vertex_weight(argv[1],argv[2], num_outgoing, num_of_vertex, 
                                 start, end, nn, num_of_node, size, node, my_ip, 
                                 rank, displs, recvcounts, send, recv1,argv[3]);
-    
     num_of_vertex = num_outgoing.size();
-    cout << "[INFO]TOTAL VERTEX: "<<num_of_vertex << endl;
 
-    //pagerank.check_power_law_degree(num_outgoing);
-    //buff_size = sizeof(double) * num_of_vertex;
-    
-    //cout << "[INFO]START: "<< start << ", END: "<< end << endl;
-    //pagerank.create_graph(argv[1],argv[2],graph,num_outgoing);
-    //num_of_vertex = (*graph).size();
-    //cout << rank << " create sliced graph" << endl;
+    if(rank == 0 && my_ip != server_ip)
+        cout << "[INFO]TOTAL VERTEX: "<<num_of_vertex << endl;
+
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
     
-    //slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
-    //delete sliced_graph;
 
-    clock_gettime(CLOCK_MONOTONIC, &end1);
-    long double create_graph_time = (end1.tv_sec - begin1.tv_sec) + (end1.tv_nsec - begin1.tv_nsec) / 1000000000.0;
-    //sliced_graph = sliced_graph;//(sliced_graph.begin(),sliced_graph.end());
-    //slice_graph = (*sliced_graph);
-   // delete sliced_graph;
-    //if(my_ip != node[0]){
-    //    slice_graph = std::vector<std::vector<size_t>>((*sliced_graph).begin(),(*sliced_graph).end());
-    //    delete sliced_graph;
-    //}
-    //cout << rank << "finish" << endl;
-    //Check Graph size==============================================================
+    
     
     size_t innerVectorsSize = 0;
     for (const auto& innerVector : sliced_graph) {
@@ -138,7 +121,7 @@ int main(int argc, char** argv){
     size_t outgoing_size = sizeof(size_t) * num_outgoing.size();
     
     if(rank == 0 && my_ip != server_ip){
-        cout << "[INFO]FINISH CREATE GRAPH " <<endl;//<<  create_graph_time << "s. " << endl;
+        cout << "[INFO]FINISH CREATE GRAPH " <<endl;
         num_vertex = end-start;
         num_edge =0;
 
@@ -146,30 +129,13 @@ int main(int argc, char** argv){
             num_edge += num_outgoing[i];
         }
         cout << "[INFO]Vertex: " << num_vertex << ", Edge: " << num_edge << endl;
-        //cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize + outgoing_size << " byte." << endl;
-        //cout << "[INFO]OUT_E MEMORY USAGE: " << outgoing_size << " byte." << endl;
-        //cout << totalSize + outgoing_size << " byte."<<endl;
-        //cout << "=====================================================" << endl;
-        //cout << "[INFO]GRAPH PARTITIONING" << endl;
         
         cout << "[INFO]GRAPH MEMORY USAGE: " << totalSize << " + " <<outgoing_size << "= " << totalSize+outgoing_size << " byte." << endl;
     }
     
-    //while(1){
-//
-    //}
-    //graph partitioning=============================================================
-    
-    //for(int i = 0; i < num_outgoing[i].size(); i++){
-        
-    //}
-    /*pagerank.graph_partition(graph, slice_graph, num_outgoing, num_of_vertex,
-                            start, end, nn, num_of_node, size, node, my_ip, rank, 
-                            displs, recvcounts, send, recv1);*/
+  
 
     //Delete Graph===================================================================
-    
-    //delete graph;
     if(my_ip == server_ip){
         num_outgoing.clear();
         num_outgoing.shrink_to_fit();
@@ -186,9 +152,9 @@ int main(int argc, char** argv){
         myrdma.create_rdma_info(send, recv1);
         myrdma.send_info_change_qp();
     }
-   div_buff_size = sizeof(double) * send[0].size();
+    div_buff_size = sizeof(double) * send[0].size();
    
-  // cout << "end" << endl;*/
+ 
     int check;
     int check1[size];
     
@@ -198,22 +164,21 @@ int main(int argc, char** argv){
     vector<double> prev_pr;
     double df_inv = 1.0 - df;
     double inv_num_of_vertex = 1.0 / num_of_vertex;
-    //vector<double> gather_pr;
-    //gather_pr.resize(num_of_vertex);
+    
     
     long double time3;
     long double sum_time3 = 0;
     long double mpi_time = 0;
     long double rdma_time = 0;
-    //recv1[0].resize(num_of_vertex, 1/num_of_vertex);
+    
 
     vector<double> div_send;
-    double* send_buf_ptr;// = send[0].data();
-    //int send_size;
+    double* send_buf_ptr;
+    
     if(my_ip != node[0] && size > 1){
         div_send.resize(end-start);
         send_buf_ptr = div_send.data();
-        //send_size = div_send.size();
+        
     }
     else if(my_ip != node[0] && size <= 1){
         send_buf_ptr = send[0].data();
@@ -222,9 +187,7 @@ int main(int argc, char** argv){
     if(my_ip == node[0]){
         send_buf_ptr = send[0].data();
     }
-    //int send_size = div_send.size();
-    //int send_size = div_send.size();
-    //
+    
     double* recv_buffer_ptr = recv1[0].data();
    
     
@@ -313,7 +276,7 @@ int main(int argc, char** argv){
             }       
         }
     }*/
-    //===============================================================================
+    //PageRank Calculation===============================================================================
     for(step =0;step<10000000;step++){
         
         if(rank == 0 || my_ip == node[0]){
@@ -527,11 +490,12 @@ int main(int argc, char** argv){
     }
     clock_gettime(CLOCK_MONOTONIC, &end2);
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
-    //===============================================================================
+
+    //Sorting PageRank===============================================================================
     if(my_ip == node[0] && rank == 0){
         
         cout << "=====================================================" << endl;
-        cout << "[INFO]SORTING DEGREE CENTRALITY." << endl;
+        cout << "[INFO]SORTING PAGERANK." << endl;
         send[0][0] = send[0][0] - 1000000;
         //cout << "[INFO]SORTING PAGERANK VALUE." << endl;
 
@@ -545,18 +509,18 @@ int main(int argc, char** argv){
         double important_value = result[0].first;
 
         for(int i=0;i<topN;i++){
-            cout << "dc[" <<result[i].second<<"]: " << result[i].first <<endl;
+            cout << "PR[" <<result[i].second<<"]: " << result[i].first <<endl;
         }
         
-        cout << "=====================================================" << endl;
+        //cout << "=====================================================" << endl;
     }
-    else if(my_ip != node[0] && rank == 0){
-         cout << "=====================================================" << endl;
-    }
-    cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
-    printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2/30);
+    //else if(my_ip != node[0] && rank == 0){
+    //     cout << "=====================================================" << endl;
+    //}
+    //cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
+    //printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2/30);
     if(my_ip != node[0] && rank == 0){
-         cout << "=====================================================" << endl;
+        cout << "=====================================================" << endl;
         
         recv1[0][0] = recv1[0][0] - 1;
         cout << "[INFO]SORTING PAGERANK VALUE." << endl;
@@ -586,7 +550,7 @@ int main(int argc, char** argv){
     if(rank == 0|| my_ip == node[0]){
         
         printf("[INFO]AVG EXECUTION TIME:   %LFs.\n", avg_compute_time/62);
-        //printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
+        printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
         printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
         printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
         cout << "=====================================================" << endl;

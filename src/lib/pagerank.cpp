@@ -206,19 +206,21 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                                 int* recvcounts,vector<double> *send, vector<double> *recv1,string cmd)
 {
     
-    if(cmd == "1")
+    if(rank == 0){
+        if(cmd == "1")
                 cout << "[INFO]WEIGHT = EQUI-VERTEX" << endl;
-    else if(cmd == "2")
+        else if(cmd == "2")
                 cout << "[INFO]WEIGHT = SQUARE ROOT" << endl;
-    else if(cmd == "3")
+        else if(cmd == "3")
                 cout << "[INFO]WEIGHT = LOG" << endl;
-    else if(cmd == "4" || cmd == "5")
+        else if(cmd == "4" || cmd == "5")
                 cout << "[INFO]WEIGHT = EQUI-EDGE" << endl;
-    else if(cmd == "6")
+        else if(cmd == "6")
                 cout << "[INFO]WEIGHT = LOG + E" << endl;
-    else{
-        cout << "[INFO]WEIGHT ERROR(1 ~ 5)" << endl;
-        exit(0);
+        else{
+            cout << "[INFO]WEIGHT ERROR(1 ~ 5)" << endl;
+            exit(0);
+        }
     }
     istream *infile;
     infile = new ifstream(path.c_str());
@@ -245,7 +247,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             add_arc1(strtol(from.c_str(), NULL, 10),strtol(to.c_str(), NULL, 10),num_outgoing);
             
             line_num++;
-            if(line_num % 50000000 == 0){
+            if(line_num % 50000000 == 0 && rank == 0){
                 cout << "[INFO]READ "<< line_num<< " LINES." << endl;
             }
 		}

@@ -160,7 +160,7 @@ void Pagerank::check_power_law_degree(vector<int>& num_outgoing){
             cout << i << " " << weighht[i] << endl;
         }*/
 }
-void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph){
+void Pagerank::create_sliced_graph(string path, string del, int start, int end, std::vector<std::vector<size_t>>& sliced_graph, int rank){
     istream *infile;
     infile = new ifstream(path.c_str());
     string line;
@@ -188,7 +188,7 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
             if(y >= start && y < end)
                 ret = insert_into_vector(sliced_graph[y-start], x);
              line_num++;
-            if(line_num % 50000000 == 0){
+            if(line_num % 50000000 == 0 && rank == 0){
                 cout << "[INFO]READ "<< line_num<< " LINES." << endl;
             }
             

@@ -107,7 +107,7 @@ int main(int argc, char** argv){
     if(rank == 0 && my_ip != server_ip)
         cout << "[INFO]TOTAL VERTEX: "<<num_of_vertex << endl;
 
-    pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph);
+    pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph, rank);
     
 
     

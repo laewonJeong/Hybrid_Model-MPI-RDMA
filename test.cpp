@@ -507,11 +507,15 @@ int main(int argc, char** argv){
     //}
     //cout << "[INFO]Average Time: "<< sum_time3/30 << endl;
     //printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2/30);
+    ofstream outfile("output.txt");
+
     if(my_ip != node[0] && rank == 0){
         cout << "=====================================================" << endl;
-        
+        outfile << "=====================================================" << endl;
+
         recv1[0][0] = recv1[0][0] - 1;
         cout << "[INFO]SORTING PAGERANK VALUE." << endl;
+        outfile << "[INFO]SORTING PAGERANK VALUE." << endl;
 
         vector<pair<double,int>> result;
         for (int i = 0; i < num_of_vertex; ++i) {
@@ -527,9 +531,11 @@ int main(int argc, char** argv){
         
         for(int i=0;i<topN;i++){
             cout << "PR[" <<result[i].second<<"]: " << result[i].first <<endl;
+            outfile << "PR[" <<result[i].second<<"]: " << result[i].first <<endl;
         }
         
         cout << "=====================================================" << endl;
+        outfile << "=====================================================" << endl;
        
         //cout << "[INFO]IMPORTANT VERTEX: " << important_idx << "\n[INFO]" << important_idx << "'S VALUE: "<<important_value << endl;
        // cout << "s = " <<round(sum1) << endl;
@@ -537,12 +543,29 @@ int main(int argc, char** argv){
     }
     if(rank == 0|| my_ip == node[0]){
         
-        printf("[INFO]AVG EXECUTION TIME:   %LFs.\n", avg_compute_time/62);
-        printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
-        printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
-        printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
-        cout << "=====================================================" << endl;
+        if(my_ip == node[0]){
+            printf("[INFO]AVG EXECUTION TIME:   %LFs.\n", avg_compute_time/62);
+            printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
+            printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
+            printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
+            cout << "=====================================================" << endl;
+        }
+        else{
+            printf("[INFO]AVG EXECUTION TIME:   %LFs.\n", avg_compute_time/62);
+            printf("[INFO]AVG MPI_TIME:  %Lfs.\n", mpi_time/62);
+            printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
+            printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
+            cout << "=====================================================" << endl;
+            outfile << "[INFO]AVG EXECUTION TIME:   %LFs.\n" << avg_compute_time/62;
+            outfile << "[INFO]AVG MPI_TIME:  %Lfs.\n" << mpi_time/62;
+            outfile << "[INFO]AVG NETWORK TIME:     %Lfs.\n" << rdma_time/62;
+            outfile << "[INFO]TOTAL EXECUTION TIME: %Lfs.\n" << time2;
+            outfile << "=====================================================" << endl;
+        }
     }
+
+    outfile.close();
+
     MPI_Finalize();
     myrdma.exit_rdma();
 }

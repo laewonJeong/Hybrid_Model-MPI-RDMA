@@ -522,7 +522,7 @@ int main(int argc, char** argv){
             result.push_back(make_pair(recv1[0][i],i));
         }
         
-        int topN = 5;
+        int topN = 20;
         partial_sort(result.begin(), result.begin() + topN, result.end(), greater<>());
         int important_idx = result[0].second;
         double important_value = result[0].first;

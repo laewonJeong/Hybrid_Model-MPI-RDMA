@@ -556,10 +556,10 @@ int main(int argc, char** argv){
             printf("[INFO]AVG NETWORK TIME:     %Lfs.\n", rdma_time/62);
             printf("[INFO]TOTAL EXECUTION TIME: %Lfs.\n", time2);
             cout << "=====================================================" << endl;
-            outfile << "[INFO]AVG EXECUTION TIME:   %LFs.\n" << avg_compute_time/62;
-            outfile << "[INFO]AVG MPI_TIME:  %Lfs.\n" << mpi_time/62;
-            outfile << "[INFO]AVG NETWORK TIME:     %Lfs.\n" << rdma_time/62;
-            outfile << "[INFO]TOTAL EXECUTION TIME: %Lfs.\n" << time2;
+            outfile << "[INFO]AVG EXECUTION TIME:   " << avg_compute_time/62 << "s." << endl;
+            outfile << "[INFO]AVG MPI_TIME:  " << mpi_time/62 << "s." << endl;
+            outfile << "[INFO]AVG NETWORK TIME:     " << rdma_time/62 << "s." << endl;
+            outfile << "[INFO]TOTAL EXECUTION TIME: " << time2 << "s." << endl;
             outfile << "=====================================================" << endl;
         }
     }

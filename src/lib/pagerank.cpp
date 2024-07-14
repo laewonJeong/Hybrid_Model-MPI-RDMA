@@ -317,10 +317,12 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "5")
                 weight = log(num_outgoing[i]+2.71);
             else if(cmd == "7"){
-                avg = 20;//14.2326;
+                avg = 14.2326;
                 max = 20293;
+                double max1 = max - max*0.95;
                 z_score = num_outgoing[i]-round(avg);
-                weight = 1 + (sqrt(num_outgoing[i])-1)*unit_step_func(num_outgoing[i]-round(avg));// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
+
+                weight = 1 + (sqrt(num_outgoing[i]+(z_score*unit_step_func(num_outgoing[i]-max1)))-1)*unit_step_func(num_outgoing[i]-round(avg));// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
             }
             else{
                 avg =14.2326;//35.253;//14.2326;//15.9151;//27.528;//14.2326;//35.253;//35.253;//14.2326;//14.2326;//14.2326;//14.2362;//35.253;// 27.528;//35.253;//14.2362;//35.253;//14.2362;//15.9151;//2;//15.9151;//6.54044;//5.57058;//11.092;//35.253;//14.2362;//35.253;//35.253;//2;//35.253;//14.2362;//14.2362;//2;//14.2362;//14.2362;//35.253;//+36;

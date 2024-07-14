@@ -22,7 +22,7 @@ double min_max(double x, double min_x, double max_x){
     return (x-min_x)/(max_x-min_x);
 }
 double unit_step_func(double x){
-    if(x <= 0)
+    if(x < 0)
         return 0;
     else
         return 1;
@@ -319,7 +319,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "7"){
                 avg = 14.2326;
                 max = 20293;
-                weight = (sqrt(num_outgoing[i]+(num_outgoing[i]-avg))-1)*unit_step_func(num_outgoing[i]-avg) + 1;// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
+                weight = 1 + (sqrt(num_outgoing[i]+(num_outgoing[i]-avg))-1)*unit_step_func(num_outgoing[i]-avg);// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
             }
             else{
                 avg =14.2326;//35.253;//14.2326;//15.9151;//27.528;//14.2326;//35.253;//35.253;//14.2326;//14.2326;//14.2326;//14.2362;//35.253;// 27.528;//35.253;//14.2362;//35.253;//14.2362;//15.9151;//2;//15.9151;//6.54044;//5.57058;//11.092;//35.253;//14.2362;//35.253;//35.253;//2;//35.253;//14.2362;//14.2362;//2;//14.2362;//14.2362;//35.253;//+36;

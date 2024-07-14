@@ -18,6 +18,12 @@ vector<int> n2;
 vector<int> nn;
 //int number_outgoing = 0;
 
+double unit_step_func(double x){
+    if(x < 0)
+        return 0;
+    else
+        return 1;
+}
 vector<string> split(string str, char Delimiter) {
     istringstream iss(str);             
     string buffer;                     
@@ -217,6 +223,8 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 cout << "[INFO]WEIGHT = EQUI-EDGE" << endl;
         else if(cmd == "6")
                 cout << "[INFO]WEIGHT = LOG + E" << endl;
+        else if (cmd == "7")
+            cout << "[INFO]DEWP-PRIME" << endl;
         else{
             cout << "[INFO]WEIGHT ERROR(1 ~ 5)" << endl;
             exit(0);
@@ -305,6 +313,11 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 weight = num_outgoing[i];//sqrt(num_outgoing[i]+6.0);
             else if(cmd == "5")
                 weight = log(num_outgoing[i]+2.71);
+            else if(cmd == "7"){
+                avg = 14.2326;
+                max = 20293;
+                weight = 1 + sqrt(num_outgoing[i] - 1)*unit_step_func(avg-num_outgoing[i]) + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
+            }
             else{
                 avg =14.2326;//35.253;//14.2326;//15.9151;//27.528;//14.2326;//35.253;//35.253;//14.2326;//14.2326;//14.2326;//14.2362;//35.253;// 27.528;//35.253;//14.2362;//35.253;//14.2362;//15.9151;//2;//15.9151;//6.54044;//5.57058;//11.092;//35.253;//14.2362;//35.253;//35.253;//2;//35.253;//14.2362;//14.2362;//2;//14.2362;//14.2362;//35.253;//+36;
                 std = 2.98611;//2419.74;//87.0887;//36.0803;//2419.74;//30.4273;//99.915;//30.4273;//6.55653;//16.356;//2419.74;//36.0803;//2419.74;//2419.74;//99.915;//36.0803;//36.0803;//2419.74;

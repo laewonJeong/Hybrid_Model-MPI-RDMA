@@ -318,7 +318,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 weight = log(num_outgoing[i]+2.71);
             else if(cmd == "7"){
                 avg = edge/num_vertex;
-                max = 100022;
+                max = 2997469;
                 double max1 = max - max*0.995;
                 z_score = num_outgoing[i]-round(avg);
 

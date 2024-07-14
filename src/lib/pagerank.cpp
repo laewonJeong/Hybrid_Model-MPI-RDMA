@@ -239,7 +239,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     string line;
     int num_vertex = 0;
     int temp;
-	//int edge;
+	int edge;
 
 	if(infile){
         while(getline(*infile, line)) {
@@ -264,7 +264,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
 		}
 	} 
     //num_of_vertex = num_vertex;
-    //edge = line_num;
+    edge = line_num;
     delete infile;
     
     double std_deviation = calculateStandardDeviation(num_outgoing, num_vertex);
@@ -317,7 +317,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "5")
                 weight = log(num_outgoing[i]+2.71);
             else if(cmd == "7"){
-                avg = 14.2326;
+                avg = edge/num_of_vertex;
                 max = 20293;
                 double max1 = max - max*0.995;
                 z_score = num_outgoing[i]-round(avg);

@@ -38,7 +38,7 @@ int max_edge = 0;
 using namespace std;
 
 bool is_server(string ip){
-  if(ip == server_ip)
+  if(ip == server_ip) 
     return true;
   return false;
 }

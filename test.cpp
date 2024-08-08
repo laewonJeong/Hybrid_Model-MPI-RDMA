@@ -25,8 +25,8 @@
 #define num_of_node 5
 #define port 40145
 #define server_ip "192.168.4.5"//"pod-a.svc-k8s-rdma"
-//2,4,6,7,5,9,3,8
-string node[num_of_node] = {server_ip,"192.168.4.14","192.168.4.12","192.168.4.10","192.168.4.9"};//"192.168.4.11","192.168.4.8","192.168.4.13","192.168.4.16"};//,"192.168.1.106","192.168.1.107","192.168.1.108","192.168.1.109"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
+//7,4,6,2,5,9,3,8
+string node[num_of_node] = {server_ip,"192.168.4.9","192.168.4.12","192.168.4.10","192.168.4.14"};//"192.168.4.11","192.168.4.8","192.168.4.13","192.168.4.16"};//,"192.168.1.106","192.168.1.107","192.168.1.108","192.168.1.109"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 
 string node_domain[num_of_node];
  
@@ -265,7 +265,7 @@ int main(int argc, char** argv){
         }
     }*/
     //PageRank Calculation===============================================================================
-    for(step =0;step<10000000;step++){
+    for(step =0;step<20;step++){
         
         if(rank == 0 || my_ip == node[0]){
             cout <<"================STEP "<< step+1 << "================" <<endl;
@@ -513,7 +513,7 @@ int main(int argc, char** argv){
         cout << "=====================================================" << endl;
         outfile << "=====================================================" << endl;
 
-        recv1[0][0] = recv1[0][0] - 1;
+        //recv1[0][0] = recv1[0][0] - 1;
         cout << "[INFO]SORTING PAGERANK VALUE." << endl;
         outfile << "[INFO]SORTING PAGERANK VALUE." << endl;
 

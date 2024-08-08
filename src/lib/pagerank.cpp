@@ -218,7 +218,7 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
 void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_outgoing, 
                                 int& num_of_vertex, int& start, int& end, int* nn,int num_of_node, 
                                 int size,string* node, string my_ip, int rank, int* displs, 
-                                int* recvcounts,vector<double> *send, vector<double> *recv1,string cmd)
+                                int* recvcounts,vector<double> *send, vector<double> *recv1,string cmd, string alpha1)
 {
     
     if(rank == 0){
@@ -327,7 +327,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 //max = 2997469;
                 double alpha = 403;
                 z_score = num_outgoing[i]-round(avg);
-                weight = ReLU(0.0, sqrt(num_outgoing[i]-round(avg))) + 0.8;
+                weight = ReLU(0.0, sqrt(num_outgoing[i]-round(avg))) + stod(alpha1);
                 //weight = 1 + (sqrt(num_outgoing[i]+(z_score*unit_step_func(num_outgoing[i]-max1)))-1)*unit_step_func(num_outgoing[i]-round(avg));// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
                 //weight = 1 + (sqrt(num_outgoing[i]+(num_outgoing[i]-round(avg))*unit_step_func(num_outgoing[i]-alpha))-1)*unit_step_func(z_score);
             }

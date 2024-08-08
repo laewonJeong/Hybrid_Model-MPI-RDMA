@@ -472,9 +472,9 @@ int main(int argc, char** argv){
             cout << "[INFO]DIFF: " <<diff << endl;
        
         
-        if(diff < 0.00001 || recv1[0][0] > 1){
+        /*if(diff < 0.00001 || recv1[0][0] > 1){
             break;
-        }
+        }*/
     }
     clock_gettime(CLOCK_MONOTONIC, &end2);
     long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;

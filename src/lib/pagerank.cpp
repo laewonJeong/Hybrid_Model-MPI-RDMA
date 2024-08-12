@@ -409,6 +409,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         end_arr[num_of_node-2] = num_vertex;
     }
     cout << "finish something" << endl;
+    cout << "doing something" << endl;
     //cout << rank << " finish vertex weight" << endl;
     int div_num_of_vertex;
     if(my_ip != node[0]){
@@ -419,7 +420,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 end = end_arr[i-1];
             }
         }
-        //cout << rank << " start process vertex weight" << endl;
+        cout << rank << " start process vertex weight" << endl;
         //if(rank == 0){
             for(int i=0;i<num_of_node;i++){
                 if(i == 0){
@@ -433,7 +434,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                     recv1[i].shrink_to_fit();
                 }
             }
-        //cout << rank << " start process vertex weight" << endl;
+        cout << rank << " start process vertex weight" << endl;
         if(size > 1){
             vector<double> vertex_weight;
             double sum_weight = 0;

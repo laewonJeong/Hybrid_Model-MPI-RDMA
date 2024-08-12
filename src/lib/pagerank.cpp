@@ -420,6 +420,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 end = end_arr[i-1];
             }
             cout << div_num_of_vertex << endl;
+            cout << node[i] <<", " << my_ip << endl;
         }
         cout << rank << " start process vertex weight" << endl;
         //if(rank == 0){

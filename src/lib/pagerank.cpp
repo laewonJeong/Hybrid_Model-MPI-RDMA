@@ -423,6 +423,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         cout << rank << " start process vertex weight" << endl;
         //if(rank == 0){
             for(int i=0;i<num_of_node;i++){
+                cout << i << endl;
                 if(i == 0){
                     send[i].resize(div_num_of_vertex);
                     recv1[i].resize(num_vertex, 1/num_vertex);
@@ -433,7 +434,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                     recv1[i].resize(1);
                     recv1[i].shrink_to_fit();
                 }
-                cout << i << endl;
+                
             }
         cout << rank << " start process vertex weight" << endl;
         if(size > 1){

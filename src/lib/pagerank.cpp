@@ -367,6 +367,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             vertex_weight[i] /= sum_weight;
           
         }
+        cout << "Finish Fairness" << endl;
         //cout << c << endl;
         /*vector<double> weighht;
         int max_dimm = 0;

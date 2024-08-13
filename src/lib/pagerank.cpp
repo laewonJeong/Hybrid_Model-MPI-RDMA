@@ -329,7 +329,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 //max = 2997469;
                 double alpha = 403;
                 z_score = num_outgoing[i]-round(avg);
-                weight = ReLU(0.0, sqrt(num_outgoing[i]-round(avg)) * sqrt(num_outgoing[i])) + stod(alpha1);
+                weight = ReLU(0.0, sqrt(num_outgoing[i]-round(avg)) * sqrt(num_outgoing[i]-round(avg))) + stod(alpha1);
                 //weight = 1 + (sqrt(num_outgoing[i]+(z_score*unit_step_func(num_outgoing[i]-max1)))-1)*unit_step_func(num_outgoing[i]-round(avg));// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
                 //weight = 1 + (sqrt(num_outgoing[i]+(num_outgoing[i]-round(avg))*unit_step_func(num_outgoing[i]-alpha))-1)*unit_step_func(z_score);
             }

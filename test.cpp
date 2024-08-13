@@ -103,7 +103,7 @@ int main(int argc, char** argv){
                                 start, end, nn, num_of_node, size, node, my_ip, 
                                 rank, displs, recvcounts, send, recv1,argv[3], argv[4]);
     num_of_vertex = num_outgoing.size();
-
+    cout << "[INFO]num_outgoing[21513299]: " << num_outgoing[21513299] << endl;
     if(rank == 0 && my_ip != server_ip)
         cout << "[INFO]TOTAL VERTEX: "<<num_of_vertex << endl;
 

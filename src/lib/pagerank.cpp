@@ -183,6 +183,8 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
     size_t line_num = 0;
     //std::vector<std::vector<size_t>>* slice_graph = new std::vector<std::vector<size_t>>();
 	sliced_graph.resize(end-start);
+    cout << end <<", " << start << endl;
+    cout << end-start << endl;
     bool ret =false;
     size_t x;
     size_t y;

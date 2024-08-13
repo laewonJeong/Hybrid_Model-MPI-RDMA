@@ -109,11 +109,9 @@ int main(int argc, char** argv){
 
     pagerank.create_sliced_graph(argv[1],argv[2],start, end, sliced_graph, rank);
     
-
-    
-    
     size_t innerVectorsSize = 0;
-    for (const auto& innerVector : sliced_graph) {
+    for (auto& innerVector : sliced_graph) {
+        innerVector.shrink_to_fit();
         innerVectorsSize += innerVector.size() * sizeof(size_t);
     }
     size_t totalSize = innerVectorsSize;

@@ -44,6 +44,7 @@ bool is_server(string ip){
 }
 
 int main(int argc, char** argv){
+    cout << sizeof(size_t) << endl;
     TCP tcp;
     Pagerank pagerank;
     myRDMA myrdma;

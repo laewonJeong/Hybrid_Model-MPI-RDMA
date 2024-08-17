@@ -331,7 +331,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 z_score = num_outgoing[i]-round(avg);
 
                 //size_t vm = num_outgoing[i] * sizeof(size_t);
-                double n_diff = pow(num_outgoing[i]/round(avg), 1.65) * sizeof(size_t);
+                double n_diff = pow(num_outgoing[i]/round(avg), 1.65);// * sizeof(size_t);
                 weight = stod(alpha1) + sqrt(n_diff)*unit_step_func(num_outgoing[i]-round(avg));//ReLU(0.0, n_diff) + stod(alpha1);//ReLU(0 , sqrt((num_outgoing[i]-round(avg))*sizeof(size_t))) + sizeof(size_t);//sqrt(num_outgoing[i]);
                 //weight = 1 + (sqrt(num_outgoing[i]+(z_score*unit_step_func(num_outgoing[i]-max1)))-1)*unit_step_func(num_outgoing[i]-round(avg));// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);
                 //weight = 1 + (sqrt(num_outgoing[i]+(num_outgoing[i]-round(avg))*unit_step_func(num_outgoing[i]-alpha))-1)*unit_step_func(z_score);

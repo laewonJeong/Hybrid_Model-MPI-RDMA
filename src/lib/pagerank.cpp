@@ -333,10 +333,10 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 //size_t vm = num_outgoing[i] * sizeof(size_t);
                 
                 double n_diff = 0;
-                n_diff = pow((num_outgoing[i]/round(avg)) + (num_outgoing[i]/round(avg)) * unit_step_func(num_outgoing[i]-100000), 1.5) * sizeof(size_t);
+                n_diff = pow((num_outgoing[i]/round(avg)), stod(alpha1)) * sizeof(size_t);
                 //n_diff += (num_outgoing[i]/100000) * unit_step_func(num_outgoing[i]-100000);
                 double unit_step_val = 1 / (1 + exp(-5 * (num_outgoing[i] - avg)));
-                weight = stod(alpha1) + sqrt(n_diff)*unit_step_val;//ReLU(0.0, n_diff) + stod(alpha1);//ReLU(0 , sqrt((num_outgoing[i]-round(avg))*sizeof(size_t))) + sizeof(size_t);//sqrt(num_outgoing[i]);
+                weight = 1.0 + sqrt(n_diff)*unit_step_val;//ReLU(0.0, n_diff) + stod(alpha1);//ReLU(0 , sqrt((num_outgoing[i]-round(avg))*sizeof(size_t))) + sizeof(size_t);//sqrt(num_outgoing[i]);
                 
                 
                 //weight = 1 + (sqrt(num_outgoing[i]+(z_score*unit_step_func(num_outgoing[i]-max1)))-1)*unit_step_func(num_outgoing[i]-round(avg));// + sqrt(num_outgoing[i]+avg)*unit_step_func(0.95 - num_outgoing[i]/max);

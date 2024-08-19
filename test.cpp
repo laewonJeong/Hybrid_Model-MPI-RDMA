@@ -114,6 +114,7 @@ int main(int argc, char** argv){
     int check_iter = 0;
     size_t max_check = 0;
     size_t inner_vector_size;
+    cout << sliced_graph.size() << endl;
     for (auto& innerVector : sliced_graph) {
         innerVector.shrink_to_fit();
         inner_vector_size = innerVector.size() * sizeof(size_t);

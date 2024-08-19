@@ -325,7 +325,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             else if(cmd == "5")
                 weight = log(num_outgoing[i]+2.71);
             else if(cmd == "7"){
-                avg = std::min(10, edge/num_vertex);
+                avg = std::max(10, edge/num_vertex);
                 
                 //max = 2997469;
                 double alpha = 127;

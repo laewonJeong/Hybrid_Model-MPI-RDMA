@@ -289,6 +289,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     size_t index = 0;
     int a,b;
     double xxxxx = 1.0/(num_of_node-1);
+    struct timespec begin2, end2;
     //int edge_part = ceil((edge/(num_of_node-1)));
     //int vertex_part = ceil((num_of_vertex/(num_of_node-1))*argvv);
     //int part = ceil((edge+num_of_vertex)/(num_of_node-1));
@@ -297,6 +298,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
     //long long buf_part = buffer_size/(num_of_node-1);
     //int ttt = 1;
     //cout << "ve: " << ve << endl;
+    clock_gettime(CLOCK_MONOTONIC, &begin2);
     if (my_ip != "192.168.0.102"){
         double weight;
         vector<double> vertex_weight;
@@ -512,6 +514,9 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         //num_outgoing.shrink_to_fit();
         //delete graph;
     }
+    clock_gettime(CLOCK_MONOTONIC, &end2);
+    long double time2 = (end2.tv_sec - begin2.tv_sec) + (end2.tv_nsec - begin2.tv_nsec) / 1000000000.0;
+    printf("[INFO]PARTITIONING EXECUTION TIME: %Lfs.\n", time2);
 }
 void Pagerank::create_graph(string path, string del,std::vector<std::vector<size_t>>* graph, vector<int>& num_outgoing){
     istream *infile;

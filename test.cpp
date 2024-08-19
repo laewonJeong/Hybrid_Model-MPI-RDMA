@@ -26,7 +26,8 @@
 #define port 40145
 #define server_ip "192.168.4.5"//"pod-a.svc-k8s-rdma"
 //6,7,2,3,4,5,9,8
-string node[num_of_node] = {server_ip,"192.168.4.14","192.168.4.13","192.168.4.12","192.168.4.11","192.168.4.10","192.168.4.9","192.168.4.8"};//,"192.168.4.16"};//,"192.168.1.106","192.168.1.107","192.168.1.108","192.168.1.109"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
+string node[num_of_node] = {server_ip,"192.168.4.10","192.168.4.13","192.168.4.9","192.168.4.8",
+                            "192.168.4.14","192.168.4.12","192.168.4.11"};//,"192.168.4.16"};//,"192.168.1.106","192.168.1.107","192.168.1.108","192.168.1.109"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 
 string node_domain[num_of_node];
  
@@ -55,9 +56,9 @@ int main(int argc, char** argv){
     long double network_time = 0;
     long double compute_time = 0;
     long double avg_compute_time = 0;
-    struct timespec begin1, end1 ;
-    struct timespec begin2, end2 ;
-    struct timespec begin3, end3 ;
+    struct timespec begin1, end1;
+    struct timespec begin2, end2;
+    struct timespec begin3, end3;
     std::vector<std::vector<size_t>>* graph = new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> sliced_graph; //= new std::vector<std::vector<size_t>>();
     std::vector<std::vector<size_t>> slice_graph;

@@ -26,7 +26,7 @@
 #define port 40145
 #define server_ip "192.168.4.5"//"pod-a.svc-k8s-rdma"
 //6,7,2,3,4,5,9,8
-string node[num_of_node] = {server_ip,"192.168.4.14","192.168.4.13","192.168.4.10","192.168.4.9"};//,
+string node[num_of_node] = {server_ip,"192.168.4.10","192.168.4.9","192.168.4.14","192.168.4.13"};//,
                            //"192.168.4.10","192.168.4.9","192.168.4.8"};//,"192.168.4.16"};//,"192.168.1.106","192.168.1.107","192.168.1.108","192.168.1.109"};//"pod-b.svc-k8s-rdma","pod-c.svc-k8s-rdma","pod-d.svc-k8s-rdma","pod-e.svc-k8s-rdma"};//,"192.168.1.102","192.168.1.103"};
 
 string node_domain[num_of_node];
@@ -115,7 +115,7 @@ int main(int argc, char** argv){
     int check_iter = 0;
     size_t max_check = 0;
     size_t inner_vector_size;
-    cout << sliced_graph.size() << endl;
+    
     for (auto& innerVector : sliced_graph) {
         innerVector.shrink_to_fit();
         inner_vector_size = innerVector.size() * sizeof(size_t);

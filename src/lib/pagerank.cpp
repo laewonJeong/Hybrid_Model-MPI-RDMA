@@ -183,8 +183,8 @@ void Pagerank::create_sliced_graph(string path, string del, int start, int end, 
     size_t line_num = 0;
     //std::vector<std::vector<size_t>>* slice_graph = new std::vector<std::vector<size_t>>();
 	sliced_graph.resize(end-start);
-    cout << end <<", " << start << endl;
-    cout << end-start << endl;
+    //cout << end <<", " << start << endl;
+    //cout << end-start << endl;
     bool ret =false;
     size_t x;
     size_t y;
@@ -380,7 +380,6 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
             vertex_weight[i] /= sum_weight;
           
         }
-        cout << "Finish Fairness" << endl;
         //cout << c << endl;
         /*vector<double> weighht;
         int max_dimm = 0;
@@ -404,7 +403,6 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         /*for(int i =0; i<weighht.size();i++){
             cout << i << " " << weighht[i] << endl;
         }*/
-        cout << "doing something" << endl;
         for(int i =0; i<num_vertex;i++){
             sum += vertex_weight[i];
             if(sum >= xxxxx){
@@ -421,8 +419,6 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         }
         end_arr[num_of_node-2] = num_vertex;
     }
-    cout << "finish something" << endl;
-    cout << "doing something" << endl;
     //cout << rank << " finish vertex weight" << endl;
     int div_num_of_vertex;
     if(my_ip != node[0]){
@@ -432,10 +428,10 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 start = start_arr[i-1];
                 end = end_arr[i-1];
             }
-            cout << div_num_of_vertex << endl;
-            cout << node[i] <<", " << my_ip << endl;
+            //cout << div_num_of_vertex << endl;
+            //cout << node[i] <<", " << my_ip << endl;
         }
-        cout << rank << " start process vertex weight" << endl;
+        //cout << rank << " start process vertex weight" << endl;
         //if(rank == 0){
             for(int i=0;i<num_of_node;i++){
                 cout << i << endl;
@@ -451,7 +447,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
                 }
                 
             }
-        cout << rank << " start process vertex weight" << endl;
+
         if(size > 1){
             vector<double> vertex_weight;
             double sum_weight = 0;

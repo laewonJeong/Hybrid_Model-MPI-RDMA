@@ -45,7 +45,6 @@ bool is_server(string ip){
 }
 
 int main(int argc, char** argv){
-    cout << sizeof(size_t) << endl;
     TCP tcp;
     Pagerank pagerank;
     myRDMA myrdma;
@@ -122,7 +121,7 @@ int main(int argc, char** argv){
         innerVectorsSize += inner_vector_size;
         if (inner_vector_size > max_check){
             max_check = inner_vector_size;
-            cout << check_iter + start << ": " << inner_vector_size << ", " << innerVector.size() << endl;
+            //cout << check_iter + start << ": " << inner_vector_size << ", " << innerVector.size() << endl;
         }
         check_iter++;
     }

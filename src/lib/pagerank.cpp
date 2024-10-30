@@ -311,7 +311,7 @@ void Pagerank::create_vertex_weight(string path, string del, vector<int>& num_ou
         double max;
         int c = 0;
 
-        avg = 20;//std::max(10, edge/num_vertex);
+        avg = 40;//std::max(10, edge/num_vertex);
         for(int i =0; i<num_vertex;i++){
 
             if(cmd == "1")

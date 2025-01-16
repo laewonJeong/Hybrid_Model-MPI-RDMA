@@ -1,5 +1,8 @@
 # Hybrid_Model-MPI-RDMA
-연구 실험용 레포지토리
 
-# Overall Architecture
-<img width="1049" alt="image" src="https://github.com/user-attachments/assets/b956bc51-8644-4b83-b5e8-0564b7483600" />
+### 통신 개념도
+![image](https://github.com/user-attachments/assets/8b2791cd-f512-4487-a7da-e2d24ea26074)
+
+### Overall Architecture
+![image](https://github.com/user-attachments/assets/0ea0f9bb-c65d-4e9a-bc25-8112496cd298)
+
